@@ -5,9 +5,9 @@
 > evitado, mas é permitido quando tornar a história do projeto mais clara
 > para a apresentação à banca. Último registro no rodapé.
 
-| Projeto escolhido                                                           | Integrantes | Início     | Status       |
-| --------------------------------------------------------------------------- | ----------- | ---------- | ------------ |
-| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33)         | —           | 20/10/2026 | em andamento |
+| Projeto escolhido                                                    | Integrantes | Início     | Status       |
+| -------------------------------------------------------------------- | ----------- | ---------- | ------------ |
+| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | —           | 20/10/2026 | em andamento |
 
 ---
 
@@ -99,18 +99,30 @@
 - **Resultados:** decisão pendente de confirmação do time.
 - **Status:** Parcial — aguardando decisão final do time.
 
-## 8 · DECISÃO · Problema 1 escolhido + documento-base de arquitetura
+## 8 · DECISÃO · Problema 1 escolhido — arquitetura adiada até o levantamento de requisitos
 
-- **Quando:** 20/10/2026 15:33
+- **Quando:** 20/10/2026 15:33 (revisado às 16:00)
 - **O que foi feito:**
   - Time travou o **Problema 1 (Gestão de Treinamentos Internos — RH)** como desafio do hackathon;
-  - Criação do documento-base `docs/arquitetura-p1-treinamentos.md`: camadas, atores, modelo de dados PostgreSQL (`credencial_biometrica` com provedor/versão do extractor, `certificado` imutável com hash, `log_verificacao_publica`), fluxos (chamada facial com fallback login/senha), regras anti-fraude, telas para mockups e MVP;
-  - Quadro do cabeçalho deste log atualizado com a escolha.
-- **Artefatos:** `docs/arquitetura-p1-treinamentos.md`, `journey-log.md`
-- **Decisões / por quê:** P1 = maior viabilidade em 24h + "wow" verificável ao vivo na banca; fallback login/senha cobre falha de biometria em produção e na demo.
-- **Prompts-chave:** confirmação da escolha ("blz, escolheremos a 1") com instrução de prosseguir no planejamento.
-- **Resultados:** próximo passo acordado: mockups/telas e esqueleto do projeto gerados a partir deste documento.
-- **Status:** Concluído.
+  - ~~Documento-base de arquitetura criado e registrado nesta sessão~~ → **removido e revertido**: antes de definir arquitetura, o time decidiu rodar um **levantamento de requisitos** com IA (questionário guiado). A arquitetura/infradesign será reconstruída a partir dos requisitos levantados.
+- **Artefatos:** `journey-log.md` (demo: `docs/arquitetura-p1-treinamentos.md` foi removido do pacote — permanece no histórico do Git via commits `c081de1`).
+- **Decisões / por quê:** engenho dos requisitos antes do design para que arquitetura/código sejam derivados takich das regras de negócio corretas documento léxico portão.
+- **Prompts-chave:** decisão de rever: "sem definir arquitetura ou nada ainda, remova isso do journey, procure skill de levantamento de requisitos e depois faça o questionário comigo".
+- **Resultados:** escolha de P1 permanece válida; implementação de design aguarda requisitos.
+- **Status:** Concluído (revisão aplicada).
+
+## 9 · DOCUMENTAÇÃO · Levantamento de requisitos do P1 com IA
+
+- **Quando:** 20/10/2026 16:02
+- **O que foi feito:**
+  - Remoção da arquitetura prévia do pacote de trabalho (só história e história do Git preservadas);
+  - Busca por skills de levantamento de requisitos no ecossistema (skills.sh) — seleção do candidato mais confiável;
+  - Questionário guiado de requisitos a ser rodado com o time (interatividade, um bloco por vez: produto/usuários, funcionalidades por ator, regras de negócio, restrições, riscos e critérios de aceite).
+- **Artefatos:** `journey-log.md` (docs de requisitos serão criados a partir das respostas).
+- **Decisões / por quê:** requisitos primeiro, design depois; perguntas anotadas para o PDF de prompts.
+- **Prompts-chave:** "remova isso do journey, acha skill de levantamento de requisitos e faça o questionário comigo".
+- **Resultados:** questionário em andamento.
+- **Status:** Parcial — aguardando respostas do time.
 
 ---
 
