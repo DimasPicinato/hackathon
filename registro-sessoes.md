@@ -47,6 +47,34 @@
 - **Prompts-chave:** pedido do time: "faça uma skill que a cada operação/documentação/discussão com IA você adicione um resumo em ordem e quando".
 - **Status:** Concluído.
 
+## 4 · DECISÃO · Identidade unificada: reconhecimento facial como primário + login/senha como fallback
+
+- **Quando:** 20/10/2026 15:05
+- **O que foi feito:**
+  - Definição global para os 3 projetos: **reconhecimento facial é o meio principal** de identificação do usuário (time já tem experiência com o método);
+  - **Fallback: login/senha convencional**, vinculado ao mesmo cadastro do usuário que carrega a biometria;
+  - Banco escolhido: **PostgreSQL** (versatilidade para todos os cenários);
+  - Solicitado o mapeamento da estrutura de dados de reconhecimento facial (credenciais biométricas, foto de referência, assinatura negative dependendo do provedor, consentimento e log de eventos).
+- **Artefatos:** (planejamento consolidado na conversa).
+- **Decisões / por quê:** simplicidade operacional e confiabilidade: biometria sempre como padrãoização, login/senha como via alternativa caso indisponível.
+- **Prompts-chave:** diretiva do time consolidando: biometria facial primária, login/senha fallback, PostgreSQL.
+- **Resultados:** plano atualizado com modelo de armazenamento de dados biométricos.
+- **Status:** Concluído.
+
+## 5 · CONFIGURAÇÃO · Versionamento Git + reforço na skill de registro
+
+- **Quando:** 20/10/2026 15:10
+- **O que foi feito:**
+  - Inicialização/normalização do repositório Git (branch `main`) e `.gitignore` (locks Office, `.env`, temporários do OpenCode);
+  - Commit inicial: `chore: init repo — problemas, registro de sessões do hackathon e skill registro-hackathon`;
+  - Atualização da skill `registro-hackathon`: agora **puxa e refina os prompts do time antes de registrar** (contexto → objetivo → restrições → formato saída, preservando o sentido) e documenta os **resultados** de cada uso;
+  - Preparado campo para sincronização com GitHub (aguardando URL do repositório remoto).
+- **Artefatos:** `.opencode/skills/registro-hackathon/SKILL.md`, `.gitignore`, `registro-sessoes.md`
+- **Decisões / por quê:** versionamento do processo e dos prompts para a entrega em PDF; clareza dos prompts é critério avaliado pela banca.
+- **Prompts-chave:** solicitação para todo prompt enviado ser polido e ter resultados documentados; alteração registrada na skill.
+- **Resultados:** skill ampliada; repositório versionado.
+- **Status:** Concluído (push ao GitHub pendente de URL do remote).
+
 ---
 
-_Última atualização: 20/10/2026 14:56 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 15:11 — gerado pela skill `registro-hackathon`._
