@@ -1,6 +1,6 @@
 ---
 name: Registro Hackathon
-description: Documenta em registro-sessoes.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
+description: Documenta em journey-log.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
 ---
 
 # Skill: Registro de Sessões do Hackathon
@@ -29,10 +29,10 @@ Quase todo prompt que o time enviar (na conversa, para reuso com outras IAs ou p
 
 ## Como registrar
 
-1. **Garanta o arquivo** `registro-sessoes.md` na raiz do repositório. Se não existir, crie-o com o cabeçalho padrão (ver template abaixo).
+1. **Garanta o arquivo** `journey-log.md` na raiz do repositório. Se não existir, crie-o com o cabeçalho padrão (ver template abaixo).
 2. **Obtenha a data/hora local** (ferramenta de shell) para o campo `Quando` — nunca invente horário.
 3. **Abra o arquivo e identifique o próximo número de sessão** (o último Nº existente + 1). Se o histórico tiver sido compactado, use o maior número existente + 1.
-4. **Apende a nova entrada NO FINAL do arquivo** (histórico em ordem cronológica, mais antigo primeiro — nunca adicione no meio, nunca reordene, nada se apaga).
+4. **Apende a nova entrada NO FINAL do arquivo** (histórico em ordem cronológica, mais antigo primeiro). Editar entradas antigas deve ser **evitado**, mas **é permitido** quando tornar o histórico mais claro e melhores apresentáveis à banca (ex.: corrigir erro factual, consolidar repetição do mesmo dia, enriquecer uma decisão). Preserve sempre os números Nº e a cronologia geral; se editar, regere o rodapé.
 5. Se houver uma sessão anterior *muito* similar no mesmo dia, o usuário pode pedir fundição ("festival de entradas pequenas") — só compacta sob pedido explícito, mantendo o inteiro de datas/horas que corresponda.
 6. Se o usuário disser "não registre", "ignore este log" ou equivalente: pule o registro silenciosamente.
 
@@ -56,13 +56,15 @@ Categorias válidas (exatamente uma por entrada): `ARQUITETURA` · `CÓDIGO` · 
 
 ## Cabeçalho do arquivo (usar ao criar; manter atualizado)
 
-No topo do `registro-sessoes.md`, mantenha:
+No topo do `journey-log.md`, mantenha:
 
 ```markdown
-# 🗂️ Registro de Sessões — Hackathon FATEC & ETEC · Usina Lins
+# 🗂️ Journey Log (Diário de Bordo) — Hackathon FATEC & ETEC · Usina Lins
 
-> Histórico cronológico de tudo o que fizemos com IA. Cada sessão é numerada e
-> nunca é editada retroativamente. Último registro no rodapé.
+> Histórico cronológico de tudo o que fizemos com IA. Cada sessão é numerada
+> (Nº) e em ordem de data/hora. Evita-se editar entradas antigas, mas
+> correções/complementos são permitidos quando ajudarem a contar melhor a
+> história do projeto à banca. Último registro no rodapé.
 
 | Projeto escolhido | Integrantes | Início | Status |
 |---|---|---|---|

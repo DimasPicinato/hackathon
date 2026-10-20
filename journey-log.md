@@ -1,7 +1,9 @@
-# 🗂️ Registro de Sessões — Hackathon FATEC & ETEC · Usina Lins
+# 🗂️ Journey Log (Diário de Bordo) — Hackathon FATEC & ETEC · Usina Lins
 
-> Histórico cronológico de tudo o que fizemos com IA. Cada sessão é numerada e
-> nunca é editada retroativamente. Último registro no rodapé.
+> Histórico cronológico de tudo o que fizemos com IA. Cada sessão é numerada
+> (Nº) e mantida em ordem de data/hora. Editar entradas antigas deve ser
+> evitado, mas é permitido quando tornar a história do projeto mais clara
+> para a apresentação à banca. Último registro no rodapé.
 
 | Projeto escolhido                                                           | Integrantes | Início     | Status       |
 | --------------------------------------------------------------------------- | ----------- | ---------- | ------------ |
@@ -41,8 +43,8 @@
 - **Quando:** 20/10/2026 14:56
 - **O que foi feito:**
   - Criação da skill em `.opencode/skills/registro-hackathon/SKILL.md`: define quando registrar, formato das entradas, categorias, regras de estilo e verificações;
-  - Criação deste `registro-sessoes.md` como histórico oficial do processo.
-- **Artefatos:** `.opencode/skills/registro-hackathon/SKILL.md`, `registro-sessoes.md`
+  - Criação deste `journey-log.md` como histórico oficial do processo.
+- **Artefatos:** `.opencode/skills/registro-hackathon/SKILL.md`, `journey-log.md`
 - **Decisões / por quê:** a apresentação precisa de evidência cronológica do uso de IA; o registro é escrito por IA ao fim de cada sessão, sem retrabalho para o time.
 - **Prompts-chave:** pedido do time: "faça uma skill que a cada operação/documentação/discussão com IA você adicione um resumo em ordem e quando".
 - **Status:** Concluído.
@@ -69,12 +71,24 @@
   - Commit inicial: `chore: init repo — problemas, registro de sessões do hackathon e skill registro-hackathon`;
   - Atualização da skill `registro-hackathon`: agora **puxa e refina os prompts do time antes de registrar** (contexto → objetivo → restrições → formato saída, preservando o sentido) e documenta os **resultados** de cada uso;
   - Preparado campo para sincronização com GitHub (aguardando URL do repositório remoto).
-- **Artefatos:** `.opencode/skills/registro-hackathon/SKILL.md`, `.gitignore`, `registro-sessoes.md`
+- **Artefatos:** `.opencode/skills/registro-hackathon/SKILL.md`, `.gitignore`, `journey-log.md`
 - **Decisões / por quê:** versionamento do processo e dos prompts para a entrega em PDF; clareza dos prompts é critério avaliado pela banca.
 - **Prompts-chave:** solicitação para todo prompt enviado ser polido e ter resultados documentados; alteração registrada na skill.
 - **Resultados:** skill ampliada; repositório versionado.
 - **Status:** Concluído (push ao GitHub pendente de URL do remote).
 
+## 6 · CONFIGURAÇÃO · Renomeio para `journey-log.md` e flexibilização da regra de edição
+
+- **Quando:** 20/10/2026 15:13
+- **O que foi feito:**
+  - Renomeação do arquivo de registro para **`journey-log.md`** (termo em inglês para "diário de bordo", a pedido do time), com `git mv` para preservar o rastreio de histórico;
+  - Ajuste na skill `registro-hackathon` e no próprio cabeçalho deste log: edição e correção de entradas antigas deixou de ser proibida absoluta — **evita-se, porém é permitido** quando ajudar a apresentar melhor a história do projeto à banca (preservados sempre os Nº e a ordem cronológica).
+- **Artefatos:** `journey-log.md`, `.opencode/skills/registro-hackathon/SKILL.md`
+- **Decisões / por quê:** nomenclatura mais forte/daora para o artefato de apresentação; histórico útil vale mais que histórico "congelado", desde que mantida a integridade cronológica.
+- **Prompts-chave:** pedido para renomear o arquivo com termo em inglês referente a diário de bordo e remover a regra de nenhum retrabalho permitido.
+- **Resultados:** nome e política de edição atualizados; sem perda de histórico anterior.
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 15:11 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 15:13 — gerado pela skill `registro-hackathon`._
