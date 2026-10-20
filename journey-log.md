@@ -7,7 +7,7 @@
 
 | Projeto escolhido                                                           | Integrantes | Início     | Status       |
 | --------------------------------------------------------------------------- | ----------- | ---------- | ------------ |
-| (P1 Treinamentos · P2 Refeitório · P3 Visitas — preencher quando decidirem) | —           | 20/10/2026 | em andamento |
+| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33)         | —           | 20/10/2026 | em andamento |
 
 ---
 
@@ -99,6 +99,19 @@
 - **Resultados:** decisão pendente de confirmação do time.
 - **Status:** Parcial — aguardando decisão final do time.
 
+## 8 · DECISÃO · Problema 1 escolhido + documento-base de arquitetura
+
+- **Quando:** 20/10/2026 15:33
+- **O que foi feito:**
+  - Time travou o **Problema 1 (Gestão de Treinamentos Internos — RH)** como desafio do hackathon;
+  - Criação do documento-base `docs/arquitetura-p1-treinamentos.md`: camadas, atores, modelo de dados PostgreSQL (`credencial_biometrica` com provedor/versão do extractor, `certificado` imutável com hash, `log_verificacao_publica`), fluxos (chamada facial com fallback login/senha), regras anti-fraude, telas para mockups e MVP;
+  - Quadro do cabeçalho deste log atualizado com a escolha.
+- **Artefatos:** `docs/arquitetura-p1-treinamentos.md`, `journey-log.md`
+- **Decisões / por quê:** P1 = maior viabilidade em 24h + "wow" verificável ao vivo na banca; fallback login/senha cobre falha de biometria em produção e na demo.
+- **Prompts-chave:** confirmação da escolha ("blz, escolheremos a 1") com instrução de prosseguir no planejamento.
+- **Resultados:** próximo passo acordado: mockups/telas e esqueleto do projeto gerados a partir deste documento.
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 15:29 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 15:33 — gerado pela skill `registro-hackathon`._
