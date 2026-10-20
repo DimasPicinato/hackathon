@@ -1,6 +1,6 @@
 ---
 name: Registro Hackathon
-description: Documenta em registro-sessoes.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", ou tiver criado/alterado artefatos do projeto.
+description: Documenta em registro-sessoes.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
 ---
 
 # Skill: Registro de Sessões do Hackathon
@@ -16,6 +16,16 @@ Registre ao final de uma interação quando houver **qualquer** destes resultado
 - um prompt/modelo de prompt importante usado com a IA.
 
 NÃO registre: interações triviais (perguntar hora, erro de digitação, teste abandonado).
+
+## Polimento de prompts do time
+
+Quase todo prompt que o time enviar (na conversa, para reuso com outras IAs ou para o PDF de entrega) deve passar por **polimento antes de ser registrado/arquivado**:
+
+1. **Reestruture para legibilidade**: contexto → objetivo → restrições → formato de saída esperado, com marcadores claros.
+2. **Preserve o sentido original**: polimento é clareza, não reescrita de conteúdo. Se houver ambiguidade no prompt original, pergunte em vez de supor.
+3. **Corrija ruídos comuns**: repetições, jargão desnecessário, objetivos misturados em um parágrafo só, pé de texto quebrado.
+4. Ao final da sessão em que um prompt polido foi usado, documente o **resultado** na entrada do registro (campo `Resultados`): o que a IA entregou e o que o time aproveitou/descartou. Isso alimenta diretamente o PDF de prompts que a banca exige.
+5. Se o time pedir, salve a versão polida em `prompts/` com nome descritivo (ex.: `prompts/2026-10-20-arquitetura-p1.md`), com frontmatter curto: data, autor do prompt original, objetivo.
 
 ## Como registrar
 
@@ -37,7 +47,8 @@ NÃO registre: interações triviais (perguntar hora, erro de digitação, teste
 - **Artefatos:** `<caminho/relativo>`
   - (link relativo para os arquivos criados/lidos relevantes; "—" se só discussão);
 - **Decisões / por quê:** <uma ou duas frases justificando; "—" se puro trabalho operacional>;
-- **Prompts-chave:** resumo de 1 linha sobre como a IA foi usada (importante para o PDF de prompts exigido);
+- **Prompts-chave:** resumo de 1 linha sobre como a IA foi usada (importante para o PDF de prompts exigido); se houver versão polida, referencie o caminho em `prompts/`;
+- **Resultados:** o que a saída da IA produziu e o que foi aproveitado (1 linha; "—" se não se aplica);
 - **Status:** Concluído · Parcial · Pendente decisão.
 ```
 

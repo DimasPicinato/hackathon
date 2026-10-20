@@ -1,0 +1,20 @@
+# Sistema operacional
+Thumbs.db
+desktop.ini
+~$*
+
+# Arquivos temporários de Office (locks de edição)
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# Segredos/ambiente (nunca versionar)
+.env
+.env.*
+
+# Dependências de ferramentas (se surgirem)
+node_modules/
+__pycache__/
+
+# Temp do OpenCode
+.opencode/tmp/
