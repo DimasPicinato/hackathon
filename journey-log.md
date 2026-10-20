@@ -89,6 +89,16 @@
 - **Resultados:** nome e política de edição atualizados; sem perda de histórico anterior.
 - **Status:** Concluído.
 
+## 7 · DISCUSSÃO · Recomendação: escolher o Problema 1 (Treinamentos)
+
+- **Quando:** 20/10/2026 15:29
+- **O que foi feito:** análise rápida dos 3 cenários para escolha do desafio.
+- **Artefatos:** —
+- **Decisões / por quê:** **P1** recomendado: menor dependência de hardware real (só câmera na chamada), MVP factível no prazo, e o "wow" da demo é acessível de celular — o avaliador valida um certificado ao vivo na página pública de verificação. **P3** é o plano B (fluxo de aprovação + expiração visível). **P2** é o mais rico, mas o mais arriscado (catraca física + rateio complexo).
+- **Prompts-chave:** pedido de recomendação em poucas palavras para a escolha.
+- **Resultados:** decisão pendente de confirmação do time.
+- **Status:** Parcial — aguardando decisão final do time.
+
 ---
 
-_Última atualização: 20/10/2026 15:13 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 15:29 — gerado pela skill `registro-hackathon`._
