@@ -20,11 +20,12 @@
 
 **0:30–1:15 — A solução em 30 segundos**
 - Colaborador (`otavio.martins.gomes@exemplo.com`) faz **login** — todas as contas do seed já têm o **termo LGPD aceito** (o aceite volta a ser exigido quando o RH publicar nova versão do termo, mostrado em 4:00).
-- Portal: aula **NR35 em andamento** → botão **"Validar presença agora (facial)"** → presença registrada + auditoria.
+- Portal: aula **NR35 em andamento** → botão **"Validar presença agora (facial)"** → **abre a câmera do navegador**: contagem 3‑2‑1, captura do rosto → **"Rosto não reconhecido — melhor similaridade ~36% (limiar 85)"**.
+  Fala pronta: *"Na demo as contas ainda não têm rosto cadastrado — o sistema NUNCA inventa presença. Ele recusa e manda para a via auditável."* (Informe à banca que a imagem da câmera não sai do navegador.)
 
-**1:15–2:15 — A exceção com anti-fraude (RF15)**
-- Logout → login `klaus.werner.steiner` (instrutor) → aula NR35 Aula 3 → **Iniciar aula** (notifica RH!).
-- Tela da chamada: homologação manual — escolhe colaborador, **senha do COLABORADOR** + motivo do catálogo (ou motivo novo no ato — RF27).
+**1:15–2:15 — A exceção com anti-fraude (RF15) — é aqui que o facial recusado se resolve**
+- Logout → login `klaus.werner.steiner` (instrutor) → aula NR35 ativa → chamada.
+- Tela da chamada: registrar presença do colaborador que o facial recusou — **homologação manual com a senha do COLABORADOR** + motivo do catálogo (tente "Falha no reconhecimento facial" — agora a história fecha!) ou motivo novo no ato (RF27).
 - Mostrar o flash de erro com **senha errada** (recusado, e a tentativa fica na auditoria).
 
 **2:15–3:00 — Ticket que faz efeito real (RF10–RF13)**
