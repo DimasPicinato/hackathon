@@ -204,3 +204,6 @@ details summary::-webkit-details-marker { display: none; }
 .badge-valido          { background: var(--status-aprovado); color: #fff; }
 .badge-expirado        { background: #EA580C; color: #fff; }
 .badge-nao_encontrado  { background: #64748B; color: #fff; }
+
+.form-inline-vertical { display: flex; flex-direction: column; gap: .5rem; }
+.form-inline-vertical input, .form-inline-vertical textarea { width: 100%; }

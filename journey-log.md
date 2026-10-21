@@ -301,4 +301,15 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:10 — gerado pela skill `registro-hackathon`._
+## 22 · CÓDIGO · Painel de configurações (RF26): motivos, tipos, termo LGPD, SMTP
+
+- **Quando:** 21/10/2026 01:11 → 01:19
+- **O que foi feito:**
+  - Tela `portal/rh/configuracoes` (Admin/RH apenas): catálogo de motivos de homologação criar/alterar (alimenta RF27); tipos de ticket alternar (RF10); **publicação de nova versão do termo LGPD** — a anterior deixa de vigir e TODOS são re-impostos ao aceite no próximo portal (RF04, wow-factor de demo); SMTP em leitura;
+  - Todas as ações com auditoria (`motivo_criado`, `motivo_alternado`, `termo_publicado`, `tipo_ticket_alternado`); link "Configurações (RF26)" na home do RH/Admin;
+- **Testes:** `ConfiguracoesRhTest` (4): motivo criar/alternar com auditoria, publicação de termo re-pede aceite (403 do colaborador, alternar tipo).
+- **Resultados:** **OK — 72 testes, 228 asserções, verde**; smoke dev: tela 200 com catálogo e tipos real carregados.
+
+---
+
+_Última atualização: 21/10/2026 01:19 — gerado pela skill `registro-hackathon`._

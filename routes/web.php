@@ -5,6 +5,7 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\ChamadaController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\Rh\CertificadosController;
+use App\Http\Controllers\Rh\ConfiguracoesController;
 use App\Http\Controllers\Rh\JustificativasController;
 use App\Http\Controllers\Rh\RelatoriosController;
 use App\Http\Controllers\Rh\TicketsController;
@@ -67,6 +68,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
             Route::get('/relatorios/pessoas/csv', [RelatoriosController::class, 'csvPessoas'])->name('relatorios.pessoas');
             Route::get('/relatorios/sessoes/{aula}/csv', [RelatoriosController::class, 'csvSessao'])->name('relatorios.sessao');
+
+            // RF26 — configurações (Admin/RH)
+            Route::get('/configuracoes', [ConfiguracoesController::class, 'index'])->name('configuracoes');
+            Route::post('/configuracoes/motivos', [ConfiguracoesController::class, 'criarMotivo'])->name('configuracoes.motivo.criar');
+            Route::post('/configuracoes/motivos/{motivo}/alternar', [ConfiguracoesController::class, 'alternarMotivo'])->name('configuracoes.motivo.alternar');
+            Route::post('/configuracoes/tipos/{tipo}/alternar', [ConfiguracoesController::class, 'alternarTipo'])->name('configuracoes.tipo.alternar');
+            Route::post('/configuracoes/termo/publicar', [ConfiguracoesController::class, 'publicarTermo'])->name('configuracoes.termo.publicar');
         });
     });
 });

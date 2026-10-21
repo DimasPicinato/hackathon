@@ -79,6 +79,7 @@
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas ({{ $pendentes['justificativas']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.certificados') }}">Certificados</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios</a>
+        <a class="btn btn-outline btn-pequeno" href="{{ route('portal.rh.configuracoes') }}">Configurações (RF26)</a>
     </nav>
 </div>
 @endif
