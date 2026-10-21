@@ -1,5 +1,5 @@
 ---
-name: Registro Hackathon
+name: registro-hackathon
 description: Documenta em journey-log.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
 ---
 
@@ -10,6 +10,7 @@ Propósito: manter um histórico contínuo e verificável do processo de desenvo
 ## Quando registrar
 
 Registre ao final de uma interação quando houver **qualquer** destes resultados:
+
 - uma decisão tomada (arquitetura, escolha de problema, regra de negócio);
 - artefatos criados ou alterados (código, docs, prompts, diagramas, planos);
 - uma discussão que produza conclusão relevante (ex.: leitura/interpretação dos problemas);
@@ -33,7 +34,7 @@ Quase todo prompt que o time enviar (na conversa, para reuso com outras IAs ou p
 2. **Obtenha a data/hora local** (ferramenta de shell) para o campo `Quando` — nunca invente horário.
 3. **Abra o arquivo e identifique o próximo número de sessão** (o último Nº existente + 1). Se o histórico tiver sido compactado, use o maior número existente + 1.
 4. **Apende a nova entrada NO FINAL do arquivo** (histórico em ordem cronológica, mais antigo primeiro). Editar entradas antigas deve ser **evitado**, mas **é permitido** quando tornar o histórico mais claro e melhores apresentáveis à banca (ex.: corrigir erro factual, consolidar repetição do mesmo dia, enriquecer uma decisão). Preserve sempre os números Nº e a cronologia geral; se editar, regere o rodapé.
-5. Se houver uma sessão anterior *muito* similar no mesmo dia, o usuário pode pedir fundição ("festival de entradas pequenas") — só compacta sob pedido explícito, mantendo o inteiro de datas/horas que corresponda.
+5. Se houver uma sessão anterior _muito_ similar no mesmo dia, o usuário pode pedir fundição ("festival de entradas pequenas") — só compacta sob pedido explícito, mantendo o inteiro de datas/horas que corresponda.
 6. Se o usuário disser "não registre", "ignore este log" ou equivalente: pule o registro silenciosamente.
 
 ## Formato da entrada
@@ -66,16 +67,17 @@ No topo do `journey-log.md`, mantenha:
 > correções/complementos são permitidos quando ajudarem a contar melhor a
 > história do projeto à banca. Último registro no rodapé.
 
-| Projeto escolhido | Integrantes | Início | Status |
-|---|---|---|---|
-| (P1 Treinamentos · P2 Refeitório · P3 Visitas — preencher quando decidirem) | | 20/10/2026 | em andamento |
+| Projeto escolhido                                                           | Integrantes | Início     | Status       |
+| --------------------------------------------------------------------------- | ----------- | ---------- | ------------ |
+| (P1 Treinamentos · P2 Refeitório · P3 Visitas — preencher quando decidirem) |             | 20/10/2026 | em andamento |
 ```
 
 E ao rodapé do arquivo, mantenha sempre:
 
 ```markdown
 ---
-*Última atualização: <dd/MM/yyyy HH:MM> — gerado pela skill `registro-hackathon`.*
+
+_Última atualização: <dd/MM/yyyy HH:MM> — gerado pela skill `registro-hackathon`._
 ```
 
 ## Regras de estilo

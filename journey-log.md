@@ -132,7 +132,7 @@
   - Questionário interativo (via OpenCode) em 4 rodadas — Q1–Q30 — cobrindo: verificação pública com validade, presença manual, vagas nominais, fila de espera, fluxo de tickets, certificado, relatórios, papéis e permissões;
   - **Evoluições importantes decididas pelo time**: entidade **Aula** (Treinamento 1:N Aula) com instrutor iniciando/encerrando; facial **só para validar presença na aula ativa** (com colaborador autônomo OU via instrutor); homologação manual exige **senha do colaborador + motivo** (catálogo editável, incl. motivo novo no ato); confirmação prévia removida — **tickets** resolvem cancelamentos/justificativas (APROVADO/RECUSADO); líder com permissões totais no seu setor e **Admin** com poder total (SMTP); RH emite certificados **manualmente**; relatórios completos com exportação;
   - Consolidação em `docs/requisitos-p1.md` (28 RFs, 6 RNFs, seed de demo, fluxos e fora-de-escopo) após confirmação de entendimento compartilhado.
-- **Artefatos:** `docs/requisitos-p1.md`, `.agents/skills/grill-me/`, `.agents/skills/grilling/`, `journey-log.md`
+- **Artefatos:** `docs/requisitos-p1.md`, `docs/questionario-requisitos-p1.md` (transcrição Q&A), `.agents/skills/grill-me/`, `.agents/skills/grilling/`, `journey-log.md`
 - **Decisões / por quê:** requisitos antes de arquitetura (decisão da sessão 8/9); pergunta a pergunta para não deixar nada assumido; certificado manual dá o RH como "dono da verdade" dos NRs.
 - **Prompts-chave:** 30 perguntas respondidas no questionário interativo do OpenCode (respostas registradas na conversa; a consolidar no PDF de prompts).
 - **Resultados:** `docs/requisitos-p1.md` aprovado pelo time; base pronta para mockups e esqueleto.
@@ -148,10 +148,18 @@
 - **Resultados:** sequência de execução acordada a confirmar; nenhum requisito crítico pendente.
 - **Status:** Concluído.
 
+## 12 · CONFIGURAÇÃO · Skills grill-me e grilling movidas para escopo global do usuário
+
+- **Quando:** 20/10/2026 21:27
+- **O que foi feito:**
+  - Movidas `grill-me` e `grilling` de `.agents/skills/` (escopo do repositório) para `~/.agents/skills/` (escopo global do usuário), tornando-as usáveis em qualquer projeto;
+  - `skills-lock.json` do repositório limpo (as skills não são mais instalações locais).
+- **Artefatos:** `journey-log.md`, `skills-lock.json`, `%USERPROFILE%\.agents\skills\grill-me\`, `%USERPROFILE%\.agents\skills\grilling\`
+- **Decisões / por quê:** as skills são utilitários gerais de levantamento de requisitos, não específicos deste projeto; escopo global evita instalação duplicada em outros repositórios.
+- **Prompts-chave:** "torne as skills grill-me e grilling globais ... pode apenas mover os arquivos ... depois verifique se estão disponíveis".
+- **Resultados:** verificação positiva — ambas carregam corretamente pelo tool `skill` a partir do diretório global.
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 21:25 — gerado pela skill `registro-hackathon`._
-
----
-
-_Última atualização: 20/10/2026 15:33 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 21:27 — gerado pela skill `registro-hackathon`._
