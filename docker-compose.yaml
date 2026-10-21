@@ -34,9 +34,8 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: presenza-app
-    working_dir: /app
-    volumes:
-      - .:/app
+    # Código rola EMBUTIDO na imagem (WORKDIR /presenza recusado a montagens em /app)
+    working_dir: /presenza
     ports:
       # Host: default 18000 — a 8000 já é do painel do Coolify na VPS (bind falha
       # com "port is already allocated"). A porta do CONTÊINER segue 8000, que é
@@ -72,13 +71,11 @@ services:
     # Reset total (aprovado pela equipe): cada (re)início do contêiner refaz o banco
     # com o seed completo da demo (SEED01–04). Para conservar dados ao vivo, NÃO
     # recriar/reiniciar o contêiner durante a apresentação.
-    # No Coolify o bind `.:/app` aponta pro checkout do deploy — sem `vendor/`
-    # (gitignored). O guarda abaixo instala uma única vez, persistindo no bind.
     command:
       - sh
       - -c
       - |
-        [ -f vendor/autoload.php ] || composer install --no-dev --no-interaction --prefer-dist --no-progress
+        [ -L public/storage ] || php artisan storage:link
         php artisan migrate:fresh --seed --force
         exec php artisan serve --host=0.0.0.0 --port=8000
 
@@ -87,9 +84,7 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: presenza-scheduler
-    working_dir: /app
-    volumes:
-      - .:/app
+    working_dir: /presenza
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
@@ -110,14 +105,8 @@ services:
     depends_on:
       app:
         condition: service_started
-    # No 1º start da VPS o `app` ainda está rodando `composer install` no bind
-    # compartilhado — espera o autoload aparecer (cap de ~2 min) antes de subir.
-    command:
-      - sh
-      - -c
-      - |
-        timeout 120 sh -c 'until [ -f vendor/autoload.php ]; do sleep 2; done'
-        exec php artisan schedule:work
+    # vendor vem da própria imagem agora — sem corrida no 1º start
+    command: ["php", "artisan", "schedule:work"]
 
 volumes:
   presenza_pgdata:

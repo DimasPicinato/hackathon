@@ -466,4 +466,19 @@
 
 ---
 
-_Última atualização: 21/10/2026 02:31 — gerado pela skill `registro-hackathon`._
+## Nº 34 · CONFIGURAÇÃO · Código embarcado na imagem (morre a dependência de bind de fonte no Coolify)
+
+- **Quando:** 21/10/2026 03:01
+- **O que foi feito:**
+  - Redeploy do `3ecf784` subiu contêineres mas o `app` crashou em loop no Coolify: `Composer could not find a composer.json in /app` — causa raiz: o `up` do Coolify roda a partir de diretório do helper que **não existe no lado do daemon**, então o bind `.:/app` chegava vazio no contêiner (sem código/artisan);
+  - Fix estrutural: Dockerfile agora **embute código + dependências** (`COPY composer.json/lock → composer install --no-dev → COPY . . → dump-autoload/package:discover`, WORKDIR dedicado `/presenza`) + `.dockerignore` novo (segredos/dev fora do contexto); compose perde os binds `.:/app`, `working_dir: /presenza`, guarda de `vendor` sai do command e o scheduler volta ao comando simples;
+  - Validação local completa: `docker compose build` p/ ambos (scheduler tinha ficado em imagem antiga — cada serviço tem sua imagem nomeada, `hackaton-app`/`hackaton-scheduler`) → 4 contêineres Up, `/verificar` em `200` e scheduler com ticks normais.
+- **Artefatos:** `docker/php/Dockerfile`, `.dockerignore`, `docker-compose.yaml`, `README.md`
+- **Decisões / por quê:** imagem autossuficiente elimina a classe inteira de erros de fonte ausente (local = VPS, mesma família de build); WORKDIR `/presenza` afasta qualquer montagem obliqua em `/app`; custo: mudança de código exige rebuild (aprovado — o fluxo de dev segue pelo `docker run` one-off de dev).
+- **Prompts-chave:** log do Coolify com o erro do composer; IA liga o `Could not open input file: artisan` ao bind vazio (não ao código) e troca a estratégia de "runtime install" para "imagem embarcada";
+- **Resultados:** pilha verde local (build + up + smoke 200); envio pendente: push/redeploy na VPS.
+- **Status:** Parcial (redeploy na VPS pendente).
+
+---
+
+_Última atualização: 21/10/2026 03:01 — gerado pela skill `registro-hackathon`._

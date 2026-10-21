@@ -1,0 +1,12 @@
+# Fora do contexto de build: segredos, dev e artefatos que nunca iam à imagem
+.git
+.opencode
+.env*
+vendor/
+node_modules/
+database/database.sqlite
+docs/
+journey-log.md
+public/build
+storage/logs/
+tests/

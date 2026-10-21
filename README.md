@@ -41,6 +41,8 @@ docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --
 docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app em http://localhost:18000)
 ```
 
+> O código do `app`/`scheduler` vai **embutido na imagem** (Dockerfile faz `COPY` + `composer install`) — o mesmo recinto builda local e na VPS (Coolify). A mudança nos códigos aplica com `--build`.
+
 **Seed automático (reset total — aprovado pela equipe):** a cada (re)criação do contêiner `app` o banco é repovado com `migrate:fresh --seed` (SEED01–04, ~15 s) antes do `serve`. Logo após `up`, aguarde ~20 s para o primeiro `200`. `docker compose restart` **apaga e resemeia** — não reinicie o contêiner durante a apresentação se quiser conservar dados criados ao vivo.
 
 `docker-compose.yaml` (padrão do compose) = topologia completa de homologação — todos os serviços declarados no próprio arquivo, autossuficiente p/ deploy no Coolify (que ignora `include:` e falharia em ver `mailpit`/`postgres`); `docker-compose.dev.yaml` = apenas `postgres` + `mailpit`.

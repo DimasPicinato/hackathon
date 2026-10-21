@@ -18,5 +18,12 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Composer disponível dentro da imagem
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Laravel precisa do artisan executável
-WORKDIR /app
+# Código + dependências EMBUTIDOS na imagem — sem bind do fonte: o `up` do
+# Coolify roda a partir de diretório que NÃO existe no lado do daemon, então
+# o bind `.:/app` chegava como diretório vazio (sem composer.json/artisan).
+# Duas etapas p/ aproveitar cache: deps primeiro, código depois.
+WORKDIR /presenza
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts --no-autoloader
+COPY . .
+RUN composer dump-autoload --optimize && php artisan package:discover --ansi
