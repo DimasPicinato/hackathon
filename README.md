@@ -78,6 +78,6 @@ docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit   # Postgres r
 
 ## Equipe
 
-Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcel dos Santos Silva
+Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva
 
 > **AT03/AT01**: todo o código foi escrito por IA (proveito pelo log); decisões técnicas sempre com a equipe por votação registrada.

@@ -11,7 +11,7 @@ use League\CommonMark\CommonMarkConverter;
 class GerarPdfPrompts extends Command
 {
     protected $signature = 'presenza:pdf-prompts
-        {--fonte=* : docs markdown (padrão: questionário + requisitos + stack + acordos + design)}
+        {--fonte=* : docs markdown (padrão: questionários + requisitos + stack + acordos + design + deploy + prompts das conversas)}
         {--saida=docs/prompts-ia.pdf}';
 
     protected $description = 'Gera o PDF com evidência dos prompts e decisões IA do projeto';
@@ -20,10 +20,13 @@ class GerarPdfPrompts extends Command
     {
         $fontes = $this->option('fonte') ?: [
             'docs/questionario-requisitos-p1.md',
+            'docs/questionario-requisitos-assistente-ia.md',
             'docs/requisitos-p1.md',
             'docs/stack.md',
             'docs/acordos-de-trabalho.md',
             'docs/design-p1.md',
+            'docs/deploy-coolify.md',
+            'docs/prompts-conversas.md',
         ];
 
         $secoes = [];
@@ -50,7 +53,7 @@ class GerarPdfPrompts extends Command
         }
 
         $pdf = Pdf::loadView('pdf.documento', [
-            'titulo' => 'Presenza — Prompts e decisões IA (Problema 1)',
+            'titulo' => 'Presenza — Prompts e decisões IA (Problema 1) · evidência completa do processo',
             'secoes' => $secoes,
         ])->setPaper('a4');
 

@@ -26,7 +26,7 @@
         <p class="sub">Presenças reais, certificados à prova</p>
         <p class="sub">{{ $titulo }}</p>
         <p class="sub">Hackathon FATEC &amp; ETEC Usina Lins · Problema 1 · 21/10/2026</p>
-        <p class="sub">Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcel dos Santos Silva</p>
+        <p class="sub">Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva</p>
     </div>
 
     @foreach ($secoes as $secao)

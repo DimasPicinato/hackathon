@@ -7,7 +7,7 @@
 
 | Projeto escolhido                                                    | Integrantes                                                                                                                                                                                                                                                      | Início     | Status       |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------ |
-| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | Dimas Matheus Gomes Picinato, Sara Silva Marsola, João Marcel dos Santos Silva (principais); Bruno Miranda Barcelos Tremeschin Pereira Melo, João Lucas Martins Pazin, Matheus Roberto Baraúna da Silva, Matheus Pereira Jesus, Lucas Yuuji Murayama (coautores) | 20/10/2026 | em andamento |
+| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | Dimas Matheus Gomes Picinato, Sara Silva Marsola, João Marcelo dos Santos Silva (principais); Bruno Miranda Barcelos Tremeschin Pereira Melo, João Lucas Martins Pazin, Matheus Roberto Baraúna da Silva, Matheus Pereira Jesus, Lucas Yuuji Murayama (coautores) | 20/10/2026 | em andamento |
 
 ---
 
@@ -583,4 +583,42 @@
 
 ---
 
-_Última atualização: 21/10/2026 11:17 — gerado pela skill `registro-hackathon`._
+---
+
+_Última atualização: 21/10/2026 11h17 — gerado pela skill `registro-hackathon`._
+
+## Nº 41 · DECISÃO · Assistente de IA público: requisitos fechados (Q36–Q59) e docs do módulo
+
+- **Quando:** 21/10/2026 11h47
+- **O que foi feito:**
+  - Requisitos do **assistente de IA público** levantados com o time em 4 rodadas de questionário (Q36–Q59), após verificação de fatos: catálogo de modelos gratuitos ($0), modo servidor do agente (API HTTP) e necessidade de **API key** mesmo para modelos free;
+  - Consenso: widget **público "Assistente Presenza"** (sem login) nas páginas abertas, **só leitura**, respostas baseadas na documentação do projeto + **mapa de páginas novo**; **runtime do agente em contêiner próprio no compose** (exceção ao "sem Node no MVP" aceite pelo time); modelo **big-pickle** ($0, trocável via `.env`); zero dados pessoais; resposta em bloco único com carregamento; conversas gravadas (IP + data) visíveis só ao Admin, com aviso no widget; **sem limite de taxa — risco aceito**;
+  - Artefatos criados: transcrição completa do questionário, **seção 7 dos requisitos** (RF29–RF34, RNF07–RNF09), **mapa de páginas** (contexto do agente) e **mockup do widget** para aprovação;
+  - Próximo passo: aprovação do mockup → implementação (contêiner, endpoint, widget, painel Admin, roteiro) na janela que fecha às **14:00** (apresentação às 14h30).
+- **Artefatos:** `docs/questionario-requisitos-assistente-ia.md`, `docs/requisitos-p1.md` (seção 7), `docs/mapa-paginas.md`, `docs/design-assistente-ia.md`, `docs/relatorio-final.md` (P-42)
+- **Decisões / por quê:** o time quis o runtime do agente embutido no produto (e não só os modelos), aprovando a exceção de infraestrutura; a fonte de conhecimento é a documentação para dar contexto completo às respostas; o fim do roteiro de demo mostra o diferencial de IA.
+- **Prompts-chave:** "acha que dá pra planejar colocar um assistente de IA usando o OpenCode e um modelo gratuito nesse sistema? planeje e me pergunte coisas para elaborar os requisitos até que não restem dúvidas sobre" — polido no relatório §6 (P-42).
+- **Resultados:** RF29–RF34 + RNF07–09 escritos e aprovados ("Aprovado, seguir"); mockup pronto para aprovação final; implementação não iniciada.
+- **Status:** Concluído (documentação) · Parcial (implementação pendente de aprovação do mockup).
+
+---
+
+_Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackathon`._
+
+## Nº 42 · DOCUMENTAÇÃO · Correção do nome da equipe no PDF + anexo dos prompts originais das conversas
+
+- **Quando:** 21/10/2026 11h27 → 11h55
+- **O que foi feito:**
+  - Corrigido o nome do integrante truncado ("João Marcel" → **João Marcelo dos Santos Silva**) em todos os artefatos que alimentam o PDF: capa do `docs/prompts-ia.pdf` (`resources/views/pdf/documento.blade.php`), `README.md`, `docs/relatorio-final.md` e cabeçalho do `journey-log.md`;
+  - **Extração do histórico real de conversas** do agente (banco SQLite de sessões): **53 prompts originais** do time em **6 sessões** (19–21/10), agrupados por sessão, com horário, texto **verbatim** e resultado de cada um;
+  - Anexo novo `docs/prompts-conversas.md` (C-01…C-53) gerado por script reproduzível versionado no repo: `scripts/extrair-prompts-conversas.php` (roda no contêiner `presenza/php` com o banco do agente montado em `/data`);
+  - Comando `presenza:pdf-prompts` ampliado (padrão agora inclui `docs/deploy-coolify.md`, `docs/questionario-requisitos-assistente-ia.md` e `docs/prompts-conversas.md`) e **PDF regerado** (1,8 MB/31 pág. → **2,4 MB/39 pág.**) com o anexo das conversas e o nome corrigido — conferido por extração do texto do PDF (nome na capa, C-01…C-53, Q36–Q59 e stack trace presentes).
+- **Artefatos:** `docs/prompts-conversas.md`, `scripts/extrair-prompts-conversas.php`, `docs/prompts-ia.pdf`, `app/Console/Commands/GerarPdfPrompts.php`, `resources/views/pdf/documento.blade.php`, `README.md`, `docs/relatorio-final.md`
+- **Decisões / por quê:** a banca avalia **completude do prompt** — o anexo mostra o texto original, sem edição, permitindo a conferência de que a versão polida (§6 do relatório) preservou o sentido; o relatório continua sendo a base do PDF final, agora com §6/§8/§9/§10 sincronizados.
+- **Prompts-chave:** "o nome do João Marcelo está com o Marcelo cortado em 'João Marcel dos Santos Silva' no docs/prompts-ia.pdf. Inclua nele também os prompts relevantes das conversas que conseguir pegar, é importante" — polido no relatório §6 (P-43).
+- **Resultados:** nome correto em 4 artefatos; 53 prompts originais anexados ao PDF de prompts (39 páginas); extração reproduzível por script versionado; PDF regerado e verificado.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 11h55 — gerado pela skill `registro-hackathon`._

@@ -9,11 +9,11 @@
 | **Datas** | 20/10/2026 (13h30) a 21/10/2026 (14h00) · Apresentações 21/10, 14h30–17h30 (5 min/grupo) |
 | **Problema escolhido** | **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10, 15h33) |
 | **Produto** | **Presenza** |
-| **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcel dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
+| **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
-| **Estado final** | 28/28 RFs implementados · 93 testes / 305 asserções verdes · aplicação no ar em `https://hackathon.dpicinato.com` |
+| **Estado final** | 28/28 RFs implementados · 93 testes / 305 asserções verdes · aplicação no ar em `https://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) com requisitos e mockup aprovados, implementação na janela da demo |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (39 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (42 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -72,14 +72,14 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 
 ## 1.3 Metodologia de desenvolvimento
 
-- **Desenvolvimento dirigido por IA com gate de aprovação humana (AT01):** todo o código foi escrito por IA; toda dúvida ou alternativa virava um questionário ao time (opções + recomendação) antes de prosseguir — 35 decisões registradas (Q1–Q35).
+- **Desenvolvimento dirigido por IA com gate de aprovação humana (AT01):** todo o código foi escrito por IA; toda dúvida ou alternativa virava um questionário ao time (opções + recomendação) antes de prosseguir — 59 decisões registradas (Q1–Q59).
 - **Requisitos antes da arquitetura:** questionário guiado interativo (skill `grilling`) com o time — 30 perguntas em 4 rodadas + ajustes — consolidado em RF01–RF28, RNF01–06 e SEED01–03; só depois design e stack.
 - **Design system antes das telas:** paleta "verde agro + laranja de segurança", tipografia Lexend/Source Sans 3 e tokens de status mapeados 1:1 nos RFs.
 - **Docker-first (AT02):** serviços em contêiner no dev; topologia de homologação/demonstração estende os mesmos serviços com a app buildada.
 - **Instalações instruídas (AT03):** a IA nunca instalou nada direto na máquina do time — emitia passos com justificativa.
 - **Testes como regressão da demo:** suíte PHPUnit feature criada junto com cada bloco de RFs, sempre verde no PostgreSQL real.
 - **Mocks por seed:** 57 contas fictícias com embeddings biométricos fake, treinamentos/aulas/presenças/tickets/certificados nos 3 cenários de demonstração (SEED01–04) — a demo não depende de câmera, hardware ou rede.
-- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 39 registros cronológicos com prompts, decisões e resultados.
+- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 42 registros cronológicos com prompts, decisões e resultados.
 - **Sequência executada:** problemas → escolha do P1 → requisitos → design → stack → scaffold → domínio (migrations/models/seed) → telas/fluxos → testes → blocos RH/scheduler → deploy (Coolify) → polimento de UI → documentação/entregáveis.
 
 ## 1.4 Resultados-chave
@@ -94,7 +94,7 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 |---|---|
 | Criatividade | Facial como anti-fraude de presença + certificado verificável publicamente por qualquer leitor de QR; reemissão imutável |
 | Clareza do prompt | Prompts numerados, polidos (contexto → objetivo → restrições → formato) e cada um com **resultado documentado** (ATO 2 §6) |
-| Completude do prompt | Transcrição integral do questionário interativo Q1–Q35 + 40+ prompts de desenvolvimento (ATO 2 §6–§7) |
+| Completude do prompt | Transcrição integral do questionário interativo Q1–Q35 + Q36–Q59 (assistente de IA) + 43 prompts de desenvolvimento polidos + **53 prompts originais das conversas** (ATO 2 §6–§7 + anexo `docs/prompts-conversas.md`) |
 | Arquitetura + design de UI | Monolito em camadas com services de domínio + design system verde/laranja com tokens de status ligados aos RFs (ATO 1 §2, ATO 2 §4) |
 | Uso adequado de mocks | Seed com 57 contas e embeddings fake, fachada biométrica simulável (RNF06), Mailpit como mock de e-mail (ATO 2 §3/§9) |
 
@@ -271,7 +271,7 @@ Dependências: `laravel/breeze` (auth/reset), `barryvdh/laravel-dompdf` (PDF), `
 > **P-03 · Criar o registro de processo**
 > "Faça uma skill que, a cada operação, documentação ou discussão com IA, adicione um resumo em ordem cronológica com data/hora — e crie o arquivo do diário."
 >
-> **Resultado:** skill `registro-hackathon` + `journey-log.md` (diário de bordo oficial; 39 sessões até o fim do hackathon).
+> **Resultado:** skill `registro-hackathon` + `journey-log.md` (diário de bordo oficial; 42 sessões até o fim do hackathon).
 
 > **P-04 · Versionar o processo e polir prompts**
 > "Inicialize o Git no repositório com `.gitignore` apropriado e faça o commit inicial. A partir de agora, todo prompt que o time enviar deve ser polido por você (contexto → objetivo → restrições → formato de saída, preservando o sentido) e os resultados de cada uso documentados — porque a clareza dos prompts é critério avaliado pela banca."
@@ -465,9 +465,31 @@ Contexto: VPS gerenciada pelo Coolify, domínio `https://hackathon.dpicinato.com
 >
 > **Resultado:** ParseError corrigido (linha `@if` engolida por um edit anterior — `php -l` + 93/305 verde) e Docker Desktop reerguido após queda; aceites passaram a ser criados no `CatalogoSeeder` logo após o termo ativo (`INSERT … SELECT … ON CONFLICT DO NOTHING` — a 1ª tentativa no `UserSeeder` rodava antes do termo existir: 0 aceites); **44/44 contas com aceite** — login vai direto ao portal; tela do termo segue viva na demo ao publicar nova versão (força os aceites de novo); SMTP/catálogo e README no domínio `@exemplo.com`.
 
+### Fase 16 — Extensão: assistente de IA público (21/10)
+
+> **P-42 · Assistente de IA no produto (runtime de agente + modelo gratuito)**
+> - **Contexto:** Presenza implementado e no ar (28/28 RFs, 93 testes verdes); apresentação à banca no mesmo dia às 14h30.
+> - **Objetivo:** avaliar viabilidade e planejar a inclusão de um **assistente de IA embutido ao sistema**, usando o runtime de agente OpenCode e um modelo gratuito; levantar requisitos com o time via skill `grilling` até não restarem dúvidas.
+> - **Restrições:** seguir a AT01 (toda dúvida vira questionário com recomendação); levantar fatos do ambiente **antes** de perguntar (catálogo de modelos free, documentação oficial do agente, credenciais do gateway); não codificar antes da aprovação; manter o processo registrado.
+> - **Formato:** plano curto de alto nível + rodadas de perguntas numeradas (Qn) com resposta recomendada; resumo consolidado em tabela + plano de entrega; confirmação final do time antes de documentar/agir.
+>
+> **Resultado:** 24 perguntas (**Q36–Q59**) em 4 rodadas + confirmação final ("Aprovado, seguir"). Consenso: widget **público "Assistente Presenza"** (sem login) nas páginas abertas, **só leitura**, baseado em `docs/` + novo `docs/mapa-paginas.md`; **runtime do agente em contêiner próprio** no compose (exceção ao "sem Node no MVP" aceite, AT01); modelo **`opencode/big-pickle`** ($0, trocável via `.env`, **API key** necessária mesmo para free); **zero PII** (verificação de certificado = só indicar página RF21); respostas em **bloco único com carregamento**; conversas **gravadas (IP + data)** visíveis só ao Admin com **aviso no widget**; **sem limite de taxa (risco aceito)**; mensagem de cortesia em falha (RNF06); requisitos em **seção 7 de `requisitos-p1.md`** (RF29–RF34, RNF07–09); transcrição em `docs/questionario-requisitos-assistente-ia.md`; mockup em `docs/design-assistente-ia.md` **pendente de aprovação**; entrada no fim do roteiro de demo.
+
+### Fase 17 — Anexo de evidência: prompts originais das conversas (21/10, 11h27–11h55)
+
+> **P-43 · Nome da equipe no PDF + anexo dos prompts originais**
+> - **Contexto:** no `docs/prompts-ia.pdf` (volume de evidência entregue à banca) o nome de um dos integrantes aparece truncado — "João Marcel dos Santos Silva"; além disso, o PDF trazia só os documentos polidos, sem o texto original dos prompts enviados nas conversas.
+> - **Objetivo:** (1) corrigir o nome em todos os artefatos que alimentam o PDF (capa do PDF, README, relatório final, diário de bordo); (2) **extrair do histórico real de conversas** os prompts enviados pelo time e incluí-los no PDF.
+> - **Restrições:** preservar o texto dos prompts **verbatim** (sem reescrita); manter a numeração já existente (P-01…P-42 no relatório, Nº 1…Nº 41 no diário); registrar a sessão no diário e no relatório (AT04); não alterar os demais conteúdos dos docs.
+> - **Formato:** anexo `docs/prompts-conversas.md` com os prompts numerados (C-01…), agrupados por sessão, cada um com horário, texto original e resultado; extração por script versionado e reproduzível (`scripts/extrair-prompts-conversas.php`).
+>
+> **Resultado:** nome corrigido nos 4 artefatos (capa do PDF, `README.md`, relatório final, cabeçalho do diário); **53 prompts originais** recuperados do banco de sessões do agente (6 sessões, 19–21/10) e anexados ao PDF — incluindo o stack trace colado pelo time e os prompts de confirmação curtos, para a completude do processo; comando `presenza:pdf-prompts` ampliado (entram `docs/deploy-coolify.md`, `docs/questionario-requisitos-assistente-ia.md` e `docs/prompts-conversas.md`) e **PDF regerado** (1,8 MB/31 pág. → **2,4 MB/39 pág.**); script de extração versionado no repositório (`scripts/extrair-prompts-conversas.php`).
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
+
+> **Extensão Q36–Q59 (21/10):** questionário do módulo **assistente de IA** — transcrição completa (4 rodadas + fatos + confirmação final) em `docs/questionario-requisitos-assistente-ia.md`; requisitos em `docs/requisitos-p1.md` §7 (RF29–RF34, RNF07–09) e registro em P-42/§6.
 
 ### Rodada 1 — Produto, operação e dados de demo (Q1–Q8)
 
@@ -550,8 +572,10 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 19. **Polimento de UI (sidebar/voltar/4-8 → mojibake/login/busca → copy amigável)** (P-36–P-38) — 03h10–05h00.
 20. **Documentação final para a banca** (P-39) — 21/10.
 21. **Hotfix da chamada + seed com termo aceito (44/44) + dev reerguido** (P-41) — 21/10 09h30–11h17.
+22. **Assistente de IA público: requisitos Q36–Q59 fechados + docs do módulo (transcrição, seção 7 dos RFs, mapa de páginas, mockup)** (P-42) — 21/10, até 11h47.
+23. **Nome da equipe corrigido no PDF + anexo com os 53 prompts originais das conversas** (P-43) — 21/10 11h27–11h55.
 
-## §9. Diário de bordo (`journey-log.md`, 40 sessões)
+## §9. Diário de bordo (`journey-log.md`, 42 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -606,8 +630,10 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 38 · 04h30–05:00 — Código:** copy amigável (fim dos RF/Q na UI), e-mails `@exemplo.com`, botões com fonte herdada — **93/305 verde**. ✔
 - **Nº 39 · 11h12–11h13 — Documentação:** relatório final da entrega (ATO 1 + ATO 2, este documento) compilado a partir do journey-log e dos docs; **governança de manutenção** criada (seção na skill `registro-hackathon` + bloco no `AGENTS.md`) para que o relatório evolua junto com o projeto em toda sessão de IA. ✔
 - **Nº 40 · 09h30–11h17 — Código:** hotfix de ParseError na chamada (edit engoliu o `@if`) + Docker Desktop reerguido; **seed agora pré-assina o termo LGPD (44/44)** — login direto ao portal, aceite re-vivotado ao publicar nova versão; SMTP/README no domínio `@exemplo.com`. ✔
+- **Nº 41 · 11h47 — Decisão:** assistente de IA público — requisitos Q36–Q59 fechados em 4 rodadas de grilling com o time; widget público "Assistente Presenza" (só leitura, zero PII), runtime do agente em contêiner no compose (exceção "com Node" aceita), modelo gratuito trocável, conversas gravadas com aviso, risco "sem limite de taxa" assumido; RF29–RF34 + RNF07–09 na seção 7 dos requisitos, transcrição, mapa de páginas e mockup criados; implementação pendente de aprovação do mockup. ✔
+- **Nº 42 · 11h27–11h55 — Documentação:** nome do integrante corrigido nos 4 artefatos (capa do PDF, README, relatório, diário) e **anexo com os 53 prompts originais das conversas** extraídos do banco de sessões do agente (`docs/prompts-conversas.md`, script `scripts/extrair-prompts-conversas.php`); PDF de prompts regerado (1,8 MB → 2,4 MB) com o anexo e o runbook do deploy. ✔
 
-*Última atualização do diário: 21/10/2026, 11h17.*
+*Última atualização do diário: 21/10/2026, 11h55.*
 
 ## §10. Estado final e evidências
 
@@ -651,15 +677,20 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 40 sessões com prompts, decisões e resultados |
-| `docs/requisitos-p1.md` | RF01–RF28, RNF01–06, SEED01–03, fluxos, fora de escopo |
+| `journey-log.md` | Diário de bordo — 42 sessões com prompts, decisões e resultados |
+| `docs/requisitos-p1.md` | RF01–RF28, RNF01–06, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
+| `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
 | `docs/design-p1.md` | Design system (paleta, tipografia, tokens de status, kit de skills) |
+| `docs/design-assistente-ia.md` | Mockup do widget público do assistente (aprovação AT01 pendente) |
+| `docs/mapa-paginas.md` | Mapa de rotas/telas para contexto do agente (fonte de conhecimento, RF30) |
 | `docs/stack.md` | Decisão de stack (Q35), serviços, dependências, ajustes de execução |
 | `docs/acordos-de-trabalho.md` | AT01–AT04 |
 | `docs/deploy-coolify.md` | Runbook do deploy (sintoma→causa→ação + prompts P1–P5) |
 | `docs/roteiro-demo.md` | Roteiro cronometrado da demo + plano B |
-| `docs/prompts-ia.pdf` | Primeira versão do PDF de prompts (gerada pelo comando `presenza:pdf-prompts`) |
+| `docs/prompts-ia.pdf` | **Volume de evidência dos prompts** (gerado pelo comando `presenza:pdf-prompts`, 39 páginas): questionário Q1–Q35, questionário Q36–Q59 (assistente de IA), requisitos, stack, acordos, design, runbook do deploy e **anexo com os 53 prompts originais das conversas** |
+| `docs/prompts-conversas.md` | Anexo — **53 prompts originais (verbatim)** extraídos do histórico de conversas do agente, por sessão, com horário e resultado |
+| `scripts/extrair-prompts-conversas.php` | Script reproduzível da extração dos prompts (lê o banco de sessões do agente e gera o anexo) |
 | `docs/relatorio-final.md` | **Este documento** — base do PDF final de entrega |
 
 ---
