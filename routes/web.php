@@ -8,6 +8,7 @@ use App\Http\Controllers\Rh\CertificadosController;
 use App\Http\Controllers\Rh\ConfiguracoesController;
 use App\Http\Controllers\Rh\JustificativasController;
 use App\Http\Controllers\Rh\RelatoriosController;
+use App\Http\Controllers\Rh\ReservasController;
 use App\Http\Controllers\Rh\TicketsController;
 use App\Http\Controllers\TermoController;
 use App\Http\Controllers\VerificacaoPublicaController;
@@ -48,8 +49,12 @@ Route::middleware('auth')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-        // ─── Gestão — RH / Líder / Admin (RF10–RF13, RF18–RF20, RF28) ─────────────
+        // ─── Gestão — RH / Líder / Admin (RF05, RF08–RF13, RF18–RF20, RF26, RF28) ─
         Route::prefix('portal/rh')->name('portal.rh.')->group(function () {
+            Route::get('/reservas', [ReservasController::class, 'index'])->name('reservas');
+            Route::post('/reservas', [ReservasController::class, 'reservar'])->name('reservas.reservar');
+            Route::post('/reservas/{inscricao}/cancelar', [ReservasController::class, 'cancelar'])
+                ->name('reservas.cancelar');
             Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets');
             Route::post('/tickets/{ticket}/resolver', [TicketsController::class, 'resolver'])
                 ->name('tickets.resolver');

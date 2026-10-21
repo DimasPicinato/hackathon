@@ -75,6 +75,7 @@
         </div>
     </div>
     <nav class="form-inline">
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.reservas') }}">Reservas do time (RF08)</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets ({{ $pendentes['tickets']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas ({{ $pendentes['justificativas']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.certificados') }}">Certificados</a>

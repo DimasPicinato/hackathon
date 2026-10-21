@@ -312,4 +312,16 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:19 — gerado pela skill `registro-hackathon`._
+## 23 · CÓDIGO · Reservas nominais do time (RF05/RF08) com fila automática (RF09)
+
+- **Quando:** 21/10/2026 01:20 → 01:29
+- **O que foi feito:**
+  - Tela `portal/rh/reservas`: Líder/RH reserva vaga nominal em aula agendada para liderados (RF05: Líder só nos seus; RH em todos); **aula lotada → entrada automática na fila de espera com posição**; cancelamento de reserva promove a fila na hora (serviço VagaService, RF09);
+  - Notificações RF24 em tudo (vaga reservada / entrou na fila / cancelada); auditoria `reserva_feita`; link "Reservas do time (RF08)" na home;
+  - Listagem por aula com vagas restantes, reservadas e fila completa + botão Cancelar.
+- **Testes:** `ReservasTest` (4): reserva nominal + rastro `reservado_por_id`, lote → fila posição 1, cancelamento promove fila, líder fora do setor 403.
+- **Resultados:** **OK — 76 testes, 239 asserções, verde.**
+
+---
+
+_Última atualização: 21/10/2026 01:29 — gerado pela skill `registro-hackathon`._
