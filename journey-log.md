@@ -402,4 +402,20 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:49 — gerado pela skill `registro-hackathon`._
+## 30 · CONFIGURAÇÃO · Renome dos composes (.yml → .yaml): homologação vira o padrão do Docker Compose
+
+- **Quando:** 21/10/2026 01:49 → 01:59
+- **O que foi feito:**
+  - Mudança do time revisada e aceita: `docker-compose.yml` (dev) → **`docker-compose.dev.yaml`** e `docker-compose.homolog.yml` → **`docker-compose.yaml`** — efeito: o comando sem `-f` (`docker compose up -d`) agora sobe a **topologia completa de homologação** (app + scheduler + serviços), e o dev usa `-f docker-compose.dev.yaml`;
+  - Correção necessária pelo renome: o `include` dentro de `docker-compose.yaml` apontava para o arquivo antigo (`docker-compose.yml`, inexistente) → atualizado para `docker-compose.dev.yaml` + comentário no cabeçalho marcando o padrão;
+  - Documentação sincronizada: README (blocos de desenvolvimento e homologação com comandos reais validados) e `docs/stack.md` (tabela/árvore de arquivos); `docs/roteiro-demo.md` segue válido (o passo `docker compose up -d` agora é literalmente o comando de subida da demo);
+  - Validação ao vivo: `docker compose config --quiet` OK; `docker compose up -d` reconciliou pilha já em execução **sem recriar contêineres** (nenhum dado perdido) e `/verificar` em `200 OK`.
+- **Artefatos:** `docker-compose.yaml`, `docker-compose.dev.yaml`, `README.md`, `docs/stack.md`
+- **Decisões / por quê:** renome do time mantido e documentado — default de compose = stack de demonstração conta o 5 minutos; histórico (`journey-log` Nº 10–28) preservado com os nomes da época, sem reescrita.
+- **Prompts-chave:** "ve o que alterei, documente onde precisar e commit" revisão de mudança humana: IA identifica cross-impact (include quebrado + docs fora de sync) antes de documentar;
+- **Resultados:** topologia validada com os novos nomes; nada de código funcional alterado (99 linhas movidas entre arquivos).
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 01:59 — gerado pela skill `registro-hackathon`._

@@ -1,9 +1,9 @@
-# Presenza — Homologação/demonstração (AT02)
-# ESTENDE o compose de serviços (via include) e adiciona a aplicação DEFINITIVA,
+# Presenza — Homologação/demonstração (AT02) — PADRÃO: `docker compose` executa ESTE arquivo.
+# ESTENDE o compose de dev/testes (docker-compose.dev.yaml, via include) e adiciona a aplicação DEFINITIVA,
 # com variáveis de ambiente FIXAS neste arquivo (compatibilidade de rede:
 # hosts = nomes de serviço da rede interna do compose).
 include:
-  - docker-compose.yml
+  - docker-compose.dev.yaml
 
 services:
   app:

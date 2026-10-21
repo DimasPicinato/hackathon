@@ -27,21 +27,22 @@ Hackathon FATEC & ETEC — Usina Lins · Problema 1 (gestão de treinamentos + c
 
 ## Como rodar
 
-### Desenvolvimento ((turnkey)
+### Desenvolvimento (serviços + app em contêiner one-off)
 
 ```sh
-docker compose up -d          # postgres:5433 (host) + mailpit:8025
-docker compose run --rm app php artisan migrate:fresh --seed
-docker compose run --rm app php artisan serve   # http://localhost:8000   (ou `app:` service up)
+docker compose -f docker-compose.dev.yaml up -d          # postgres:5433 (host) + mailpit:8025
+docker run --rm -v .:/app -w /app presenza/php php artisan migrate:fresh --seed
+docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --host=0.0.0.0   # http://localhost:8000
 ```
 
 ### Homologação/demonstração (topologia AT02)
 
 ```sh
-docker compose -f docker-compose.homolog.yml up -d --build   # app + scheduler (lembretes RF25)
+docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app + scheduler, lembretes RF25)
+docker compose exec app php artisan migrate:fresh --seed --force
 ```
 
-`docker-compose.yml` = só serviços; `docker-compose.homolog.yml` estende via `include` e adiciona app + scheduler com env fixa.
+`docker-compose.yaml` (padrão do compose) = topologia completa de homologação — inclui os serviços via `include` e adiciona `app` + `scheduler` com env fixa; `docker-compose.dev.yaml` = apenas `postgres` + `mailpit`.
 
 ## Credenciais da demo (seed)
 
