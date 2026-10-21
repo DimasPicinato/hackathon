@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Matriz de conformidade <span class="muted">(RF28 — precisa fazer o quê?)</span></h1>
+<h1>Matriz de conformidade <span class="muted">(quem precisa fazer o quê?)</span></h1>
 
 
 <div class="card" style="overflow-x: auto;">

@@ -532,4 +532,23 @@
 
 ---
 
-_Última atualização: 21/10/2026 04:10 — gerado pela skill `registro-hackathon`._
+## Nº 38 · CÓDIGO · Copy amigável: fim dos códigos RF/Q na interface e e-mails @exemplo.com
+
+- **Quando:** 21/10/2026 04:30 → 05:00
+- **O que foi feito:**
+  - Team pediu: deixar tudo **amigável para quem usa a plataforma** — sem códigos internos (RF** e Q*) e sem notas de desenvolvedor (ex.: "a biometria aqui NÃO é usada… Q10");
+  - **Limpeza de copy**: 39 ocorrências RF + Q + "fachada" em 12 views → títulos sem jargão ("Tickets", "Certificados", "Usuários"), botões diretos ("Emitir certificado", "Resolver", "Reemitir (nova versão)", "Registrar presença manual"), avisos em linguagem de uso ("Aula ainda não iniciada — a validação abre quando o instrutor iniciar"); Telefonista "📷 Facial (fachada)" → "📷 Reconhecimento facial"; Telefonista matriz mantida com subtítulo "quem precisa fazer o quê?";
+  - **Domínio de e-mail** `@usinalins.local` → `@exemplo.com` (UserSeeder, DadosExtrasSeeder, README, teste); telefonista SMTP/carta deixou de apontar '.local' p/ manter coerência;
+  - **Login**: listinha de contas agora mostra **e-mail completo copiável de uma vez** (user-select all, clique copia), senha única destacada, instrução "clique no e-mail para copiar" — acabou a necessidade de montar e-mail em duas partes; Telefonista validada: os 5 e-mails completos são servidos;
+  - Só dev no ar: stack de demo desligada (`compose down`; postgres/mailpit refeitos pelo dev compose) e dev `:8000` com **login real testado** com novo domínio;
+  - Telefonista de botões: `.btn` unificado com familia de fonte herdada (era padrão do navegador) e semântica já consistente: verde primário (ação principal), laranja accent (atenção: facial, reemitir, cancelar vagas), outline (secundária);
+  - **93/305 verde** após tudo (o seeder novo estoque regenerado: contas com @exemplo.com).
+- **Artefatos:** 12 views + seeders + README + testes + app.css/login
+- **Decisões / por quê:** códigos RF/Q são vocabulário de documentação interna — ficam em README/roteiro/relatórios PDF, desaparecem da UI; e-mail completo na lista elimina passo mental na apresentação;
+- **Prompts-chave:** "remova mensagens que são pros desenvolvedores… troque o e-mail dessas contas por @exemplo.com… os códigos estranhos inclui os Q*" — pedido de produto, atendido varredura por padrão;
+- **Resultados:** telefone 93/305; dev on-line em :8000 com login validado após >= reseed.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 05:00 — gerado pela skill `registro-hackathon`._

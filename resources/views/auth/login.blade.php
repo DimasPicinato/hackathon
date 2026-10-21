@@ -4,7 +4,7 @@
 
 @section('conteudo')
     <h1>Entrar nos portais</h1>
-    <p class="muted">Login/senha — a biometria aqui NÃO é usada (só para validar presença, Q10).</p>
+    <p class="muted">Acesse com seu e-mail corporativo.</p>
 
     @if (session('status'))
         <div class="alert alert-ok">{{ session('status') }}</div>
@@ -35,12 +35,12 @@
         <strong>Contas da demo</strong>
         <p class="demo-senha">Senha única: <code>Password@123</code></p>
         <ul class="lista-credenciais">
-            <li><span class="badge badge-facial">Admin</span><code>fernanda.carvalho.duarte</code></li>
-            <li><span class="badge badge-fila">RH</span><code>isabela.cristina.fonseca</code></li>
-            <li><span class="badge badge-manual">Instrutor</span><code>klaus.werner.steiner</code></li>
-            <li><span class="badge badge-pendente">Líder</span><code>heloisa.fernandes.peixoto</code></li>
-            <li><span class="badge badge-aprovado">Colaborador</span><code>otavio.martins.gomes</code></li>
+            <li><span class="badge badge-facial">Admin</span><code>fernanda.carvalho.duarte@exemplo.com</code></li>
+            <li><span class="badge badge-fila">RH</span><code>isabela.cristina.fonseca@exemplo.com</code></li>
+            <li><span class="badge badge-manual">Instrutor</span><code>klaus.werner.steiner@exemplo.com</code></li>
+            <li><span class="badge badge-pendente">Líder</span><code>heloisa.fernandes.peixoto@exemplo.com</code></li>
+            <li><span class="badge badge-aprovado">Colaborador</span><code>otavio.martins.gomes@exemplo.com</code></li>
         </ul>
-        <p class="demo-dominio">E-mail completo = login acima <code>@usinalins.local</code></p>
+        <p class="demo-dominio">Clique no e-mail para copiar e cole no campo acima.</p>
     </div>
 @endsection

@@ -25,7 +25,7 @@ class UsuariosTest extends TestCase
         $this->actingAs($rh)
             ->post(route('portal.rh.usuarios.criar'), [
                 'name' => 'Nova Pessoa Exemplo',
-                'email' => 'nova.pessoa@usinalins.local',
+                'email' => 'nova.pessoa@exemplo.com',
                 'matricula' => 'U-77777',
                 'setor_id' => $setor->id,
                 'turno' => 'tarde',

@@ -49,7 +49,7 @@ docker compose up -d --build              # sem -f: o padrão É o compose de ho
 
 ## Credenciais da demo (seed)
 
-Todas as senhas `Password@123` · e-mails `nome.completo@usinalins.local`:
+Todas as senhas `Password@123` · e-mails `nome.completo@exemplo.com`:
 
 | Papel | Login | Cenário |
 |---|---|---|

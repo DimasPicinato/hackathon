@@ -328,7 +328,7 @@ class DadosExtrasSeeder extends Seeder
     {
         return User::create([
             'name' => $nome,
-            'email' => str_replace(' ', '.', strtolower(Str::ascii($nome))) . '@usinalins.local',
+            'email' => str_replace(' ', '.', strtolower(Str::ascii($nome))) . '@exemplo.com',
             'password' => 'Password@123', // padrão da demo
             'matricula' => 'USI-2026-' . str_pad((string) $this->matriculaSeq++, 4, '0', STR_PAD_LEFT),
             'setor_id' => $setorId,

@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Usuários <span class="muted">(RF05 — sem self-service)</span></h1>
+<h1>Usuários</h1>
 
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
@@ -132,7 +132,7 @@
                     @else
                         <form method="POST" action="{{ route('portal.rh.usuarios.senha', $usuario) }}" class="form-edicao">@csrf
                             <input type="password" name="senha" placeholder="Senha temporária" autocomplete="new-password" required>
-                            <button class="btn btn-outline btn-pequeno">Redefinir senha (RF05)</button>
+                            <button class="btn btn-outline btn-pequeno">Redefinir senha</button>
                         </form>
                     @endif
                 </td>

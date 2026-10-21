@@ -15,20 +15,19 @@
     · {{ $aula->data_inicio->format('d/m/Y H:i') }} · {{ $aula->local }}
     · instrutor: {{ $aula->instrutor?->name }}</p>
 
-@if ($aula->status === StatusAula::Agendada)
     <div class="alert alert-erro">
-        A aula ainda NÃO foi iniciada — a janela de presença facial só abre depois (RF03).
+        A aula ainda não foi iniciada — a validação de presença abre quando o instrutor iniciar a aula.
     </div>
     <form method="POST" action="{{ route('portal.aula.iniciar', $aula) }}">@csrf
         <button class="btn btn-primary">▶ Iniciar aula e abrir chamada</button>
     </form>
 @elseif ($aula->status === StatusAula::EmAndamento)
     <div class="alert alert-ok">
-        Aula EM ANDAMENTO desde {{ $aula->iniciada_em->format('H:i') }} — presenças faciais liberadas (RF03).
+        Aula em andamento desde {{ $aula->iniciada_em->format('H:i') }} — validação de presença liberada.
     </div>
 @else
     <div class="alert alert-erro">
-        Aula encerrada em {{ $aula->encerrada_em->format('H:i') }} — fora da janela, só homologação manual (RF03).
+        Aula encerrada em {{ $aula->encerrada_em->format('H:i') }} — fora da janela, só é possível registrar presença manualmente, com senha da pessoa e motivo.
     </div>
 @endif
 
@@ -69,11 +68,11 @@
                                 <div class="acao-chamada">
                                     <form method="POST" action="{{ route('portal.aula.presenca.facial', $aula) }}" class="inline">@csrf
                                         <input type="hidden" name="colaborador_id" value="{{ $pessoa->id }}">
-                                        <button class="btn btn-accent btn-pequeno">📷 Facial (fachada)</button>
+                                        <button class="btn btn-accent btn-pequeno">📷 Reconhecimento facial</button>
                                     </form>
                                     <form method="POST" action="{{ route('portal.aula.presenca.manual', $aula) }}" class="form-manual">@csrf
                                         <input type="hidden" name="colaborador_id" value="{{ $pessoa->id }}">
-                                        <label class="mini">Senha do próprio colaborador (RF15)</label>
+                                        <label class="mini">Senha da própria pessoa (confirma a presença — antifraude)</label>
                                         <input type="password" name="senha" required placeholder="senha">
                                         <label class="mini">Motivo do catálogo</label>
                                         <select name="motivo_id">
@@ -82,9 +81,9 @@
                                                 <option value="{{ $motivo->id }}">{{ $motivo->nome }}</option>
                                             @endforeach
                                         </select>
-                                        <label class="mini">…ou motivo novo no ato (RF27)</label>
+                                        <label class="mini">…ou registre um motivo novo</label>
                                         <input type="text" name="motivo_novo" placeholder="ex.: câmera com defeito aqui">
-                                        <button class="btn btn-primary btn-pequeno">Homologar manualmente</button>
+                                        <button class="btn btn-primary btn-pequeno">Registrar presença manual</button>
                                     </form>
                                 </div>
                             </details>

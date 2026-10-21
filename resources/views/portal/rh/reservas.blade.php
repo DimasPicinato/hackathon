@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Reservas nominais <span class="muted">(RF05/RF08 — Líder/RH manda o time)</span></h1>
+<h1>Reservas nominais <span class="muted">(Líder/RH manda o time)</span></h1>
 
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
@@ -28,7 +28,7 @@
         </select>
         <button class="btn btn-primary btn-pequeno">Reservar</button>
     </form>
-    <p class="muted">Aula lotada = entra automaticamente na fila de espera; cancelamento promove a fila (RF09).</p>
+    <p class="muted">Aula lotada = entra automaticamente na fila de espera; cancelamento promove a fila.</p>
 </div>
 
 @foreach ($aulas as $aula)

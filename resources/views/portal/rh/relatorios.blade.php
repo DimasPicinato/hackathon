@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Relatórios <span class="muted">(RF28)</span></h1>
+<h1>Relatórios</h1>
 
 <div class="card">
     <h2>Exportações</h2>

@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Tickets <span class="muted">(RF10–RF12)</span></h1>
+<h1>Tickets</h1>
 
 
 <div class="card">
@@ -38,7 +38,7 @@
                             <input type="hidden" name="acao" value="cancelar_vaga">
                             <button class="btn btn-accent btn-pequeno"
                                     onclick="return confirm('Devolver as vagas em TODAS as aulas e promover a fila?')">
-                                Cancelar vagas + promover fila (RF09)
+                                Cancelar vagas + promover fila
                             </button>
                         </form>
                     @elseif ($ticket->tipoTicket->nome === 'Justificar falta')
@@ -57,7 +57,7 @@
                                 <option value="aprovado">aprovado</option>
                                 <option value="recusado">recusado</option>
                             </select>
-                            <button class="btn btn-primary btn-pequeno">Resolver (RF12)</button>
+                            <button class="btn btn-primary btn-pequeno">Resolver</button>
                         </form>
                     @else
                         <form method="POST" action="{{ route('portal.rh.tickets.resolver', $ticket) }}" class="form-inline">@csrf

@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Certificados <span class="muted">(RF18–RF20)</span></h1>
+<h1>Certificados</h1>
 
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
@@ -14,7 +14,7 @@
             <span class="muted">· {{ $treinamento->aulas->count() }} aula(s) · validade {{ $treinamento->validade_meses }} meses</span>
         </h2>
 
-        <h3>Elegíveis a emitir <span class="muted">(RF18 — presença em TODAS as aulas)</span></h3>
+        <h3>Elegíveis a emitir <span class="muted">(presença em todas as aulas)</span></h3>
         @if ($elegiveisPorTreinamento[$treinamento->id]->isEmpty())
             <p class="muted">Ninguém elegível ainda.</p>
         @else
@@ -28,10 +28,10 @@
                                 <form method="POST" action="{{ route('portal.rh.certificados.emitir') }}">@csrf
                                     <input type="hidden" name="user_id" value="{{ $elegivel->id }}">
                                     <input type="hidden" name="treinamento_id" value="{{ $treinamento->id }}">
-                                    <button class="btn btn-primary btn-pequeno">Emitir certificado (RF19)</button>
+                                    <button class="btn btn-primary btn-pequeno">Emitir certificado</button>
                                 </form>
                             @else
-                                <span class="muted">emissão exclusiva do RH (RF19)</span>
+                                <span class="muted">emissão exclusiva do RH</span>
                             @endif
                         </td>
                     </tr>
@@ -39,7 +39,7 @@
             </table>
         @endif
 
-        <h3>Emitidos <span class="muted">(RF20 — imutável; reemissão cria nova versão)</span></h3>
+        <h3>Emitidos <span class="muted">(imutáveis; reemissão cria nova versão)</span></h3>
         @forelse ($treinamento->certificados as $cert)
             <div class="linha-aula">
                 <div>
@@ -57,7 +57,7 @@
                         <form method="POST" action="{{ route('portal.rh.certificados.reemitir', $cert) }}">@csrf
                             <button class="btn btn-accent btn-pequeno"
                                     onclick="return confirm('Reemissão gera NOVA versão (nova linha); o código atual deixa de ser verificável. Continuar?')">
-                                Reemitir (RF20)
+                                Reemitir (nova versão)
                             </button>
                         </form>
                     @endif

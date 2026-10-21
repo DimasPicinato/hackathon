@@ -4,11 +4,11 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Justificativas de faltas <span class="muted">(RF12–RF13)</span></h1>
+<h1>Justificativas de faltas</h1>
 
 
 <div class="card">
-    <h2>Registro direto pela gestão (RF13 — sem ticket, a qualquer momento)</h2>    <form method="POST" action="{{ route('portal.rh.justificativas.registrar') }}" class="form-inline">@csrf
+    <h2>Registro direto pela gestão <span class="muted">(sem ticket, a qualquer momento)</span></h2>    <form method="POST" action="{{ route('portal.rh.justificativas.registrar') }}" class="form-inline">@csrf
         <select name="user_id" required>
             <option value="">Colaborador…</option>
             @foreach (\App\Models\User::query()->where('ativo', true)->whereJsonContains('papeis', 'colaborador')->orderBy('name')->get() as $pessoa)
@@ -47,7 +47,7 @@
                 @if ($just->ticket_id)
                     <span class="badge badge-fila">via ticket #{{ $just->ticket_id }}</span>
                 @else
-                    <span class="badge badge-manual">registro direto (RF13)</span>
+                    <span class="badge badge-manual">registro direto</span>
                 @endif
                 @if ($just->alteradoPor)
                     <div class="muted">Última alteração: {{ $just->alteradoPor->name }} · {{ $just->alterado_em?->format('d/m H:i') }}</div>

@@ -116,7 +116,7 @@ class UserSeeder extends Seeder
 
     private function email(string $nome): string
     {
-        return str_replace(' ', '.', strtolower(Str::ascii($nome))) . '@usinalins.local';
+        return str_replace(' ', '.', strtolower(Str::ascii($nome))) . '@exemplo.com';
     }
 
     private function embedding(int $dimensoes = 128): string

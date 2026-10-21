@@ -5,8 +5,8 @@
 @section('conteudo')
 <div class="card termo-card">
     <h1>Termo de Consentimento — Biometria Facial</h1>
-    <p class="muted">Versão {{ $termo->versao }} · obrigatório para presença facial (RF04). Sem aceite, a
-        presença continua possível por homologação manual com o instrutor.</p>
+    <p class="muted">Versão {{ $termo->versao }} · obrigatório para validação de presença por biometria. Sem aceite, a
+        presença continua possível pelo registro manual com o instrutor.</p>
 
     <div class="termo-conteudo">{{ $termo->conteudo }}</div>
 

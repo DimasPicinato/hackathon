@@ -4,7 +4,7 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Treinamentos e aulas <span class="muted">(RF07)</span></h1>
+<h1>Treinamentos e aulas</h1>
 
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
@@ -53,7 +53,7 @@
                                 <button class="btn btn-outline btn-pequeno">Ajustar</button>
                             </form>
                         @else
-                            <span class="muted">{{ $aula->status === 'agendada' ? '—' : 'janela fechada: ajuste pelo instrutor (RF06)' }}</span>
+                            <span class="muted">{{ $aula->status === 'agendada' ? '—' : 'janela fechada: ajuste pelo instrutor' }}</span>
                         @endif
                     </td>
                 </tr>

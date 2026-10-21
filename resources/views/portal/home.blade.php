@@ -75,14 +75,14 @@
         </div>
     </div>
     <nav class="form-inline">
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.reservas') }}">Reservas do time (RF08)</a>
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.treinamentos') }}">Treinamentos (RF07)</a>
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.usuarios') }}">Usuários (RF05)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.reservas') }}">Reservas do time</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.treinamentos') }}">Treinamentos</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.usuarios') }}">Usuários</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets ({{ $pendentes['tickets']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas ({{ $pendentes['justificativas']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.certificados') }}">Certificados</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios</a>
-        <a class="btn btn-outline btn-pequeno" href="{{ route('portal.rh.configuracoes') }}">Configurações (RF26)</a>
+        <a class="btn btn-outline btn-pequeno" href="{{ route('portal.rh.configuracoes') }}">Configurações</a>
     </nav>
 </div>
 @endif
@@ -92,9 +92,9 @@
     <h2>Meu setor: {{ $user->setor?->nome }}</h2>
     <p>{{ $teamCount }} liderados.</p>
     <nav class="form-inline">
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets do setor (RF12)</a>
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas (RF13)</a>
-        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios (RF28)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets do setor</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios</a>
     </nav>
 </div>
 @endif
@@ -171,7 +171,7 @@
 </div>
 
 <div class="card">
-    <h2>Abrir ticket <span class="muted">(RF10 — cancelar vaga, justificar falta, informação)</span></h2>
+    <h2>Abrir ticket <span class="muted">(cancelar vaga, justificar falta, informação)</span></h2>
     <form method="POST" action="{{ route('portal.ticket.abrir') }}" class="form-inline">@csrf
         <select name="tipo_ticket_id" required>
             <option value="">Tipo…</option>

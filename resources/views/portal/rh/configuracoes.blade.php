@@ -4,12 +4,12 @@
 
 @section('conteudo')
 <a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
-<h1>Configurações <span class="muted">(RF26 — Admin/RH)</span></h1>
+<h1>Configurações</h1>
 
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
 <div class="card">
-    <h2>Catálogo de motivos de homologação <span class="muted">(RF27)</span></h2>
+    <h2>Catálogo de motivos de homologação</h2>
     <form method="POST" action="{{ route('portal.rh.configuracoes.motivo.criar') }}" class="form-inline">@csrf
         <input type="text" name="nome" placeholder="Novo motivo (ex.: Troca de turno de última hora)" maxlength="120" required>
         <button class="btn btn-primary btn-pequeno">Adicionar</button>
@@ -30,7 +30,7 @@
 </div>
 
 <div class="card">
-    <h2>Tipos de ticket <span class="muted">(RF10)</span></h2>
+    <h2>Tipos de ticket</h2>
     <table class="table">
         @foreach ($tipos as $tipo)
             <tr>
@@ -47,13 +47,13 @@
 </div>
 
 <div class="card">
-    <h2>Termo LGPD — biometria facial <span class="muted">(RF04)</span></h2>
+    <h2>Termo LGPD — biometria facial</h2>
     <form method="POST" action="{{ route('portal.rh.configuracoes.termo.publicar') }}" class="form-inline-vertical">@csrf
         <input type="text" name="versao" placeholder="Versão (ex.: v2.0)" maxlength="20" required>
         <input type="text" name="titulo" placeholder="Título do termo" maxlength="120" required>
         <textarea name="conteudo" rows="4" placeholder="Texto completo do consentimento…" required></textarea>
         <button class="btn btn-accent btn-pequeno"
-                onclick="return confirm('Publicar nova versão? TODAS as pessoas farão aceite novamente ao entrar no portal (RF04).')">
+                onclick="return confirm('Publicar nova versão? TODAS as pessoas farão aceite novamente ao entrar no portal.')">
             Publicar nova versão
         </button>
     </form>
