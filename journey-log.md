@@ -337,4 +337,18 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:41 — gerado pela skill `registro-hackathon`._
+## 25 · TESTES · Topologia AT02 (homolog) construída e validada de ponta a ponta
+
+- **Quando:** 21/10/2026 01:42 → 01:49
+- **O que foi feito:**
+  - Dev manual (`presenza-dev-app`) parado; `docker compose -f docker-compose.homolog.yml up -d --build` — serviços **app** (porta 8000) e **scheduler** de pé, postgres/mailpit compartilhados e saudáveis;
+  - `migrate:fresh --seed` DENTRO do serviço `app` (rede interna compose: `DB_HOST=postgres` — nunca localhost);
+  - Smoke público homolog: `/`, `/verificar`, VÁLIDO, EXPIRADO, **PDF application/pdf**, `/login` — todos 200;
+  - Smoke do fluxo crítico completo na topologia REAL: login 302 → portal bloqueado 302→/portal/termo (**RF04**) → aceite → portal 200 → telas RH 200 (Certificados);
+  - `schedule:list` no serviço app confirma o RF25 rodando no scheduler do compose;
+  - Curiosidade trabalhada: Docker Desktop rejeita `docker exec/logs` por nome do contêiner do compose — usar `docker compose exec` (funciona direto).
+- **Resultados:** topologia AT02 em pé e validada — é o estado que fica para a apresentação; suíte dev segue **76/239 verde**.
+
+---
+
+_Última atualização: 21/10/2026 01:49 — gerado pela skill `registro-hackathon`._
