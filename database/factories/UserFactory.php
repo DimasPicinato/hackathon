@@ -30,7 +30,16 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'matricula' => 'TEST-' . fake()->unique()->numerify('#####'),
+            'ativo' => true,
+            'papeis' => ['colaborador'],
         ];
+    }
+
+    /** User colaborador padrão. */
+    public function comPapeis(string ...$papeis): static
+    {
+        return $this->state(fn () => ['papeis' => $papeis]);
     }
 
     /**

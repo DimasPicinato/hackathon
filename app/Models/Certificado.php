@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Certificado extends Model
 {
     protected $fillable = [
-        'user_id', 'treinamento_id', 'codigo', 'versao', 'substituido_por_id',
-        'emitido_por_id', 'carga_horaria', 'concluido_em', 'valido_ate',
+        'user_id', 'treinamento_id', 'codigo', 'versao', 'substituido_por_id', 'emitido_por_id',
+        'emitido_em', 'carga_horaria', 'concluido_em', 'valido_ate',
     ];
 
     protected function casts(): array
@@ -19,6 +19,7 @@ class Certificado extends Model
         return [
             'concluido_em' => 'date',
             'valido_ate' => 'date',
+            'emitido_em' => 'datetime',
         ];
     }
 

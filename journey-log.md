@@ -244,4 +244,34 @@
 
 ---
 
-_Última atualização: 20/10/2026 23:38 — gerado pela skill `registro-hackathon`._
+## 18 · CÓDIGO · Telas e fluxos da demo: termo, portais, chamada e verificação pública
+
+- **Quando:** 20/10/2026 23:39 → 00:24
+- **O que foi feito:**
+  - **RF04**: middleware `ExigirAceiteTermo` — sem aceite, portal bloqueado e tudo redireciona à tela do termo; aceite cria `TermoAceite` (validado na prática: `/portal` → `/portal/termo` → aceite → portal);
+  - **RF01**: login redesignado (PT-BR, tokens própria) com redirect por papel; `/dashboard` mantido para compat com reset/reset-porde-password do Breeze;
+  - **RF14.a**: presença facial **autônoma** do colaborador (botão "Validar presença agora" na aula em andamento);
+  - **RF14.b + RF15 + RF27**: tela "Fazer chamada" do instrutor — facial via instrutor OU homologação manual com **senha do próprio colaborador** + motivo do catálogo OU novo (alimentando catálogo); início/encerramento da aula notificam RH (RF06/RF24);
+  - **RF21/RF22**: página pública `/verificar/{código}` com VÁLIDO/EXPIRADO/NÃO ENCONTRADO, dados mínimos (nome, treinamento, carga, datas, instrutores — sem setor/foto/doc), **QR renderizado** (chillerlan), log de verificação e **PDF para download** (dompdf);
+  - Welcome público com hero + busca de certificado; layout dos portais com topbar/sair;
+  - Fachada biométrica documentada no service (`RNF06`): demo segura sem hardware.
+- **Artefatos:** `app/Services/PresencaService.php`, controllers `Portal/Termo/Chamada/Aula/VerificacaoPublica`, middleware `ExigirAceiteTermo`, 9 views Blade, routes/web.php refeito, CSS estendido, `.env` com `QUEUE_CONNECTION=sync` (Mailpit sem worker) e `DEBUGBAR_ENABLED=false`
+- **Validação (smoke manual com curl + cookies):** login → termo → portal 200; facial autônoma grava presença + auditoria; **RF16 recusa duplicidade** (flash na tela); instrutor homologa manualmente com senha correta (presença manual + notificação RH + auditoria) e **recusa senha errada**; `/verificar` VÁLIDO com QR e EXPIRADO; PDF 200.
+- **Decisão AT01:** equipe pediu método mais eficiente que curls ad hoc → **suíte automatizada PHPUnit aprovada** (ver sessão 19). Skills `testing-best-practices` + `laravel-best-practices` (do Boost) governam a suíte.
+- **Ajuste de requisito executado com o time:** **RF05** exigiu remover self-service — rota pública `/register` desabilitada (contas só via RH/Admin/líder).
+- **Resultados:** fluxo crítico da demo end-to-end funcionando: login → termo LGPD → chamada facial/homologada → certificado verificável com QR + PDF.
+
+## 19 · TESTES · Suíte automatizada dos fluxos críticos (PHPUnit via contêiner, Postgres)
+
+- **Quando:** 21/10/2026 00:24 → 00:33
+- **O que foi feito:**
+  - Infra de teste: banco `presenza_test` no próprio container Postgres (pgvector não existe no SQLite — **testes rodam no banco formal**, RNF02), `phpunit.xml` apontando para ele, debugbar desligada;
+  - `UserFactory` estendido (matrícula/papéis) + trait `Tests\Concerns\CriaFixtures` (colaboradores/instrutores/RH, termo+aceite reutilizável, aula nos 3 status, inscrição, certificado com validade);
+  - **5 suítes feature, 21 testes novos**: `AceiteTermoTest` (RF04: bloqueio, aceite+trilha, re-aceite em nova versão), `PresencaFacialTest` (RF03/RF14/RF16: janela ativa, fora da janela, duplicidade com auditoria, facial via instrutor, 403 aula alheia), `HomologacaoManualTest` (RF15/RF27: senha correta+motivo, senha errada com auditoria, motivo novo no catálogo), `CicloAulaTest` (RF06/RF24: inicia/encerra com notificação RH, intruso 403), `VerificacaoPublicaTest` (RF21/RF22: VÁLIDO com dados mínimos e sem matrícula, EXPIRADO, NÃO ENCONTRADO, log, PDF público);
+  - Testes legados do Breeze alinhados: login→portal, rota `dashboard` renomeada, registro público desativado (RF05).
+- **Resultados:** **OK — 49 testes, 144 asserções, verde** no PostgreSQL. Os smokes manuais viraram regressão re-executável e evidência para o júri.
+- **Comando:** `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit`
+
+---
+
+_Última atualização: 21/10/2026 00:33 — gerado pela skill `registro-hackathon`._

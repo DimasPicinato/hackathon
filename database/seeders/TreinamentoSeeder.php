@@ -73,7 +73,7 @@ class TreinamentoSeeder extends Seeder
                     ['aula' => 'NR10', 'metodo' => 'manual'], $marco->id, '10.0.0.10');
             }
         }
-        $concluidoNr10 = $nr10Aula->data_inicio->copy()->toDateString();
+            $concluidoNr10 = $nr10Aula->data_inicio->copy()->toDateString();
         foreach ([
             'Carlos Eduardo Ramos' => 'PZ-2025-000101',
             'Fernando Alves Costa' => 'PZ-2025-000102',
@@ -84,6 +84,7 @@ class TreinamentoSeeder extends Seeder
                 'treinamento_id' => $nr10->id,
                 'codigo' => $codigo,
                 'emitido_por_id' => $isabela->id,
+                'emitido_em' => $nr10Aula->data_inicio->copy()->addDays(3),
                 'carga_horaria' => 8,
                 'concluido_em' => $concluidoNr10,
                 'valido_ate' => $nr10Aula->data_inicio->copy()->addMonths(24),
@@ -167,6 +168,7 @@ class TreinamentoSeeder extends Seeder
             'treinamento_id' => $segInfo->id,
             'codigo' => 'PZ-2024-000087',
             'emitido_por_id' => $paulo->id,
+            'emitido_em' => $segA2->data_inicio->copy()->addDays(5),
             'carga_horaria' => 4,
             'concluido_em' => $segA2->data_inicio->toDateString(),
             'valido_ate' => $segA2->data_inicio->copy()->addMonths(12), // venceu → EXPIRADO (demo)

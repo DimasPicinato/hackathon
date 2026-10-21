@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('substituido_por_id')->nullable() // aponta p/ versão vigente
                 ->constrained('certificados')->nullOnDelete();
             $table->foreignId('emitido_por_id')->constrained('users')->restrictOnDelete();
+            $table->dateTime('emitido_em')->nullable();
             $table->unsignedSmallInteger('carga_horaria')->nullable();
             $table->date('concluido_em')->nullable();
             $table->date('valido_ate')->nullable();             // RF22 — alimenta EXPIRADO
