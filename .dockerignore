@@ -6,6 +6,8 @@ vendor/
 node_modules/
 database/database.sqlite
 docs/
+!docs
+!docs/**
 journey-log.md
 public/build
 storage/logs/

@@ -11,9 +11,9 @@
 | **Produto** | **Presenza** |
 | **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
-| **Estado final** | 28/28 RFs implementados · 93 testes / 305 asserções verdes · aplicação no ar em `https://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) com requisitos e mockup aprovados, implementação na janela da demo |
+| **Estado final** | 34/34 RFs implementados · 98 testes / 325 asserções verdes · aplicação no ar em `http://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (42 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (43 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -31,7 +31,7 @@
 | QR Code | **chillerlan/php-qrcode** | QR do certificado → página pública de verificação (RF21) |
 | E-mail (dev) | **Mailpit** | Captura de todos os e-mails da demo com UI web |
 | Infra | **Docker + Docker Compose** (dev e homologação) | `postgres` + `mailpit` (dev); `app` + `scheduler` buildados (homolog) |
-| Deploy | **Coolify em VPS** | Domínio `https://hackathon.dpicinato.com` |
+| Deploy | **Coolify em VPS** | Domínio `http://hackathon.dpicinato.com` |
 | Testes | **PHPUnit** (feature) rodando no PostgreSQL real | 93 testes / 305 asserções |
 | Versionamento | **Git / GitHub** | Processo e código versionados |
 | IA | **IA generativa de preferência do time, operada via agente OpenCode (CLI)** com *skills* (`grilling`, `ui-ux-pro-max`, `frontend-design`, `ui-styling`, `design-system`, `web-design-guidelines`, `laravel-best-practices`, `testing-best-practices`, `registro-hackathon`) | 100% do código escrito por IA; decisões sempre com o time (AT01) |
@@ -65,7 +65,7 @@ Transversal: Auditoria de eventos sensíveis (RNF01) · Termo LGPD versionado + 
 Infra (AT02): docker-compose.dev.yaml = postgres (:5433) + mailpit (:8025)
               docker-compose.yaml   = idem + app (:18000→8000) + scheduler, env fixo,
               código e vendor EMBUTIDOS na imagem (local = VPS)
-Deploy: Coolify (VPS) → https://hackathon.dpicinato.com
+Deploy: Coolify (VPS) → http://hackathon.dpicinato.com
 ```
 
 Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simulável** (RNF06) com embeddings no pgvector; a integridade da chamada é garantida por **constraints no banco** (unique), não só por código; o certificado é **imutável por versão** (reemissão mata o código antigo na verificação pública).
@@ -79,14 +79,15 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 - **Instalações instruídas (AT03):** a IA nunca instalou nada direto na máquina do time — emitia passos com justificativa.
 - **Testes como regressão da demo:** suíte PHPUnit feature criada junto com cada bloco de RFs, sempre verde no PostgreSQL real.
 - **Mocks por seed:** 57 contas fictícias com embeddings biométricos fake, treinamentos/aulas/presenças/tickets/certificados nos 3 cenários de demonstração (SEED01–04) — a demo não depende de câmera, hardware ou rede.
-- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 42 registros cronológicos com prompts, decisões e resultados.
+- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 43 registros cronológicos com prompts, decisões e resultados.
 - **Sequência executada:** problemas → escolha do P1 → requisitos → design → stack → scaffold → domínio (migrations/models/seed) → telas/fluxos → testes → blocos RH/scheduler → deploy (Coolify) → polimento de UI → documentação/entregáveis.
 
 ## 1.4 Resultados-chave
 
-- **28/28 requisitos funcionais** (RF01–RF28) implementados e cobertos por testes: **93 testes / 305 asserções verdes** no PostgreSQL real.
+- **34/34 requisitos funcionais** (RF01–RF34) implementados e cobertos por testes: **98 testes / 325 asserções verdes** no PostgreSQL real.
+- **Assistente de IA público** (RF29–RF34): runtime OpenCode em contêiner com agente somente leitura de `docs/`, widget sem login em bloco único, cortesia em falha e auditoria das conversas visível só ao Admin.
 - Demo de 5 min com "momento uau": reemissão de certificado → código antigo vira **NÃO ENCONTRADO** na verificação pública ao vivo.
-- Aplicação publicada: `https://hackathon.dpicinato.com` · códigos de demonstração: `PZ-2025-000101` (VÁLIDO) e `PZ-2024-000087` (EXPIRADO).
+- Aplicação publicada: `http://hackathon.dpicinato.com` · códigos de demonstração: `PZ-2025-000101` (VÁLIDO) e `PZ-2024-000087` (EXPIRADO).
 
 ## 1.5 Quesitos da banca → como o projeto atende
 
@@ -402,7 +403,7 @@ Prompts de continuação sob AT01 (nenhuma dúvida material nova), cobrindo:
 
 ### Fase 12 — Deploy no Coolify (21/10, 02h18–03h09) — prompts P1–P5 do runbook
 
-Contexto: VPS gerenciada pelo Coolify, domínio `https://hackathon.dpicinato.com`. Quatro problemas reais de plataforma, cada um com prompt, causa raiz e correção (runbook completo em `docs/deploy-coolify.md`):
+Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`. Quatro problemas reais de plataforma, cada um com prompt, causa raiz e correção (runbook completo em `docs/deploy-coolify.md`):
 
 > **P-31 (P1 do runbook) · include ignorado**
 > "Estou deployando uma aplicação Laravel (Docker Compose) na VPS com Coolify. O deploy falhou no build com: `service "app" depends on undefined service "mailpit": invalid compose project`. O arquivo topo usa `include:` para puxar um compose de dev que declara `postgres` e `mailpit`. Diagnostique a causa raiz e corrija com a menor mudança possível, sem quebrar o fluxo local." — o time orientou: *"pode copiar o trecho do dev para dentro do padrão, preciso apenas que funcione."*
@@ -422,7 +423,7 @@ Contexto: VPS gerenciada pelo Coolify, domínio `https://hackathon.dpicinato.com
 > **P-34 (P4) · contêiner sem código (503 eterno)**
 > "O deploy com o domínio `app:8000` abre os contêineres, mas o `app` entra em loop: `Composer could not find a composer.json file in /app` + `Could not open input file: artisan`. O compose usa o bind `.:/app`. Faça local e VPS **usarem a mesma imagem**, eliminando qualquer dependência do código fora do build."
 >
-> **Resultado:** causa raiz — o `up` do Coolify roda num diretório do helper que não existe no daemon, tornando o bind uma pasta vazia. Solução definitiva: código + vendor **embutidos na imagem** (Dockerfile `COPY` + `composer install --no-dev`, WORKDIR `/presenza`, `.dockerignore` novo, binds removidos) — commit `2e123d2`; pilha verde local; **redeploy confirmado: `https://hackathon.dpicinato.com` respondendo**.
+> **Resultado:** causa raiz — o `up` do Coolify roda num diretório do helper que não existe no daemon, tornando o bind uma pasta vazia. Solução definitiva: código + vendor **embutidos na imagem** (Dockerfile `COPY` + `composer install --no-dev`, WORKDIR `/presenza`, `.dockerignore` novo, binds removidos) — commit `2e123d2`; pilha verde local; **redeploy confirmado: `http://hackathon.dpicinato.com` respondendo**.
 
 > **P-35 (P5) · documentar o deploy**
 > "Finalmente funcionou. Documente esses problemas que tivemos em questão do Docker e as ações para resolver, inclua alguns prompts também na documentação disso."
@@ -485,11 +486,26 @@ Contexto: VPS gerenciada pelo Coolify, domínio `https://hackathon.dpicinato.com
 >
 > **Resultado:** nome corrigido nos 4 artefatos (capa do PDF, `README.md`, relatório final, cabeçalho do diário); **53 prompts originais** recuperados do banco de sessões do agente (6 sessões, 19–21/10) e anexados ao PDF — incluindo o stack trace colado pelo time e os prompts de confirmação curtos, para a completude do processo; comando `presenza:pdf-prompts` ampliado (entram `docs/deploy-coolify.md`, `docs/questionario-requisitos-assistente-ia.md` e `docs/prompts-conversas.md`) e **PDF regerado** (1,8 MB/31 pág. → **2,4 MB/39 pág.**); script de extração versionado no repositório (`scripts/extrair-prompts-conversas.php`).
 
+### Fase 18 — Assistente de IA implementado (21/10, 12h10–13h45)
+
+> **P-44 · Implementação do assistente aprovado (mockup + §7)**
+> - **Contexto:** mockup aprovado pelo time ("mockup aprovado, mete bala") e requisitos RF29–RF34/RNF07–RNF09 fechados na seção 7 de `docs/requisitos-p1.md`; janela de desenvolvimento até 14h00, apresentação às 14h30.
+> - **Objetivo:** implementar o assistente público de ponta a ponta — runtime do agente no compose, endpoint Laravel, widget nas páginas públicas e tela de auditoria do Admin — mantendo o processo registrado.
+> - **Restrições:** exatamente o escopo aprovado (sem login, só leitura de `docs/`, zero PII, respostas em bloco único com carregamento, cortesia em falha, sem rate limit, conversas visíveis só ao Admin com aviso no widget); modelo `opencode/big-pickle` trocável por `.env`; segredos fora do git; suíte verde antes de registrar; AT02 (Docker).
+> - **Formato:** código + migration + testes feature + docs (stack, acordos com a exceção Node, roteiro de demo) + sessão Nº 43 no diário e sincronização deste relatório.
+>
+> **Resultado:** serviço `assistente` (Node 22 + `@opencode/cli@2`, `opencode serve` + agente `atende` com permissões apenas `read`/`glob`/`grep` em `docs/`) e `RuntimeAssistente` no Laravel (Basic auth, sessão cacheada, `/api/session` → `prompt` → `wait` → `message`); widget acessível em welcome/login/`/verificar` com aviso de gravação e loader; registro em `assistente_mensagens` (pergunta, resposta, estado, IP, sessão) e tela **Conversas do assistente** só para Admin (RH recebe 403); contrato real corrigido no E2E (`model: {id, providerID}`, `wait` 204); **98 testes / 325 asserções verdes**; imagem construída e **smoke real em contêiner** respondendo sobre `/verificar` e fila de espera sem `OPENCODE_API_KEY` (modelos free do gateway); `.dockerignore` re-inclui `docs/` para a imagem do runtime.
+
+> **P-45 · Domínio público em http://**
+> "Alteramos o protocolo do domínio de https:// para http://."
+>
+> **Resultado:** defaults `APP_URL` do compose (app + scheduler) e 11 referências em docs vivos (`deploy-coolify.md`, relatório) atualizados para `http://hackathon.dpicinato.com`; conferido que nenhum middleware força HTTPS no código — QR e links de e-mail seguem o valor configurado.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
 
-> **Extensão Q36–Q59 (21/10):** questionário do módulo **assistente de IA** — transcrição completa (4 rodadas + fatos + confirmação final) em `docs/questionario-requisitos-assistente-ia.md`; requisitos em `docs/requisitos-p1.md` §7 (RF29–RF34, RNF07–09) e registro em P-42/§6.
+> **Extensão Q36–Q59 (21/10):** questionário do módulo **assistente de IA** — transcrição completa (4 rodadas + fatos + confirmação final) em `docs/questionario-requisitos-assistente-ia.md`; requisitos em `docs/requisitos-p1.md` §7 (RF29–RF34, RNF07–09), registro em P-42/§6 e implementação em P-44.
 
 ### Rodada 1 — Produto, operação e dados de demo (Q1–Q8)
 
@@ -568,14 +584,16 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 15. **Topologia homolog validada de ponta a ponta** (P-27) — 01h42–01h49.
 16. **Renome dos composes + seed automático no `up`** (P-28, P-29) — 01h49–02h10.
 17. **SEED04 (dados extras)** (P-30) — 01h30–01h49.
-18. **Deploy no Coolify: 4 problemas resolvidos + runbook** (P-31–P-35) — 02h18–03h09 → **no ar em `https://hackathon.dpicinato.com`**.
+18. **Deploy no Coolify: 4 problemas resolvidos + runbook** (P-31–P-35) — 02h18–03h09 → **no ar em `http://hackathon.dpicinato.com`**.
 19. **Polimento de UI (sidebar/voltar/4-8 → mojibake/login/busca → copy amigável)** (P-36–P-38) — 03h10–05h00.
 20. **Documentação final para a banca** (P-39) — 21/10.
 21. **Hotfix da chamada + seed com termo aceito (44/44) + dev reerguido** (P-41) — 21/10 09h30–11h17.
 22. **Assistente de IA público: requisitos Q36–Q59 fechados + docs do módulo (transcrição, seção 7 dos RFs, mapa de páginas, mockup)** (P-42) — 21/10, até 11h47.
 23. **Nome da equipe corrigido no PDF + anexo com os 53 prompts originais das conversas** (P-43) — 21/10 11h27–11h55.
+24. **Assistente de IA público implementado ponta a ponta** (P-44) — runtime OpenCode em contêiner, widget nas páginas públicas, auditoria só do Admin, 98/325 verde — 21/10 12h10–13h45.
+25. **Domínio público alterado para http://** (P-45) — 21/10 13h30–13h36.
 
-## §9. Diário de bordo (`journey-log.md`, 42 sessões)
+## §9. Diário de bordo (`journey-log.md`, 44 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -623,7 +641,7 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 
 - **Nº 32 · 02h18 — Configuração:** Coolify ignora `include:` → compose autossuficiente; zero variáveis no deploy; `APP_URL` fixa. Parcial (redeploy pendente). ✔ após Nº 34.
 - **Nº 33 · 02h31 — Configuração:** colisão da porta 8000 com o painel do Coolify → host port 18000. ✔
-- **Nº 34 · 03h01 — Configuração:** código embutido na imagem (Dockerfile `COPY` + `composer install`, WORKDIR `/presenza`, `.dockerignore`); pilha verde local; **redeploy confirmado — `https://hackathon.dpicinato.com` no ar**. ✔
+- **Nº 34 · 03h01 — Configuração:** código embutido na imagem (Dockerfile `COPY` + `composer install`, WORKDIR `/presenza`, `.dockerignore`); pilha verde local; **redeploy confirmado — `http://hackathon.dpicinato.com` no ar**. ✔
 - **Nº 35 · 03h09 — Documentação:** runbook do deploy (`docs/deploy-coolify.md`) com sintoma→causa→ação, commits, issues e prompts polidos. ✔
 - **Nº 36 · 03h10–03h41 — Código:** revisão de layout — sidebar por papel, botão Voltar, ícones SVG, ritmo 4/8; validado com testes + smoke + screenshots. ✔
 - **Nº 37 · 03h45–04h10 — Código:** mojibake eliminado (2 arquivos, varredura byte-a-byte), login repaginado, busca client-side nas listas. ✔
@@ -632,8 +650,11 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 40 · 09h30–11h17 — Código:** hotfix de ParseError na chamada (edit engoliu o `@if`) + Docker Desktop reerguido; **seed agora pré-assina o termo LGPD (44/44)** — login direto ao portal, aceite re-vivotado ao publicar nova versão; SMTP/README no domínio `@exemplo.com`. ✔
 - **Nº 41 · 11h47 — Decisão:** assistente de IA público — requisitos Q36–Q59 fechados em 4 rodadas de grilling com o time; widget público "Assistente Presenza" (só leitura, zero PII), runtime do agente em contêiner no compose (exceção "com Node" aceita), modelo gratuito trocável, conversas gravadas com aviso, risco "sem limite de taxa" assumido; RF29–RF34 + RNF07–09 na seção 7 dos requisitos, transcrição, mapa de páginas e mockup criados; implementação pendente de aprovação do mockup. ✔
 - **Nº 42 · 11h27–11h55 — Documentação:** nome do integrante corrigido nos 4 artefatos (capa do PDF, README, relatório, diário) e **anexo com os 53 prompts originais das conversas** extraídos do banco de sessões do agente (`docs/prompts-conversas.md`, script `scripts/extrair-prompts-conversas.php`); PDF de prompts regerado (1,8 MB → 2,4 MB) com o anexo e o runbook do deploy. ✔
+- **Nº 43 · 12h10–13h45 — Código:** **assistente de IA público implementado** (RF29–RF34): contêiner `assistente` (Node + `opencode serve`, agente somente leitura de `docs/`), `RuntimeAssistente` com Basic auth e sessão cacheada, endpoint público sem CSRF, widget (aviso de gravação, loader, bloco único) em welcome/login/`/verificar`, registro em `assistente_mensagens` e tela **Conversas do assistente** só para o Admin; contrato do runtime corrigido no E2E (`model {id, providerID}`, `wait` 204); imagem construída e smoke real em contêiner (funciona **sem** `OPENCODE_API_KEY` nos modelos free); **98/325 verde**; roteiro de demo e docs de stack/acordos atualizados. ✔
 
-*Última atualização do diário: 21/10/2026, 11h55.*
+- **Nº 44 · 13h30–13h36 — Configuração:** domínio público passa a `http://` — defaults `APP_URL` do compose (app + scheduler) e docs vivos atualizados; conferido que nenhum middleware força HTTPS (QR e e-mails seguem o valor configurado). ✔
+
+*Última atualização do diário: 21/10/2026, 13h47.*
 
 ## §10. Estado final e evidências
 
@@ -646,7 +667,7 @@ docker run --rm -v .:/app -w /app presenza/php php artisan migrate:fresh --seed
 docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --host=0.0.0.0
 
 # Demonstração/homologação (topologia AT02 — seed automático)
-docker compose up -d --build        # app em http://localhost:18000
+docker compose up -d --build        # app em http://localhost:18000 (o --build também constrói o serviço assistente)
 ```
 
 ### Credenciais da demo (seed) — todas as senhas `Password@123`, e-mails `login@exemplo.com`
@@ -662,27 +683,27 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 ### Verificação pública (sem login)
 
-`https://hackathon.dpicinato.com/verificar` · códigos: **`PZ-2025-000101` (VÁLIDO)** · **`PZ-2024-000087` (EXPIRADO)**.
+`http://hackathon.dpicinato.com/verificar` · códigos: **`PZ-2025-000101` (VÁLIDO)** · **`PZ-2024-000087` (EXPIRADO)**.
 
 ### Qualidade
 
-- Suíte: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → **93 testes, 305 asserções, verde** (PostgreSQL real com pgvector).
-- Cobertura dos fluxos críticos: aceite do termo, janela facial, anti-fraude (duplicidade), homologação (senha certa/errada + motivo novo), ciclo da aula com notificação, verificação pública (VÁLIDO/EXPIRADO/NÃO ENCONTRADO + log + PDF), tickets, justificativas, emissão/reemissão, relatórios CSV, lembretes, configurações, reservas, conformidade.
+- Suíte: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → **98 testes, 325 asserções, verde** (PostgreSQL real com pgvector).
+- Cobertura dos fluxos críticos: aceite do termo, janela facial, anti-fraude (duplicidade), homologação (senha certa/errada + motivo novo), ciclo da aula com notificação, verificação pública (VÁLIDO/EXPIRADO/NÃO ENCONTRADO + log + PDF), tickets, justificativas, emissão/reemissão, relatórios CSV, lembretes, configurações, reservas, conformidade, **assistente (resposta do runtime, cortesia em falha, validação e auditoria só do Admin)**.
 
 ### Roteiro da demo (5 min)
 
-0:00 a dor (lista de presença falsificável) → 0:30 login + **presença facial** (termo LGPD já aceito no seed) → 1:15 instrutor: iniciar aula + **homologação com senha do colaborador + motivo** (senha errada recusada) → 2:15 **tickets** (justificar falta aprovada; cancelar vaga promove a **fila** na hora) → 3:00 **certificados**: emissão + **reemissão** (código antigo vira NÃO ENCONTRADO ao vivo — momento uau) + CSV → 4:00 governança: **nova versão do termo** re-pede aceite, Mailpit com e-mails reais, scheduler → 4:45 fechamento. Plano B: homologação manual é feature; suíte verde prova o domínio; 403 de escopo é feature (líder não sai do setor).
+0:00 a dor (lista de presença falsificável) → 0:30 login + **presença facial** (termo LGPD já aceito no seed) → 1:15 instrutor: iniciar aula + **homologação com senha do colaborador + motivo** (senha errada recusada) → 2:15 **tickets** (justificar falta aprovada; cancelar vaga promove a **fila** na hora) → 3:00 **certificados**: emissão + **reemissão** (código antigo vira NÃO ENCONTRADO ao vivo — momento uau) + CSV → 4:00 governança: **nova versão do termo** re-pede aceite, Mailpit com e-mails reais, scheduler → 4:30 **assistente público** (pergunta sobre `/verificar`, recusa fora do escopo, conversa registrada só para o Admin) → 4:45 fechamento. Plano B: homologação manual é feature; suíte verde prova o domínio; assistente em falha mostra cortesia (RNF08); 403 de escopo é feature (líder não sai do setor).
 
 ### Mapa de artefatos
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 42 sessões com prompts, decisões e resultados |
-| `docs/requisitos-p1.md` | RF01–RF28, RNF01–06, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
+| `journey-log.md` | Diário de bordo — 43 sessões com prompts, decisões e resultados |
+| `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
 | `docs/design-p1.md` | Design system (paleta, tipografia, tokens de status, kit de skills) |
-| `docs/design-assistente-ia.md` | Mockup do widget público do assistente (aprovação AT01 pendente) |
+| `docs/design-assistente-ia.md` | Mockup do widget público do assistente (**aprovado** em 21/10) |
 | `docs/mapa-paginas.md` | Mapa de rotas/telas para contexto do agente (fonte de conhecimento, RF30) |
 | `docs/stack.md` | Decisão de stack (Q35), serviços, dependências, ajustes de execução |
 | `docs/acordos-de-trabalho.md` | AT01–AT04 |
@@ -691,6 +712,8 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 | `docs/prompts-ia.pdf` | **Volume de evidência dos prompts** (gerado pelo comando `presenza:pdf-prompts`, 39 páginas): questionário Q1–Q35, questionário Q36–Q59 (assistente de IA), requisitos, stack, acordos, design, runbook do deploy e **anexo com os 53 prompts originais das conversas** |
 | `docs/prompts-conversas.md` | Anexo — **53 prompts originais (verbatim)** extraídos do histórico de conversas do agente, por sessão, com horário e resultado |
 | `scripts/extrair-prompts-conversas.php` | Script reproduzível da extração dos prompts (lê o banco de sessões do agente e gera o anexo) |
+| `docker/opencode/Dockerfile` + `docs/.opencode/opencode.json` | Runtime do assistente (Node + CLI OpenCode, agente `atende` somente leitura de `docs/`) |
+| `app/Services/RuntimeAssistente.php` + `tests/Feature/AssistenteTest.php` | Ponte Laravel→runtime (Basic auth, sessão cacheada) e testes do módulo (5 testes) |
 | `docs/relatorio-final.md` | **Este documento** — base do PDF final de entrega |
 
 ---

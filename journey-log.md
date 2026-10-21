@@ -621,4 +621,38 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 21/10/2026 11h55 — gerado pela skill `registro-hackathon`._
+## Nº 43 · CÓDIGO · Assistente de IA público implementado (RF29–RF34) — runtime OpenCode, widget e auditoria
+
+- **Quando:** 21/10/2026 12h10 → 13h45
+- **O que foi feito:**
+  - **Runtime do agente**: imagem própria `docker/opencode/Dockerfile` (Node 22 + `@opencode/cli@2`) embutindo `docs/`; agente `atende` em `docs/.opencode/opencode.json` com modelo `opencode/big-pickle`, system PT-BR e permissões **somente `read`/`glob`/`grep`** (deny `*`, deny `external_directory`); serviço `assistente` no compose (rede interna `:4096`, Basic auth com `OPENCODE_SERVER_PASSWORD` fixa de demo) e `app` com `ASSISTENTE_URL/MODELO/SENHA` + `depends_on`;
+  - **Backend Laravel**: migration/model `assistente_mensagens` (pergunta, resposta, estado, IP, sessão da aba), `App\Services\RuntimeAssistente` (HTTP Basic → `POST /api/session` → `prompt` → `wait` → `message`, sessão cacheada 30 min) e `AssistenteController` (`responder` público + `conversas` só Admin, gate `temPapel('admin')`); rota pública `POST /assistente` com CSRF excluído no `bootstrap/app.php`; bloco `assistente` em `config/services.php`; `.env`/`.env.example` documentados;
+  - **Frontend**: widget `resources/views/assistente/widget.blade.php` + `public/css/assistente.css` (tokens do design system, aviso de gravação/LGPD, loader e resposta em bloco único, histórico só na aba) incluído em welcome, login (`layouts/guest`), `/verificar` e resultado; view `portal/rh/assistente.blade.php` paginada e link "Conversas do assistente" na sidebar **só para Admin**;
+  - **Testes**: `tests/Feature/AssistenteTest.php` cobre sucesso (registra conversa + IP), runtime fora do ar (cortesia 200 + estado `fallback`), validação (vazio/501 chars) e autorização (Admin vê, RH recebe 403), além do widget nas páginas públicas — **suíte completa 98 testes / 325 asserções verde**;
+  - **Correções de contrato pegas no E2E**: o schema real do runtime exige `model: {id, providerID}` (modelID causava 400) e `wait` retorna **204**; `.dockerignore` passou a re-incluir `docs/` para a imagem do assistente; build da imagem validado (`hackaton-assistente`) e **smoke real** em contêiner respondendo sobre fila de espera e `/verificar` — **sem `OPENCODE_API_KEY`** (modelos free do gateway funcionam anônimos; a variável fica opcional e fora do git).
+- **Artefatos:** `docker/opencode/Dockerfile`, `docs/.opencode/opencode.json`, `docker-compose.yaml`, `config/services.php`, `bootstrap/app.php`, `routes/web.php`, `.dockerignore`, `database/migrations/2026_10_21_120000_criar_assistente_mensagens.php`, `app/Models/AssistenteMensagem.php`, `app/Services/RuntimeAssistente.php`, `app/Http/Controllers/AssistenteController.php`, `resources/views/assistente/widget.blade.php`, `public/css/assistente.css`, `resources/views/portal/rh/assistente.blade.php`, `layouts/portal|guest`, `welcome`, `verificar/{busca,resultado}`, `tests/Feature/AssistenteTest.php`, `docs/stack.md`, `docs/acordos-de-trabalho.md`, `docs/roteiro-demo.md`, `README.md`
+- **Decisões / por quê:** runtime isolado no compose mantém o app sem build (exceção aprovada, AT02); o agente só lê `docs/` e nunca toca banco/usuários (zero PII); registro em banco com IP atende à auditoria RF33 sem expor conversas ao RH; fallback de cortesia garante a demo mesmo sem rede (RNF08); sem rate limit conforme decisão registrada (Q45/RNF09).
+- **Prompts-chave:** "mockup aprovado, mete bala" → polido no relatório §6 (**P-44**): implementar o assistente exatamente conforme mockup + seção 7, com runtime em contêiner, zero PII, cortesia em falha e auditoria só do Admin, rodando a suíte e registrando a sessão.
+- **Resultados:** assistente público funcional de ponta a ponta (widget → Laravel → runtime → resposta), imagem Docker construída e testada em contêiner, 98/325 verde, tela Admin de auditoria e roteiro de demo atualizado com o bloco de 4:30–4:45.
+- **Status:** Concluído.
+
+---
+
+## Nº 44 · CONFIGURAÇÃO · Domínio público de https:// para http://
+
+- **Quando:** 21/10/2026 13h30–13h36
+- **O que foi feito:**
+  - Time alterou o protocolo do domínio público (`hackathon.dpicinato.com`) de `https://` para `http://`;
+  - `docker-compose.yaml`: os 2 defaults `APP_URL` (app + scheduler) passam a `http://` — QR (RF21) e links de e-mail dos e-mails de lembrete/convite seguem o valor configurado;
+  - `docs/deploy-coolify.md` (runbook: acessos + smoke pós-redeploy) e `docs/relatorio-final.md` (estado final, stack, evidências, §8, §9 e §10) atualizados para `http://`;
+  - Verificação de segurança: nenhum middleware força HTTPS na aplicação (sem `forceScheme`/`forceRootUrl`) — nada quebra em `http://`;
+  - `.env` local segue `http://localhost:18000`, sem relação com o domínio público.
+- **Artefatos:** `docker-compose.yaml`, `docs/deploy-coolify.md`, `docs/relatorio-final.md`
+- **Decisões / por quê:** histórico do journey-log (sessões 32–35) fica como registrado (protocolo da época); documentos vivos apontam sempre para o estado atual.
+- **Prompts-chave:** "alteramos o protocolo do domínio de https:// para http://"
+- **Resultados:** 13 referências vivas atualizadas (2 no compose, 2 no runbook, 9 no relatório); conferido que não há força de HTTPS no código.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 13h47 — gerado pela skill `registro-hackathon`._

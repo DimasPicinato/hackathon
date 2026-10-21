@@ -66,7 +66,7 @@ services:
       # valores FIXOS abaixo; local, o .env do time continua podendo sobrescrever.
       # APP_URL fixo = domínio público — QR (RF21) e links de e-mail o usam; APP_KEY
       # é fixa de DEMO no repositório (gerar nova se o projeto crescer de escopo).
-      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
+      APP_URL: ${APP_URL:-http://hackathon.dpicinato.com}
       APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       # Hosts internos do compose (jamais localhost aqui — rede própria do compose)
       DB_CONNECTION: pgsql
@@ -112,7 +112,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
-      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
+      APP_URL: ${APP_URL:-http://hackathon.dpicinato.com}
       APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       DB_CONNECTION: pgsql
       DB_HOST: postgres

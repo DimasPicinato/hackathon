@@ -22,8 +22,9 @@ Hackathon FATEC & ETEC — Usina Lins · Problema 1 (gestão de treinamentos + c
 - **Laravel 13 (PHP 8.4)** + Blade + Alpine.js — sem build de Node (`css` de tokens + Alpine vendido)
 - **PostgreSQL 16 + pgvector** — embeddings de biometria facial (`vector(128)`), fachada simulável para demo (RNF06)
 - **dompdf** (certificados/relatórios) · **php-qrcode** (QR público) · **Mailpit** (e-mails dev)
-- **Testes**: PHPUnit feature no próprio Postgres — `OK: 93 testes, 305 asserções`
-- **28/28 RFs implementados** (RF01–RF28), com auditoria em cada ação sensível (RNF01)
+- **Assistente de IA público** (RF29–RF34): runtime `opencode serve` em contêiner Node isolado (`assistente`) com agente somente leitura em `docs/`; widget sem login, resposta em bloco único, cortesia em falha e conversas auditadas só para o Admin (ver [`docs/design-assistente-ia.md`](docs/design-assistente-ia.md))
+- **Testes**: PHPUnit feature no próprio Postgres — `OK: 98 testes, 325 asserções`
+- **34/34 RFs implementados** (RF01–RF34), com auditoria em cada ação sensível (RNF01)
 
 ## Como rodar
 
@@ -41,7 +42,7 @@ docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --
 docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app em http://localhost:18000)
 ```
 
-> O código do `app`/`scheduler` vai **embutido na imagem** (Dockerfile faz `COPY` + `composer install`) — o mesmo recinto builda local e na VPS (Coolify). A mudança nos códigos aplica com `--build`.
+> O código do `app`/`scheduler` vai **embutido na imagem** (Dockerfile faz `COPY` + `composer install`) — o mesmo recinto builda local e na VPS (Coolify). A mudança nos códigos aplica com `--build`. O `--build` também constrói o serviço **`assistente`** (Node + CLI OpenCode, ~2 min na primeira vez); ele embute a pasta `docs/` como fonte de conhecimento e só responde na rede interna (`http://assistente:4096`). `OPENCODE_API_KEY` é opcional para os modelos free; `OPENCODE_SERVER_PASSWORD` tem default de demo no próprio compose (ambos podem vir do `.env`, que não é versionado).
 
 **Seed automático (reset total — aprovado pela equipe):** a cada (re)criação do contêiner `app` o banco é repovado com `migrate:fresh --seed` (SEED01–04, ~15 s) antes do `serve`. Logo após `up`, aguarde ~20 s para o primeiro `200`. `docker compose restart` **apaga e resemeia** — não reinicie o contêiner durante a apresentação se quiser conservar dados criados ao vivo.
 
@@ -68,8 +69,9 @@ Aprovação RF01–RF28/RNF01–06 em [`docs/requisitos-p1.md`](docs/requisitos-
 decision log técnico em [`docs/stack.md`](docs/stack.md); identidade visual em [`docs/design-p1.md`](docs/design-p1.md);
 runbook do deploy no Coolify em [`docs/deploy-coolify.md`](docs/deploy-coolify.md);
 transcrição das perguntas de requisitos em [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md);
+requisitos e mockup do assistente de IA em [`docs/questionario-requisitos-assistente-ia.md`](docs/questionario-requisitos-assistente-ia.md), [`docs/requisitos-p1.md`](docs/requisitos-p1.md) (§7) e [`docs/design-assistente-ia.md`](docs/design-assistente-ia.md);
 volume de evidência dos prompts (PDF entregue à banca) em [`docs/prompts-ia.pdf`](docs/prompts-ia.pdf) — inclui o anexo com os **53 prompts originais das conversas** ([`docs/prompts-conversas.md`](docs/prompts-conversas.md), extração reproduzível por [`scripts/extrair-prompts-conversas.php`](scripts/extrair-prompts-conversas.php));
-evidência cronológica IA (42 sessões) em [`journey-log.md`](journey-log.md).
+evidência cronológica IA (43 sessões) em [`journey-log.md`](journey-log.md).
 
 ## Testes
 

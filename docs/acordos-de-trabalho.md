@@ -14,6 +14,7 @@ Mecanismo prático: questionário interativo do OpenCode (opções numeradas + r
 - **Desenvolvimento/testes**: `docker-compose` somente com os **serviços** (banco de dados, mail-catcher, etc.) — a aplicação roda fora ou em contêiner de desenvolvimento, conectando via `localhost` pelos valores do `.env`.
 - **Homologação/demonstração**: um **segundo** compose que **estende** o compose de serviços, adicionando a aplicação já **buildada** e as **variáveis de ambiente dela fixas no compose** (nomes de serviço como host, ex.: `DB_HOST=postgres`) para compatibilidade de rede.
 - Os **mesmos serviços** nos dois ambientes — o que muda é só a camada de aplicação.
+- **Exceção aprovada em 21/10/2026 (RF29–RF34):** o serviço `assistente` usa imagem Node (CLI do OpenCode) **isolado** no compose; não afeta o app, que continua sem build de assets. `OPENCODE_API_KEY` e `OPENCODE_SERVER_PASSWORD` vêm por `.env`/ambiente (nunca commitadas).
 
 ## AT03 — Instalação de ferramentas
 

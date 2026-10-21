@@ -1,13 +1,13 @@
 # 🚀 Deploy no Coolify — runbook dos problemas de Docker (Presenza)
 
-História dos problemas que apareceram ao subir a pilha de homologação (AT02: `app`, `scheduler`, `postgres`, `mailpit`) na VPS gerida pelo Coolify, com o domínio `https://hackathon.dpicinato.com` na frente. Cada item: **sintoma → causa raiz → ação** (com o commit que fechou). Serve como runbook: **uma nova VPS ou um deploy do zero reaproveita este guia**, porque os primeiros obstáculos são padrões de plataforma (Coolify), e não erros do projeto.
+História dos problemas que apareceram ao subir a pilha de homologação (AT02: `app`, `scheduler`, `postgres`, `mailpit`) na VPS gerida pelo Coolify, com o domínio `http://hackathon.dpicinato.com` na frente. Cada item: **sintoma → causa raiz → ação** (com o commit que fechou). Serve como runbook: **uma nova VPS ou um deploy do zero reaproveita este guia**, porque os primeiros obstáculos são padrões de plataforma (Coolify), e não erros do projeto.
 
 ## Como ficou o deploy (estado atual)
 
 - `docker-compose.yaml` **autossuficiente** (sem `include:`), com `APP_KEY` / `APP_URL` fixos como fallback e **zero variáveis a definir** no Coolify;
 - Código + `vendor` **embutidos na imagem** (`docker/php/Dockerfile` + `.dockerignore`); binds de fonte eliminados;
 - Porta host default `18000` para o `app` (o contêiner segue `8000`, alvo do proxy); `APP_PORT` é a única válvula de resgate;
-- Acessos: `https://hackathon.dpicinato.com` via proxy → `app:8000` · debug `IP:18000` (liberar no firewall, se precisar) · Mailpit UI `:8025` · Postgres `:5433` (recomendação: fechar para fora no firewall/security group);
+- Acessos: `http://hackathon.dpicinato.com` via proxy → `app:8000` · debug `IP:18000` (liberar no firewall, se precisar) · Mailpit UI `:8025` · Postgres `:5433` (recomendação: fechar para fora no firewall/security group);
 - Tempo de 1º start: build ~2–3 min (instalação do vendor) + seed ~20 s depois de `app Started`.
 
 ## 1) `service "app" depends on undefined service "mailpit": invalid compose project`
@@ -49,7 +49,7 @@ História dos problemas que apareceram ao subir a pilha de homologação (AT02: 
 1. push (o log do deploy deve mostrar `Importing ... commit sha <novo sha>`);
 2. acompanhar: `postgres Healthy` → `app Started` → `scheduler Started` (sem erro de bind);
 3. esperar ~1–2 min (build do vendor + seed ~20 s);
-4. `https://hackathon.dpicinato.com/verificar` em `200` (códigos demo `PZ-2025-000101` VÁLIDO / `PZ-2024-000087` EXPIRADO);
+4. `http://hackathon.dpicinato.com/verificar` em `200` (códigos demo `PZ-2025-000101` VÁLIDO / `PZ-2024-000087` EXPIRADO);
 5. login com seed (`isabela.cristina.fonseca` / `Password@123`) confirma app+DB;
 6. conferir e-mails capturados na UI do Mailpit (`http://IP:8025`).
 
