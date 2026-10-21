@@ -433,4 +433,21 @@
 
 ---
 
-_Última atualização: 21/10/2026 02:10 — gerado pela skill `registro-hackathon`._
+## Nº 32 · CONFIGURAÇÃO · Compose de homologação autossuficiente (deploy no Coolify)
+
+- **Quando:** 21/10/2026 02:18
+- **O que foi feito:**
+  - Falha ao subir na VPS (pico de: `service "app" depends on undefined service "mailpit"`); causa confirmada em pesquisa: o Coolify ignora a diretiva `include:` do compose e só vê os serviços do arquivo topo (issues #5921/#2859, PR #8850 sem merge) — confirmado pelo time: bastava copiar os serviços de dev para dentro do padrão;
+  - `docker-compose.yaml`: `postgres` + `mailpit` (e o volume) declarados no próprio arquivo; `include:` removido; `docker-compose.dev.yaml` segue intacto para o fluxo de dev "serviços + app one-off";
+  - Coberturas para rodar direto na VPS: guarda de `vendor/` no comando do `app` (`composer install` no 1º start da VPS, pois `vendor` não viaja no git e o bind aponta para o checkout) e espera do `scheduler` pelo autoload; `APP_KEY`/`APP_URL` interpolados do compose (VPS gera chave efêmera se a var não for definida — sessões reiniciam junto com o banco, coerente com o reset total Nº 31); porta do `app` parametrizada (`APP_PORT`) por causa do conflito da 8000 na VPS;
+  - Validação: `docker compose config --quiet` sem avisos (topo e dev) — o 1º teste de validação chegou a interpolar `$n` do script do scheduler; contador trocado por `timeout 120`;
+  - Docs sincronizadas (README + `docs/stack.md` deixam de descrever o `include`).
+- **Artefatos:** `docker-compose.yaml`, `README.md`, `docs/stack.md`
+- **Decisões / por quê:** arquivo autossuficiente resolve o deploy gerenciado sem duplicar a stack; exigência do time de zero variáveis externas ⇒ valores fixos no compose (URL pública do subdomínio + chave de demo); com subdomínio no Coolify, a exposição é via proxy na porta do contêiner (requisitos de sessão/QR dependem do `APP_URL` correto na VPS).
+- **Prompts-chave:** "subi na VPS com Coolify e deu este erro (log completo)"; time orientou: "pode copiar o trecho do dev para dentro do padrão, preciso apenas que funcione" — IA confirmou a causa antes de corrigir e avisou os requisitos escondidos (vendor, APP_KEY, porta host na VPS);
+- **Resultados:** compose validado e pronto para novo deploy; zero variáveis a definir no Coolify — `APP_URL` fixa (`https://hackathon.dpicinato.com`, pergunta ao time) e `APP_KEY` de demo fixa no arquivo; commit efetuado; pendente: redeploy na VPS.
+- **Status:** Parcial (falta o redeploy na VPS).
+
+---
+
+_Última atualização: 21/10/2026 02:25 — gerado pela skill `registro-hackathon`._

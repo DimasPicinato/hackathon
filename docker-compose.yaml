@@ -1,11 +1,34 @@
 # Presenza — Homologação/demonstração (AT02) — PADRÃO: `docker compose` executa ESTE arquivo.
-# ESTENDE o compose de dev/testes (docker-compose.dev.yaml, via include) e adiciona a aplicação DEFINITIVA,
-# com variáveis de ambiente FIXAS neste arquivo (compatibilidade de rede:
-# hosts = nomes de serviço da rede interna do compose).
-include:
-  - docker-compose.dev.yaml
-
+# Topologia AUTÔNOMA: `postgres` e `mailpit` copiados deste arquivo em vez de `include:`
+# (docker-compose.dev.yaml continua existindo p/ o fluxo de dev "serviços + app one-off").
+# Motivo: o deploy no Coolify ignora a diretiva `include:` e só enxerga os serviços do
+# arquivo topo (coollabsio/coolify#5921, #2859) — com o include, chegava a falhar na
+# validação: service "app" depends on undefined service "mailpit".
 services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: presenza-postgres
+    environment:
+      POSTGRES_USER: presenza
+      POSTGRES_PASSWORD: presenza_dev
+      POSTGRES_DB: presenza
+    ports:
+      - "5433:5432"   # host 5433 -> evita conflito com PG local, se houver
+    volumes:
+      - presenza_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U presenza -d presenza"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: presenza-mailpit
+    ports:
+      - "1025:1025"    # SMTP (captura todos os e-mails do dev)
+      - "8025:8025"    # Web UI de e-mails capturados
+
   app:
     build:
       context: .
@@ -15,11 +38,18 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      # Na VPS o painel do Coolify já ocupa a porta host 8000 — defina APP_PORT
+      # nas env vars do Coolify (ex.: APP_PORT=8080). Local, segue sendo 8000.
+      - "${APP_PORT:-8000}:8000"
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
-      APP_URL: http://localhost:8000
+      # Zero variáveis p/ definir fora do compose: na VPS/Coolify (sem .env) valem os
+      # valores FIXOS abaixo; local, o .env do time continua podendo sobrescrever.
+      # APP_URL fixo = domínio público — QR (RF21) e links de e-mail o usam; APP_KEY
+      # é fixa de DEMO no repositório (gerar nova se o projeto crescer de escopo).
+      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
+      APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       # Hosts internos do compose (jamais localhost aqui — rede própria do compose)
       DB_CONNECTION: pgsql
       DB_HOST: postgres
@@ -41,10 +71,13 @@ services:
     # Reset total (aprovado pela equipe): cada (re)início do contêiner refaz o banco
     # com o seed completo da demo (SEED01–04). Para conservar dados ao vivo, NÃO
     # recriar/reiniciar o contêiner durante a apresentação.
+    # No Coolify o bind `.:/app` aponta pro checkout do deploy — sem `vendor/`
+    # (gitignored). O guarda abaixo instala uma única vez, persistindo no bind.
     command:
       - sh
       - -c
       - |
+        [ -f vendor/autoload.php ] || composer install --no-dev --no-interaction --prefer-dist --no-progress
         php artisan migrate:fresh --seed --force
         exec php artisan serve --host=0.0.0.0 --port=8000
 
@@ -59,6 +92,8 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
+      APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -74,4 +109,14 @@ services:
     depends_on:
       app:
         condition: service_started
-    command: ["php", "artisan", "schedule:work"]
+    # No 1º start da VPS o `app` ainda está rodando `composer install` no bind
+    # compartilhado — espera o autoload aparecer (cap de ~2 min) antes de subir.
+    command:
+      - sh
+      - -c
+      - |
+        timeout 120 sh -c 'until [ -f vendor/autoload.php ]; do sleep 2; done'
+        exec php artisan schedule:work
+
+volumes:
+  presenza_pgdata:

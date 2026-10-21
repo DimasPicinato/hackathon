@@ -24,7 +24,7 @@
 | `scheduler` | PHP 8.3 CLI | `schedule:work` para lembretes 24h/aviso de fila (RF25) — só na homologação |
 
 - **`docker-compose.dev.yaml`** (dev/testes): `postgres` + `mailpit` — o `.env` de desenvolvimento aponta para `host.docker.internal`.
-- **`docker-compose.yaml`** (PADRÃO — executado com `docker compose` sem `-f`): inclui o de dev via `include` e adiciona `app` + `scheduler` (build) **com variáveis de ambiente fixas no compose** (ex.: `DB_HOST=postgres`, `MAIL_HOST=mailpit`) para compatibilidade de rede, conforme AT02.
+- **`docker-compose.yaml`** (PADRÃO — executado com `docker compose` sem `-f`): declara `postgres` + `mailpit` **copiados** (sem `include`, que o Coolify ignora no deploy — coollabsio/coolify#5921) e adiciona `app` + `scheduler` (build) **com variáveis de ambiente fixas no compose** (ex.: `DB_HOST=postgres`, `MAIL_HOST=mailpit`) para compatibilidade de rede, conforme AT02.
 - Biometria: similaridade calculada com o operador do pgvector (distância cosseno via SQL) — sem serviço externo de IA na demo (fachada/simulador definidos em implementação, com aprovação AT01).
 
 ## 3. Dependências (propostas — aprovação triste no scaffold)
@@ -48,7 +48,7 @@ public/         # css/js/comprovantes estáticos
 resources/views # telas Blade por plano de mockups
 database/migrations + seeders (incl. leituras CSV de seed/)
 docker-compose.dev.yaml        # serviços (dev — postgres + mailpit)
-docker-compose.yaml            # PADRÃO do compose: inclui dev + app/scheduler buildados (homolog)
+docker-compose.yaml            # PADRÃO: topologia completa autônoma (homolog + Coolify)
 .env                          # dev: localhost | homolog usa env fixo do compose
 ```
 
