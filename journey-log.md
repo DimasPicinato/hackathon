@@ -177,6 +177,18 @@
 - **Resultados:** tokens prontos para os mockups; pendências leves: instalar Python (geração de `design-system/MASTER.md` via script) e verificar cores do site oficial da Usina Lins (alinhamento de marca).
 - **Status:** Concluído.
 
+## 14 · DECISÃO · Nome do produto: **Presenza**
+
+- **Quando:** 20/10/2026 22:20
+- **O que foi feito:**
+  - Escolha do nome via questionário (Q34) entre 5 candidatas geradas com racional (Certia, TurmaCert, NRFlow, Assidu, Presenza);
+  - Aplicação do nome e tagline **"presenças reais, certificados à prova"** no cabeçalho/título/intro dos artefatos de apresentação.
+- **Artefatos:** `README.md`, `docs/requisitos-p1.md`, `docs/design-p1.md`, `journey-log.md`
+- **Decisões / por quê:** nome curto (cabe em capa/PDF/certificado/QR/banner/pitch), liga biometria + assiduidade, humano e memorável.
+- **Prompts-chave:** "qual nome damos ao projeto?" — 5 opções com base no hero do produto (certificado verificável).
+- **Resultados:** identidade verbal do produto fixada para mockups/banner/apresentação.
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 22:11 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 22:22 — gerado pela skill `registro-hackathon`._

@@ -1,5 +1,7 @@
 # Requisitos — P1 · Gestão de Treinamentos Internos (RH)
 
+> **Produto: Presenza** — *presenças reais, certificados à prova.***
+
 **Hackathon FATEC & ETEC · Usina Lins · CetaCeo** — 20/10/2026
 Fonte: questionário interativo de levantamento de requisitos (skill `grilling`, via OpenCode) — 30 perguntas em 4 rodadas + ajustes, com o time.
 Transcrição completa (perguntas, respostas e impacto): **`docs/questionario-requisitos-p1.md`** · Histórico: `journey-log.md` (sessões 9–10). Sem arquitetura definida neste documento — apenas requisitos.
