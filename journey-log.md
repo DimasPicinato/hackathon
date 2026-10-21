@@ -290,4 +290,15 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:02 — gerado pela skill `registro-hackathon`._
+## 21 · CÓDIGO · Lembretes automáticos (RF25) no scheduler de homologação
+
+- **Quando:** 21/10/2026 01:03 → 01:10
+- **O que foi feito:**
+  - Comando `presenza:lembretes` (`app/Console/Commands/EnviarLembretesAula.php`): aula começando em ~24h → notifica vaga nominal ("sua aula é amanhã") e fila de espera (posição + lembrete de que RF09 promove automaticamente); janela fechada quando a aula já está `em_andamento`; auditoria `lembretes_enviados` quando algo é enviado;
+  - Agendamento horário em `routes/console.php` (`0 * * * *`) — roda no serviço `scheduler` do compose homolog (`schedule:work`), zero intervenção manual na apresentação;
+- **Testes:** `LembretesTest` (2 testes): dentre aulas em janela e fora dela, suficiente/notifica na fila, ou aula em andamento errada recebe nada.
+- **Resultados:** **OK — 68 testes, 213 asserções, verde**; `php artisan schedule:list` mostra o comando agendado no contêiner.
+
+---
+
+_Última atualização: 21/10/2026 01:10 — gerado pela skill `registro-hackathon`._
