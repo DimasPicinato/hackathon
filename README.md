@@ -38,7 +38,7 @@ docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --
 ### Homologação/demonstração (topologia AT02)
 
 ```sh
-docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app + scheduler)
+docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app em http://localhost:18000)
 ```
 
 **Seed automático (reset total — aprovado pela equipe):** a cada (re)criação do contêiner `app` o banco é repovado com `migrate:fresh --seed` (SEED01–04, ~15 s) antes do `serve`. Logo após `up`, aguarde ~20 s para o primeiro `200`. `docker compose restart` **apaga e resemeia** — não reinicie o contêiner durante a apresentação se quiser conservar dados criados ao vivo.
@@ -56,7 +56,7 @@ Todas as senhas `Password@123` · e-mails `nome.completo@usinalins.local`:
 | Líder | `heloisa.fernandes.peixoto` | reservas do time, justificativas (RF13), senha dos liderados |
 | Colaborador na fila | `otavio.martins.gomes` | promoção de fila (RF09), abrir ticket (RF10) |
 
-Verificação pública (sem login): `http://localhost:8000/verificar` — códigos de demonstração: `PZ-2025-000101` (VÁLIDO), `PZ-2024-000087` (EXPIRADO).
+Verificação pública (sem login): `http://localhost:18000/verificar` — códigos de demonstração: `PZ-2025-000101` (VÁLIDO), `PZ-2024-000087` (EXPIRADO).
 
 ## Mapa de requisitos
 

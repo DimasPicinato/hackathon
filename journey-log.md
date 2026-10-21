@@ -450,4 +450,20 @@
 
 ---
 
-_Última atualização: 21/10/2026 02:25 — gerado pela skill `registro-hackathon`._
+## Nº 33 · CONFIGURAÇÃO · Porta do host desviada da 8000 (colisão com o painel do Coolify)
+
+- **Quando:** 21/10/2026 02:31
+- **O que foi feito:**
+  - Redeploy (commit 4514fbe) avançou — build/seed/postgres OK, contêineres criados — e BATEU EM PORTA: `Bind for 0.0.0.0:8000 failed: port is already allocated` (painel do Coolify ocupa a 8000 do host na VPS);
+  - Default do host port do `app` trocado p/ **18000** (raramente ocupada local/VPS); porta do contêiner segue **8000** — o subdomínio do Coolify aponta via proxy, à porta do contêiner, então o acesso público é só https://hackathon.dpicinato.com;
+  - Zero variáveis mantido (default único local+VPS, `APP_PORT` segue como resgate); alinhados README (`up` homolog + `/verificar` p/ 18000) e `.env` local (`APP_URL=http://localhost:18000` — fora do git);
+  - Validação: `docker compose config --quiet` OK.
+- **Artefatos:** `docker-compose.yaml`, `README.md`, `.env` (local)
+- **Decisões / por quê:** porta de host é consumida DENTRO da máquina; trocar o default evita nova colisão sem exigir var na VPS; na VPS o host port publica só como debug, pois o tráfego real passa pelo proxy.
+- **Prompts-chave:** "agora esse erro (log da porta 8000 ocupada No Coolify)" — IA já tinha marcado o risco e resolveu via default único, estudado a partir da exigência de zero variáveis;
+- **Resultados:** compose validado; commit; pendente: push + redeploy na VPS.
+- **Status:** Parcial (redeploy pendente).
+
+---
+
+_Última atualização: 21/10/2026 02:31 — gerado pela skill `registro-hackathon`._

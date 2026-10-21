@@ -38,9 +38,10 @@ services:
     volumes:
       - .:/app
     ports:
-      # Na VPS o painel do Coolify já ocupa a porta host 8000 — defina APP_PORT
-      # nas env vars do Coolify (ex.: APP_PORT=8080). Local, segue sendo 8000.
-      - "${APP_PORT:-8000}:8000"
+      # Host: default 18000 — a 8000 já é do painel do Coolify na VPS (bind falha
+      # com "port is already allocated"). A porta do CONTÊINER segue 8000, que é
+      # o alvo do proxy do Coolify/subdomínio. Troque o host com APP_PORT se precisar.
+      - "${APP_PORT:-18000}:8000"
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
