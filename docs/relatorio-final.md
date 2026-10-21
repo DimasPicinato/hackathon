@@ -11,9 +11,9 @@
 | **Produto** | **Presenza** |
 | **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
-| **Estado final** | 34/34 RFs implementados · 98 testes / 325 asserções verdes · aplicação no ar em `http://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
+| **Estado final** | 34/34 RFs implementados · 100 testes / 331 asserções verdes · aplicação no ar em `http://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (44 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (45 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -79,13 +79,13 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 - **Instalações instruídas (AT03):** a IA nunca instalou nada direto na máquina do time — emitia passos com justificativa.
 - **Testes como regressão da demo:** suíte PHPUnit feature criada junto com cada bloco de RFs, sempre verde no PostgreSQL real.
 - **Mocks por seed:** 57 contas fictícias com embeddings biométricos fake, treinamentos/aulas/presenças/tickets/certificados nos 3 cenários de demonstração (SEED01–04) — a demo não depende de câmera, hardware ou rede.
-- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 44 registros cronológicos com prompts, decisões e resultados.
+- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 45 registros cronológicos com prompts, decisões e resultados.
 - **Sequência executada:** problemas → escolha do P1 → requisitos → design → stack → scaffold → domínio (migrations/models/seed) → telas/fluxos → testes → blocos RH/scheduler → deploy (Coolify) → polimento de UI → documentação/entregáveis.
 
 ## 1.4 Resultados-chave
 
-- **34/34 requisitos funcionais** (RF01–RF34) implementados e cobertos por testes: **98 testes / 325 asserções verdes** no PostgreSQL real.
-- **Assistente de IA público** (RF29–RF34): runtime OpenCode em contêiner com agente somente leitura de `docs/`, widget sem login em bloco único, cortesia em falha e auditoria das conversas visível só ao Admin.
+- **34/34 requisitos funcionais** (RF01–RF34) implementados e cobertos por testes: **100 testes / 331 asserções verdes** no PostgreSQL real.
+- **Assistente de IA público** (RF29–RF34): runtime OpenCode em contêiner com agente somente leitura de `docs/`, widget sem login **em todas as telas** (públicas e portal logado) em bloco único, cortesia em falha e auditoria das conversas visível só ao Admin.
 - Demo de 5 min com "momento uau": reemissão de certificado → código antigo vira **NÃO ENCONTRADO** na verificação pública ao vivo.
 - Aplicação publicada: `http://hackathon.dpicinato.com` · códigos de demonstração: `PZ-2025-000101` (VÁLIDO) e `PZ-2024-000087` (EXPIRADO).
 
@@ -501,6 +501,19 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** defaults `APP_URL` do compose (app + scheduler) e 11 referências em docs vivos (`deploy-coolify.md`, relatório) atualizados para `http://hackathon.dpicinato.com`; conferido que nenhum middleware força HTTPS no código — QR e links de e-mail seguem o valor configurado.
 
+> **P-46 · Diagnóstico e correção do fallback em produção (timeout)**
+> - **Contexto:** o time testou o assistente no domínio público e recebeu a mensagem de cortesia ("O assistente está indisponível neste momento…"); os testes locais passavam.
+> - **Objetivo:** reproduzir no site, identificar a causa e corrigir sem trocar o escopo aprovado.
+> - **Restrições:** manter o modelo free `opencode/big-pickle`; não mascarar falha real (a cortesia continua existindo); suíte verde antes de publicar.
+> - **Formato:** diagnóstico medido + correção no serviço/config + teste de regressão + deploy.
+>
+> **Resultado:** reprodução controlada mostrou **primeira chamada em 60,6 s** (timeout do cliente) e as seguintes em ~20 s — latência de cold start/variação do modelo free, não erro de configuração. Correção: `ASSISTENTE_TIMEOUT` padrão **100 s** (compose + `config/services.php`) e **retry de uma tentativa apenas para falhas rápidas** (<15 s, ex.: sessão do runtime morta após restart/deploy), descartando a sessão cacheada; testes cobrem o retry (`falha_rapida_descarta_sessao_morta_e_repete`). Após o deploy: **3/3 respostas `ok`** no domínio (15–25 s).
+
+> **P-47 · Widget do assistente em todas as telas**
+> "Quero que adicione o widget da IA em qualquer tela, não só a home de fora."
+>
+> **Resultado:** widget incluído nos layouts `portal` (dashboard, RH, Admin, conta) e `app` (telas de conta), somando-se às páginas públicas (welcome, login, `/verificar` e resultado); teste feature novo confirma o widget no portal logado (RH) e a suíte fecha em **100 testes / 331 asserções**; RF29 e o design (`docs/design-assistente-ia.md`) atualizados — o widget segue público e não lê a sessão do usuário.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -592,8 +605,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 23. **Nome da equipe corrigido no PDF + anexo com os 53 prompts originais das conversas** (P-43) — 21/10 11h27–11h55.
 24. **Assistente de IA público implementado ponta a ponta** (P-44) — runtime OpenCode em contêiner, widget nas páginas públicas, auditoria só do Admin, 98/325 verde — 21/10 12h10–13h45.
 25. **Domínio público alterado para http://** (P-45) — 21/10 13h30–13h36.
+26. **Assistente estável em produção + widget em todas as telas** (P-46/P-47) — timeout 100 s com retry de sessão, widget no portal logado, 100/331 verde — 21/10 14h05–14h35.
 
-## §9. Diário de bordo (`journey-log.md`, 44 sessões)
+## §9. Diário de bordo (`journey-log.md`, 45 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -653,8 +667,9 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 43 · 12h10–13h45 — Código:** **assistente de IA público implementado** (RF29–RF34): contêiner `assistente` (Node + `opencode serve`, agente somente leitura de `docs/`), `RuntimeAssistente` com Basic auth e sessão cacheada, endpoint público sem CSRF, widget (aviso de gravação, loader, bloco único) em welcome/login/`/verificar`, registro em `assistente_mensagens` e tela **Conversas do assistente** só para o Admin; contrato do runtime corrigido no E2E (`model {id, providerID}`, `wait` 204); imagem construída e smoke real em contêiner (funciona **sem** `OPENCODE_API_KEY` nos modelos free); **98/325 verde**; roteiro de demo e docs de stack/acordos atualizados. ✔
 
 - **Nº 44 · 13h30–13h36 — Configuração:** domínio público passa a `http://` — defaults `APP_URL` do compose (app + scheduler) e docs vivos atualizados; conferido que nenhum middleware força HTTPS (QR e e-mails seguem o valor configurado). ✔
+- **Nº 45 · 14h05–14h35 — Código:** fallback do assistente em produção diagnosticado (primeira chamada estourava 60 s; modelo free responde em ~20 s) e corrigido com **timeout de 100 s** + retry só para falhas rápidas (sessão do runtime morta), com teste de regressão; **widget incluído em todas as telas** (layouts `portal` e `app`, além das públicas), teste do portal logado e RF29/design atualizados; **100/331 verde**, deploy validado no domínio (3/3 `ok`). ✔
 
-*Última atualização do diário: 21/10/2026, 13h47.*
+*Última atualização do diário: 21/10/2026, 14h40.*
 
 ## §10. Estado final e evidências
 
@@ -687,7 +702,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 ### Qualidade
 
-- Suíte: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → **98 testes, 325 asserções, verde** (PostgreSQL real com pgvector).
+- Suíte: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → **100 testes, 331 asserções, verde** (PostgreSQL real com pgvector).
 - Cobertura dos fluxos críticos: aceite do termo, janela facial, anti-fraude (duplicidade), homologação (senha certa/errada + motivo novo), ciclo da aula com notificação, verificação pública (VÁLIDO/EXPIRADO/NÃO ENCONTRADO + log + PDF), tickets, justificativas, emissão/reemissão, relatórios CSV, lembretes, configurações, reservas, conformidade, **assistente (resposta do runtime, cortesia em falha, validação e auditoria só do Admin)**.
 
 ### Roteiro da demo (5 min)
@@ -698,7 +713,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 44 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 45 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |

@@ -112,7 +112,7 @@ Contas internas **acumulam papéis** (ex.: colaborador que também é líder). D
 
 ### 7.1 Requisitos funcionais
 
-- **RF29 — Widget público "Assistente Presenza"**: chat acessível **sem login** via botão flutuante nas páginas públicas (home `/`, login e verificação de certificado `/verificar`); interface em **PT-BR**; identidade neutra "Assistente Presenza".
+- **RF29 — Widget público "Assistente Presenza"**: chat acessível **sem login** via botão flutuante **em todas as telas** — públicas (home `/`, login e verificação de certificado `/verificar`) e **portal logado** (dashboard, RH, Admin); o widget é o mesmo e não lê a sessão do usuário. Interface em **PT-BR**; identidade neutra "Assistente Presenza".
 - **RF30 — Fonte de conhecimento**: respostas baseadas **exclusivamente na documentação do projeto** (`docs/`, montada read-only no agente) + `docs/mapa-paginas.md` (rotas e conteúdo das telas). **Sem acesso ao banco nem a qualquer dado do sistema**; quem quiser verificar um certificado é **orientado à página de verificação** (RF21) — nem verificação de código acontece no chat (Q56).
 - **RF31 — Escopo de temas restrito ao Presenza**: responde sobre fluxos, telas, certificados e o produto; **recusa educada** perguntas fora do escopo (economia de quota — Q51).
 - **RF32 — Zero PII (LGPD)**: o chat **não recebe nem envia dado pessoal** (nada de nome, CPF, foto, setor); não existe "usuário logado" no contexto público (Q42).

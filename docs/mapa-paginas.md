@@ -6,7 +6,7 @@
 
 Legenda das telas: código-fonte em `resources/views/**`. Requisitos referenciados: `docs/requisitos-p1.md`.
 
-## 1. Páginas públicas (sem login) — onde o assistente aparece
+## 1. Páginas públicas (sem login) — telas onde o assistente aparece (hoje também no portal logado)
 
 | Rota | Tela | Conteúdo em uma frase |
 |---|---|---|

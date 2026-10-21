@@ -8,7 +8,7 @@
 
 | Aspecto | Decisão |
 |---|---|
-| Onde aparece | Botão flutuante **apenas nas páginas públicas**: home `/`, login e `/verificar` (+ tela de resultado). **Nunca** nos portais logados. |
+| Onde aparece | Botão flutuante em **todas as telas**: públicas (home `/`, login e `/verificar` + resultado) **e portal logado** (dashboard, RH, Admin, conta). O widget é público e não acessa a sessão/dados do usuário logado. |
 | Sem login | Widget aberto a qualquer visitante; sem formulário de identificação. |
 | Respostas | Bloco único após carregar, com **indicador "assistente escrevendo…"** (sem streaming). |
 | Histórico | Vive **só na aba**; recarregar/fechar zera (RF34). O registro completo fica no banco → visão do Admin (RF33). |

@@ -8,7 +8,7 @@
 - [ ] App respondendo: `http://localhost:18000/verificar` → 200
 - [ ] Mailpit aberto em aba separada: `http://localhost:8025`
 - [ ] Telas prontas em abas: `/verificar/PZ-2024-000087` (EXPIRADO) e `/verificar/PZ-2025-000101` (VÁLIDO)
-- [ ] Suíte verde: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → 98 testes / 325 asserções
+- [ ] Suíte verde: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → 100 testes / 331 asserções
 - [ ] Assistente no ar: `docker compose ps assistente` → **Up** (runtime interno `:4096`; a API interna responde só na rede do compose)
 
 **Não arecare: `docker compose restart` re-semeia o banco (reset total) e apaga dados criados ao vivo durante a demo.**
@@ -44,7 +44,9 @@
 **4:30–4:45 — Assistente público (RF29–RF34)**
 - Na página inicial (sem login), abrir o botão **"P"** no canto → perguntar: *"Onde o visitante verifica um certificado?"* → resposta em bloco único, citando `/verificar` e sem pedir dados.
 - Perguntar algo fora do escopo (*"qual a previsão do tempo?"*) → recusa educada e volta ao Presenza.
+- Mostrar que o **mesmo botão "P" aparece dentro do portal logado** (dashboard/RH) — o assistente é público e não lê dados do usuário.
 - Login Admin → **Conversas do assistente**: a pergunta/resposta e o IP registrados (auditoria); explicar que RH/colaborador **não** acessam e que o histórico do visitante vive só na aba.
+- Se a primeira resposta demorar (cold start do modelo free), aguardar: o timeout é de 100 s e a segunda em diante responde em ~20 s.
 
 **4:45–5:00 — Fechamento**
 "Presença não falsificável, certificado verificável por qualquer leitor de QR — e toda a jornada com IA documentada no `journey-log.md`."
@@ -52,6 +54,6 @@
 ## Plano B (se algo falhar)
 
 - Facial "não funcionar" → homologação manual (que é feature real — mostre-a com orgulho).
-- Banco "não subir" → suíte PHPUnit no Postgres (98/325 verde) prova o domínio rodando.
+- Banco "não subir" → suíte PHPUnit no Postgres (100/331 verde) prova o domínio rodando.
 - Assistente "não responder" → a tela mostra a **mensagem de cortesia** (RNF08), sem erro 500; a demo segue. Para religar: `docker compose up -d --build assistente` (a imagem embute `docs/`).
 - Qualquer 403 de escopo → ISSO é feature (RF05/RF12): "líder não sai do seu setor".

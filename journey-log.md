@@ -655,4 +655,23 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 21/10/2026 13h47 — gerado pela skill `registro-hackathon`._
+## Nº 45 — CÓDIGO — Assistente estável em produção + widget em todas as telas
+
+- **Quando:** 21/10/2026 14h05–14h35
+- **O que foi feito:**
+  - **Diagnóstico do fallback no domínio público:** reprodução com 4 chamadas mediu a primeira em **60,6 s** (timeout do cliente HTTP) e as seguintes em ~20 s — latência de cold start/variação do modelo free, não erro de configuração; a falha virava a mensagem de cortesia (RNF08);
+  - **Correção de resiliência:** `RuntimeAssistente` ganhou retry (2 tentativas) **apenas para falhas rápidas** (<15 s — sessão do runtime morta após restart/deploy), descartando a sessão em cache; `ASSISTENTE_TIMEOUT` padrão passou de 60 s para **100 s** (`config/services.php` + `docker-compose.yaml`);
+  - **Teste de regressão:** `falha_rapida_descarta_sessao_morta_e_repete` simula sessão 404, recria e responde;
+  - **Widget em todas as telas:** incluído em `layouts/portal.blade.php` (dashboard, RH, Admin, conta) e `layouts/app.blade.php`, além das páginas públicas já cobertas (welcome, login, `/verificar`, resultado); novo teste confirma o widget no portal logado; RF29 e `docs/design-assistente-ia.md` atualizados (o widget segue público e não lê a sessão do usuário);
+  - **Deploy e validação:** push `6e06b75`, Coolify reconstruiu (breve 502 durante o restart); após o deploy, login Admin no domínio confirmou o widget no portal e **3/3 respostas `ok`** no endpoint público (15–25 s).
+- **Artefatos:** `app/Services/RuntimeAssistente.php`, `config/services.php`, `docker-compose.yaml`, `resources/views/layouts/portal.blade.php`, `resources/views/layouts/app.blade.php`, `tests/Feature/AssistenteTest.php`, `docs/requisitos-p1.md` (RF29), `docs/design-assistente-ia.md`, `docs/mapa-paginas.md`, `docs/roteiro-demo.md`, `README.md`, `docs/relatorio-final.md`
+- **Decisões / por quê:** timeout maior em vez de trocar o modelo aprovado; retry só quando a falha é rápida (repetir timeout dobraria a espera e pioraria a demo); widget no portal por pedido do time — como o endpoint é público e não recebe contexto de sessão, não há exposição de dados do usuário logado.
+- **Prompts-chave:**
+  - "O assistente está indisponível neste momento. Fale com o RH da Usina ou abra um ticket pelo portal. Consegue entender o por quê e corrigir?" (P-46);
+  - "Quero que adicione o widget da IA em qualquer tela, não só a home de fora." (P-47).
+- **Resultados:** suíte **100 testes / 331 asserções verde** (7/7 do módulo); deploy validado no domínio com widget no portal logado e 3 respostas reais consecutivas; documentação viva sincronizada.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 14h40 — gerado pela skill `registro-hackathon`._
