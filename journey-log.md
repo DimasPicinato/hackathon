@@ -7,7 +7,7 @@
 
 | Projeto escolhido                                                    | Integrantes | Início     | Status       |
 | -------------------------------------------------------------------- | ----------- | ---------- | ------------ |
-| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | —           | 20/10/2026 | em andamento |
+| **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | Dimas Matheus Gomes Picinato, Sara Silva Marsola, João Marcel dos Santos Silva (principais); Bruno Miranda Barcelos Tremeschin Pereira Melo, João Lucas Martins Pazin, Matheus Roberto Baraúna da Silva, Matheus Pereira Jesus, Lucas Yuuji Murayama (coautores) | 20/10/2026 | em andamento |
 
 ---
 
@@ -121,8 +121,26 @@
 - **Artefatos:** `journey-log.md` (docs de requisitos serão criados a partir das respostas).
 - **Decisões / por quê:** requisitos primeiro, design depois; perguntas anotadas para o PDF de prompts.
 - **Prompts-chave:** "remova isso do journey, acha skill de levantamento de requisitos e faça o questionário comigo".
-- **Resultados:** questionário em andamento.
-- **Status:** Parcial — aguardando respostas do time.
+- **Resultados:** questionário concluído; requisitos consolidados em `docs/requisitos-p1.md` (sessão 10).
+- **Status:** Concluído.
+
+## 10 · DOCUMENTAÇÃO · Questionário de requisitos (30 perguntas, 4 rodadas) — doc consolidado
+
+- **Quando:** 20/10/2026 16:10 → 21:20 (ajustes)
+- **O que foi feito:**
+  - Instalação das skills `grill-me` + `grilling` (mattpocock/skills, ~1,4 mi instalações) no repositório (`.agents/skills/`) e desconto de PowerShell para `npx` (ExecutionPolicy CurrentUser RemoteSigned);
+  - Questionário interativo (via OpenCode) em 4 rodadas — Q1–Q30 — cobrindo: verificação pública com validade, presença manual, vagas nominais, fila de espera, fluxo de tickets, certificado, relatórios, papéis e permissões;
+  - **Evoluições importantes decididas pelo time**: entidade **Aula** (Treinamento 1:N Aula) com instrutor iniciando/encerrando; facial **só para validar presença na aula ativa** (com colaborador autônomo OU via instrutor); homologação manual exige **senha do colaborador + motivo** (catálogo editável, incl. motivo novo no ato); confirmação prévia removida — **tickets** resolvem cancelamentos/justificativas (APROVADO/RECUSADO); líder com permissões totais no seu setor e **Admin** com poder total (SMTP); RH emite certificados **manualmente**; relatórios completos com exportação;
+  - Consolidação em `docs/requisitos-p1.md` (28 RFs, 6 RNFs, seed de demo, fluxos e fora-de-escopo) após confirmação de entendimento compartilhado.
+- **Artefatos:** `docs/requisitos-p1.md`, `.agents/skills/grill-me/`, `.agents/skills/grilling/`, `journey-log.md`
+- **Decisões / por quê:** requisitos antes de arquitetura (decisão da sessão 8/9); pergunta a pergunta para não deixar nada assumido; certificado manual dá o RH como "dono da verdade" dos NRs.
+- **Prompts-chave:** 30 perguntas respondidas no questionário interativo do OpenCode (respostas registradas na conversa; a consolidar no PDF de prompts).
+- **Resultados:** `docs/requisitos-p1.md` aprovado pelo time; base pronta para mockups e esqueleto.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 20/10/2026 21:20 — gerado pela skill `registro-hackathon`._
 
 ---
 
