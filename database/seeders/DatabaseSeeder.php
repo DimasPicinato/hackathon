@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,         // SEED01/SEED02 — time completo + biometria
             CatalogoSeeder::class,     // SEED02 — termo, motivos, tipos, configurações
             TreinamentoSeeder::class,  // SEED03 — treinamentos, aulas, presenças, certificados
+            DadosExtrasSeeder::class,  // SEED04 — dados de exemplo adicionais (demo)
         ]);
     }
 }

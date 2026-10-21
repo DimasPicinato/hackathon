@@ -385,4 +385,21 @@
 
 ---
 
-_Última atualização: 21/10/2026 02:24 — gerado pela skill `registro-hackathon`._
+
+## 29 · CÓDIGO · Seed enriquecido (SEED04) — lista de dados de exemplo cheias para a demo
+
+- **Quando:** 21/10/2026 01:30 → 01:49
+- **O que foi feito:**
+  - Pedido do time ("adicione no seed vários dados de exemplo, pode encher") virou o `DadosExtrasSeeder` (SEED04), registrado no `DatabaseSeeder` após os cenários de demo — os alvos da apresentação (NR35 A2 em andamento, códigos PZ-2025-000101/000087) ficaram intactos;
+  - Volume novo: **2 setores** (Expedição, Laboratório), **13 pessoas** (2 líderes, 1 instrutor interno, 10 colaboradores) com biometria de fachada **128 dimensões** para todos (RNF06), **6 motivos** de homologação, **5 treinamentos** (NR-12, NR-33, Brigada de Emergência, Saúde Mental, NR-11), **15 aulas**, fila de espera em 4 aulas;
+  - Cenários de gestão: **3 tickets abertos** (justificar falta — Jéssica; cancelar vaga — Rafael, para promoção de fila ao vivo; informação — Natália) + 4 resolvidos; justificativas **aprovada** (Fernando NR-12) e **recusadas** (Wesley NR-12, Éverton NR-33); **reemissão real de certificado** (RF20): v1 `PZ-2026-000105` morre (`nao_encontrado`), v2 `PZ-2026-000111` vigente;
+  - Validação: DB re-semeado no contêiner de homologação (57 contas, 7 setores, 8 treinamentos, 83 inscrições, 5 na fila, 15 certificados, 1 substituído) e 3 rotas públicas em `200 OK`;
+- **Artefatos:** `database/seeders/DadosExtrasSeeder.php`, `database/seeders/DatabaseSeeder.php`
+- **Decisões / por quê:** encher o seed sem mexer nos alvos da demo — volume a mais para a matriz de conformidade e as telas de RH parecerem "vivos" nos 5 minutos de apresentação;
+- **Prompts-chave:** "adicione no seed vários dados de exemplo, pode encher" — direto e curto; IA releu seedadores/migrações antes de escrever para não quebrar chaves únicas;
+- **Resultados:** seed completo verde em homologação; suíte de testes OK — **93 testes, 305 asserções** (nada mudou no comportamento testado).
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 01:49 — gerado pela skill `registro-hackathon`._
