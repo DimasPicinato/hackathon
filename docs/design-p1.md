@@ -71,5 +71,6 @@ Racional (para a banca): Lexend foi **desenhada para legibilidade** — decisão
 ## 6. Referência cruzada
 
 - Requisitos de negócio que exigem cores de status: `docs/requisitos-p1.md` (RF09, RF12, RF15, RF17, RF21–RF22).
-- Histórico das decisões: `journey-log.md` (sessão 13).
+- [`docs/design-p1.md`](docs/design-p1.md) — design system: paleta, tipografia, tokens de status e kit de skills
+- Histórico das decisões: `journey-log.md` (sessão 15 — gate de aprovação AT01 e stack Laravel 11).
 - Transcrição das perguntas de design: `docs/questionario-requisitos-p1.md` (seção "Rodada de design", Q31–Q33).

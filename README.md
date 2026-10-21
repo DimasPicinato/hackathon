@@ -29,4 +29,6 @@ Projeto escolhido: **P1 — Gestão de Treinamentos Internos (RH)**
 - [`docs/requisitos-p1.md`](docs/requisitos-p1.md) — requisitos funcionais/não funcionais (28 RFs + 6 RNFs) com rastreabilidade
 - [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md) — transcrição completa do questionário de requisitos (Q1–Q30) + rodada de design (Q31–Q33)
 - [`docs/design-p1.md`](docs/design-p1.md) — design system: paleta, tipografia, tokens de status e kit de skills
+- [`docs/stack.md`](docs/stack.md) — tecnologia decidida (Laravel 11 + PostgreSQL/pgvector + Docker) e topologia de contêineres
+- [`docs/acordos-de-trabalho.md`](docs/acordos-de-trabalho.md) — convenções do time/IA (gate de aprovação, Docker, instalações, processo)
 - [`problemas.docx`](problemas.docx) — enunciado dos 3 problemas do desafio

@@ -189,6 +189,20 @@
 - **Resultados:** identidade verbal do produto fixada para mockups/banner/apresentação.
 - **Status:** Concluído.
 
+## 15 · DECISÃO · Gate de aprovação como regra fixa (AT01) + Stack decidida: **Laravel 11**
+
+- **Quando:** 20/10/2026 22:40 → 22:55
+- **O que foi feito:**
+  - **Nova regra fixa do time, documentada em `docs/acordos-de-trabalho.md`** (AT01): sempre que houver dúvida ou forma alternativa de fazer, questionar o time com opções + recomendação e aguardar aprovação. Também registrados AT02 (Docker: compose de serviços p/ dev/testes + compose homolog que estende e adiciona app buildada com env fixo) e AT03 (instalações sempre instruídas, nunca diretas);
+  - Comparativo de stacks via critérios dos RFs (auth/reset, scheduler, SMTP, PDF, QR, CSV, biometria, admin, corpus de IA, encaixe Docker);
+  - **Q35 aprovado: Laravel 11 / PHP 8.3 / Blade + Alpine / PostgreSQL(pgvector) / Mailpit / dompdf** — sem Node/npm no MVP (assets prontos, sem build);
+  - Doc técnico criado com servicios do compose (pgvector/pg16, mailpit) e dependências propostas (breeze, dompdf, qrcode).
+- **Artefatos:** `docs/acordos-de-trabalho.md`, `docs/stack.md`, `README.md`
+- **Decisões / por quê:** maior cobertura dos RFs pelas baterias do framework na janela de horas restante; DomPDF puro evita imagem pesada; o time mantém proficiência (Node) como evolução pós-hackathon.
+- **Prompts-chave:** "vamos decidir a stack... Ruby-on-Rails, Laravel, Django... docker-compose de serviços + compose homolog que estende... toda vez que houver dúvida questione-me... instrua-me a instalar" (136 QRS: ver `prompts/` quando o time pedir os prompt finalizados para o PDF).
+- **Resultados:** stack travada; instruções de instalação emitidas ao time (Docker Desktop requisito único).
+- **Status:** Concluído — scaffolding aguarda Docker instalado no ambiente.
+
 ---
 
-_Última atualização: 20/10/2026 22:22 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 22:55 — gerado pela skill `registro-hackathon`._
