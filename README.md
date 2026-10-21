@@ -71,7 +71,7 @@ runbook do deploy no Coolify em [`docs/deploy-coolify.md`](docs/deploy-coolify.m
 transcrição das perguntas de requisitos em [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md);
 requisitos e mockup do assistente de IA em [`docs/questionario-requisitos-assistente-ia.md`](docs/questionario-requisitos-assistente-ia.md), [`docs/requisitos-p1.md`](docs/requisitos-p1.md) (§7) e [`docs/design-assistente-ia.md`](docs/design-assistente-ia.md);
 volume de evidência dos prompts (PDF entregue à banca) em [`docs/prompts-ia.pdf`](docs/prompts-ia.pdf) — inclui o anexo com os **53 prompts originais das conversas** ([`docs/prompts-conversas.md`](docs/prompts-conversas.md), extração reproduzível por [`scripts/extrair-prompts-conversas.php`](scripts/extrair-prompts-conversas.php));
-evidência cronológica IA (43 sessões) em [`journey-log.md`](journey-log.md).
+evidência cronológica IA (44 sessões) em [`journey-log.md`](journey-log.md).
 
 ## Testes
 

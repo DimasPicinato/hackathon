@@ -13,7 +13,7 @@
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
 | **Estado final** | 34/34 RFs implementados · 98 testes / 325 asserções verdes · aplicação no ar em `http://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (43 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (44 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -79,7 +79,7 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 - **Instalações instruídas (AT03):** a IA nunca instalou nada direto na máquina do time — emitia passos com justificativa.
 - **Testes como regressão da demo:** suíte PHPUnit feature criada junto com cada bloco de RFs, sempre verde no PostgreSQL real.
 - **Mocks por seed:** 57 contas fictícias com embeddings biométricos fake, treinamentos/aulas/presenças/tickets/certificados nos 3 cenários de demonstração (SEED01–04) — a demo não depende de câmera, hardware ou rede.
-- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 43 registros cronológicos com prompts, decisões e resultados.
+- **Processo registrado (AT04):** skill `registro-hackathon` alimentou o `journey-log.md` (diário de bordo) ao fim de cada sessão — 44 registros cronológicos com prompts, decisões e resultados.
 - **Sequência executada:** problemas → escolha do P1 → requisitos → design → stack → scaffold → domínio (migrations/models/seed) → telas/fluxos → testes → blocos RH/scheduler → deploy (Coolify) → polimento de UI → documentação/entregáveis.
 
 ## 1.4 Resultados-chave
@@ -698,7 +698,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 43 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 44 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
