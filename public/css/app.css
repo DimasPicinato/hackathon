@@ -190,3 +190,17 @@ details summary::-webkit-details-marker { display: none; }
 .termo-conteudo { background: var(--muted); border-radius: var(--radius);
                   padding: 1rem; font-size: .92rem; line-height: 1.65;
                   max-height: 280px; overflow: auto; margin-bottom: 1rem; }
+
+/* ——— Bloco RH (RF10–RF13/RF18–RF20/RF28) ——— */
+.form-inline { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.form-inline select, .form-inline input[type="text"] { min-width: 0; flex: 0 1 auto; max-width: 30rem; }
+
+.flash-ok   { background: var(--status-aprovado); color: #fff; padding: .6rem .9rem; border-radius: var(--radius); margin: .6rem 0; }
+.flash-erros{ background: var(--status-recusado); color: #fff; padding: .6rem .9rem; border-radius: var(--radius); margin: .6rem 0; }
+
+.badge-aberto          { background: var(--status-pendente); color: #fff; }
+.badge-resolvido       { background: var(--status-aprovado); color: #fff; }
+.badge-cancelada       { background: #64748B; color: #fff; }
+.badge-valido          { background: var(--status-aprovado); color: #fff; }
+.badge-expirado        { background: #EA580C; color: #fff; }
+.badge-nao_encontrado  { background: #64748B; color: #fff; }

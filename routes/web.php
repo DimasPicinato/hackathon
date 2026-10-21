@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\ChamadaController;
 use App\Http\Controllers\PortalController;
+use App\Http\Controllers\Rh\CertificadosController;
+use App\Http\Controllers\Rh\JustificativasController;
+use App\Http\Controllers\Rh\RelatoriosController;
+use App\Http\Controllers\Rh\TicketsController;
 use App\Http\Controllers\TermoController;
 use App\Http\Controllers\VerificacaoPublicaController;
 use App\Models\Verificacao;
@@ -42,6 +46,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        // ─── Gestão — RH / Líder / Admin (RF10–RF13, RF18–RF20, RF28) ─────────────
+        Route::prefix('portal/rh')->name('portal.rh.')->group(function () {
+            Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets');
+            Route::post('/tickets/{ticket}/resolver', [TicketsController::class, 'resolver'])
+                ->name('tickets.resolver');
+
+            Route::get('/justificativas', [JustificativasController::class, 'index'])->name('justificativas');
+            Route::post('/justificativas', [JustificativasController::class, 'registrar'])
+                ->name('justificativas.registrar'); // RF13 — direta por líder/RH
+            Route::post('/justificativas/{justificativa}/status', [JustificativasController::class, 'alterarStatus'])
+                ->name('justificativas.status');
+
+            Route::get('/certificados', [CertificadosController::class, 'index'])->name('certificados');
+            Route::post('/certificados/emitir', [CertificadosController::class, 'emitir'])->name('certificados.emitir');
+            Route::post('/certificados/{certificado}/reemitir', [CertificadosController::class, 'reemitir'])
+                ->name('certificados.reemitir');
+
+            Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
+            Route::get('/relatorios/pessoas/csv', [RelatoriosController::class, 'csvPessoas'])->name('relatorios.pessoas');
+            Route::get('/relatorios/sessoes/{aula}/csv', [RelatoriosController::class, 'csvSessao'])->name('relatorios.sessao');
+        });
     });
 });
 

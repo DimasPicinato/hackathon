@@ -274,4 +274,20 @@
 
 ---
 
-_Última atualização: 21/10/2026 00:33 — gerado pela skill `registro-hackathon`._
+## 20 · CÓDIGO · Bloco RH: tickets, justificativas, certificados e relatórios
+
+- **Quando:** 21/10/2026 00:34 → 01:02
+- **O que foi feito:**
+  - **RF10–RF12 + RF09**: telas de tickets — resolver "Cancelar vaga" devolve vagas em **todas** as aulas e promove a fila automática (serviço `VagaService` com reordenação da fila + notificação ao promovido); "Justificar falta" resolve com aula + status e cria/altera a justificativa; "Informação" encerra com resposta. Notificações RF24 ao colaborador em todas as resoluções;
+  - **RF12/RF13**: tela de justificativas — troca de status (aprovado/recusado/pendente, vale a qualquer momento) e **registro direto por RH/Líder sem ticket** (RF13), com botões Aprovar/Recusar;
+  - **RF18–RF20**: tela de certificados — lista de elegíveis calculada por RF18 (presença em TODAS as aulas, falta justificada = sem certificado), emissão manual pelo RH (serviço `CertificadoService`, código único `PZ-AAAA-NNNNNN`, validade às `validade_meses` após a última aula — RF22) e **reemissão imutável** (nova versão, versão antiga → NÃO ENCONTRADO na verificação);
+  - **RF28**: relatórios — resumo por sessão (convocados/presentes/faltas) e CSVs com BOM UTF-8: detalhe da sessão (nome, matrícula, setor, inscrição, presença, método, motivo de homologação) e histórico por pessoa (presenças, certificados vigentes, validade);
+  - Trait `EscopoGestao`: RH/Admin agem em tudo; **Líder só no próprio setor** (RF05/RF12), emissão de certificado exclusiva do RH (RF19);
+  - 4 novas views (`portal/rh/{tickets,justificativas,certificados,relatorios}`) com trust do design system, links diretos na home do RH/Líder;
+- **Testes (4 suítes novas, 17 testes):** `ResolucaoTicketsTest` (cancelamento+fila RF09, justificativa via ticket, falta sem aula → 422, líder só no próprio setor, colaborador 403), `StatusJustificativaTest` (qualquer momento RF12, RF13 direto, escopo), `EmissaoCertificadoTest` (elegível emite, falta bloqueia RF18, só RH, reemissão v2 + antigo não verifica RF20), `RelatorioCsvTest` (CSV sessão com método/motivo, CSV pessoas, 403 colaborador, líder vê só o setor com `streamedContent`).
+- **Resultados:** **OK — 66 testes, 209 asserções, verde**; smoke no app dev: 4 telas RH 200 + CSV `text/csv` com login da RH isabela.
+- **Aprendizados:** `streamDownload` exige `$response->streamedContent()` nos asserts (corpo não vem em `assertSee`); `whereJsonContains('papeis', …)` para filtrar colaboradores no jsonb.
+
+---
+
+_Última atualização: 21/10/2026 01:02 — gerado pela skill `registro-hackathon`._

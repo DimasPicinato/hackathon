@@ -58,11 +58,16 @@ trait CriaFixtures
         ]);
     }
 
-    protected function criarAula(StatusAula $status = StatusAula::Agendada, ?User $instrutor = null): Aula
+    protected function criarSetor(string $prefixo = 'Setor'): \App\Models\Setor
+    {
+        return \App\Models\Setor::create(['nome' => $prefixo . ' ' . fake()->unique()->numerify('###')]);
+    }
+
+    protected function criarAula(StatusAula $status = StatusAula::Agendada, ?User $instrutor = null, array $atributos = []): Aula
     {
         $treinamento = $this->criarTreinamento();
 
-        return Aula::create([
+        return Aula::create(array_merge([
             'treinamento_id' => $treinamento->id,
             'instrutor_id' => $instrutor?->id,
             'ordem' => 1,
@@ -73,7 +78,7 @@ trait CriaFixtures
             'status' => $status->value,
             'iniciada_em' => $status === StatusAula::Agendada ? null : now()->subMinutes(30),
             'encerrada_em' => $status === StatusAula::Encerrada ? now()->subMinutes(5) : null,
-        ]);
+        ], $atributos));
     }
 
     protected function inscrever(Aula $aula, User $user): Inscricao
@@ -82,6 +87,49 @@ trait CriaFixtures
             'aula_id' => $aula->id,
             'user_id' => $user->id,
             'status' => 'reservada',
+        ]);
+    }
+
+    /** Inscrição direta: reservada (vaga nominal) ou lista_espera (com posição). */
+    protected function inscreverComStatus(Aula $aula, User $user, string $status = 'reservada', ?int $posicao = null): Inscricao
+    {
+        return Inscricao::create([
+            'aula_id' => $aula->id,
+            'user_id' => $user->id,
+            'status' => $status,
+            'posicao_fila' => $posicao ?? ($status === 'lista_espera' ? 1 : null),
+        ]);
+    }
+
+    protected function darPresenca(Aula $aula, User $user, string $metodo = 'facial'): \App\Models\Presenca
+    {
+        return \App\Models\Presenca::create([
+            'aula_id' => $aula->id,
+            'user_id' => $user->id,
+            'metodo' => $metodo,
+        ]);
+    }
+
+    protected function criarTicket(User $user, Treinamento $treinamento, string $tipoNome = 'Cancelar vaga', ?string $texto = null): \App\Models\Ticket
+    {
+        $tipo = \App\Models\TipoTicket::query()->where('nome', $tipoNome)->first()
+            ?? \App\Models\TipoTicket::create(['nome' => $tipoNome, 'ativo' => true]);
+
+        return \App\Models\Ticket::create([
+            'user_id' => $user->id,
+            'treinamento_id' => $treinamento->id,
+            'tipo_ticket_id' => $tipo->id,
+            'texto' => $texto ?? 'Ticket de teste',
+            'status' => 'aberto',
+        ]);
+    }
+
+    protected function criarJustificativa(Aula $aula, User $user, string $status = 'pendente'): \App\Models\Justificativa
+    {
+        return \App\Models\Justificativa::create([
+            'user_id' => $user->id,
+            'aula_id' => $aula->id,
+            'status' => $status,
         ]);
     }
 

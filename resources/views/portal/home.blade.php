@@ -74,14 +74,24 @@
             </table>
         </div>
     </div>
-    <p class="muted">Resolução de tickets, emissão de certificados e relatórios: próxima iteração (requisitos RF12/RF19/RF28 já modelados).</p>
+    <nav class="form-inline">
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets ({{ $pendentes['tickets']->count() }})</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas ({{ $pendentes['justificativas']->count() }})</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.certificados') }}">Certificados</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios</a>
+    </nav>
 </div>
 @endif
 
 @if ($user->temPapel('lider'))
 <div class="card">
     <h2>Meu setor: {{ $user->setor?->nome }}</h2>
-    <p>{{ $teamCount }} liderados · reservas nominais do time e presenças do setor na próxima iteração (RF05/RF13 modelados).</p>
+    <p>{{ $teamCount }} liderados.</p>
+    <nav class="form-inline">
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets do setor (RF12)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas (RF13)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios') }}">Relatórios (RF28)</a>
+    </nav>
 </div>
 @endif
 
