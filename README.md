@@ -1,34 +1,75 @@
-# Hackathon FATEC & ETEC · Usina Lins
+# Presenza
 
-Projeto escolhido: **P1 — Gestão de Treinamentos Internos (RH)**
+> **Presenças reais, certificados à prova.** Gestão interna de treinamentos da Usina Lins com **validação de presença por reconhecimento facial** — e **verificação pública de certificados** que qualquer pessoa confere no site, sem login, pelo QR.
 
-**Produto: Presenza** 🎓 — *presenças reais, certificados à prova.*
-(Plataforma para treinar, validar de presença com reconhecimento facial e emitir certificados imutáveis com verificação pública.)
+Hackathon FATEC & ETEC — Usina Lins · Problema 1 (gestão de treinamentos + certificação com presença).
 
-## 👥 Autores
+---
 
-### Principais autores
+## O que resolve
 
-- Dimas Matheus Gomes Picinato
-- Sara Silva Marsola
-- João Marcel dos Santos Silva
+| Problema do caso real | Solução Presenza |
+|---|---|
+| Listas de presença fáceis de falsificar | Presença **só pelo reconhecimento facial na janela da aula** (RF03/RF14); homologação manual é exceção rastreada: senha do **próprio colaborador** + motivo do catálogo (RF15/RF27) |
+| Certificados "de geladeira" sem como conferir | **Verificação pública** por código/QR/link com status VÁLIDO/EXPIRADO/NÃO ENCONTRADO (RF21/RF22) + PDF público |
+| Faltas e cancelamentos por conversa de corredor | Fluxo por **tickets** resolvidos por RH/Líder com efeito real (devolver vaga, promover fila, justificar falta) (RF10–RF13) |
+| Fila de espera virada por Excel | **Fila automática com promoção em cascata** quando alguém cancela (RF09) |
+| Elegibilidade a certificado no "achismo" | Emissão só para quem compareceu a **todas** as aulas (RF18) — cálculo automático |
+| Certificado errado não pode ser "editado" | **Imutável**: reemissão cria nova versão; o código antigo para de verificar (RF20) |
 
-### Coautores (auxílio participativo)
+## Stack
 
-- Bruno Miranda Barcelos Tremeschin Pereira Melo
-- João Lucas Martins Pazin
-- Matheus Roberto Baraúna da Silva
-- Matheus Pereira Jesus
-- Lucas Yuuji Murayama
+- **Laravel 13 (PHP 8.4)** + Blade + Alpine.js — sem build de Node (`css` de tokens + Alpine vendido)
+- **PostgreSQL 16 + pgvector** — embeddings de biometria facial (`vector(128)`), fachada simulável para demo (RNF06)
+- **dompdf** (certificados/relatórios) · **php-qrcode** (QR público) · **Mailpit** (e-mails dev)
+- **Testes**: PHPUnit feature no próprio Postgres — `OK: 76 testes, 239 asserções`
 
-> Nome de coautores que ainda serão adicionados: _[a completar]_
+## Como rodar
 
-## 📚 Documentação
+### Desenvolvimento ((turnkey)
 
-- [`journey-log.md`](journey-log.md) — diário de bordo cronológico de tudo o que foi feito com IA (histórico de sessões, decisões e prompts-chave)
-- [`docs/requisitos-p1.md`](docs/requisitos-p1.md) — requisitos funcionais/não funcionais (28 RFs + 6 RNFs) com rastreabilidade
-- [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md) — transcrição completa do questionário de requisitos (Q1–Q30) + rodada de design (Q31–Q33)
-- [`docs/design-p1.md`](docs/design-p1.md) — design system: paleta, tipografia, tokens de status e kit de skills
-- [`docs/stack.md`](docs/stack.md) — tecnologia decidida (Laravel 11 + PostgreSQL/pgvector + Docker) e topologia de contêineres
-- [`docs/acordos-de-trabalho.md`](docs/acordos-de-trabalho.md) — convenções do time/IA (gate de aprovação, Docker, instalações, processo)
-- [`problemas.docx`](problemas.docx) — enunciado dos 3 problemas do desafio
+```sh
+docker compose up -d          # postgres:5433 (host) + mailpit:8025
+docker compose run --rm app php artisan migrate:fresh --seed
+docker compose run --rm app php artisan serve   # http://localhost:8000   (ou `app:` service up)
+```
+
+### Homologação/demonstração (topologia AT02)
+
+```sh
+docker compose -f docker-compose.homolog.yml up -d --build   # app + scheduler (lembretes RF25)
+```
+
+`docker-compose.yml` = só serviços; `docker-compose.homolog.yml` estende via `include` e adiciona app + scheduler com env fixa.
+
+## Credenciais da demo (seed)
+
+Todas as senhas `Password@123` · e-mails `nome.completo@usinalins.local`:
+
+| Papel | Login | Cenário |
+|---|---|---|
+| RH | `isabela.cristina.fonseca` | tickets, certificados, configurações, reservas |
+| Instrutor externo | `klaus.werner.steiner` | chamada facial/homologação |
+| Líder | `heloisa.fernandes.peixoto` | reservas do time, justificativas (RF13) |
+| Colaborador na fila | `otavio.martins.gomes` | promoção de fila (RF09) |
+
+Verificação pública (sem login): `http://localhost:8000/verificar` — códigos de demonstração: `PZ-2025-000101` (VÁLIDO), `PZ-2024-000087` (EXPIRADO).
+
+## Mapa de requisitos
+
+Aprovação RF01–RF28/RNF01–06 em [`docs/requisitos-p1.md`](docs/requisitos-p1.md);
+decision log técnico em [`docs/stack.md`](docs/stack.md); identidade visual em [`docs/design-p1.md`](docs/design-p1.md);
+transcrição das perguntas de requisitos em [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md);
+evidência cronológica IA (24+ sessões) em [`journey-log.md`](journey-log.md).
+
+## Testes
+
+```sh
+docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit   # Postgres real (banco presenza_test, pgvector)
+```
+
+## Equipe
+
+Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcel dos Santos Silva
+
+> **AT03/AT01**: todo o código foi escrito por IA (proveito pelo log); decisões técnicas sempre com a equipe por votação registrada.

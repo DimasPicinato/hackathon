@@ -324,4 +324,17 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:29 — gerado pela skill `registro-hackathon`._
+## 24 · ENTREGÁVEIS · README, roteiro de demo 5 min e PDF de prompts IA
+
+- **Quando:** 21/10/2026 01:30 → 01:41
+- **O que foi feito:**
+  - **Validação real de e-mail**: pedido de reset de senha (fluxo de acesso) gerou mensagem no **Mailpit** ("Reset your password" — remetente `presenza@usinalins.local`) — caixa postal dev comprovada para a demo;
+  - **`README.md`**: pitch do produto, tabela problema→solução, stack, como rodar dev/homolog (topologia AT02), credenciais da demo, códigos de verificação pública, mapa de RFs e comando de testes;
+  - **`docs/roteiro-demo.md`**: roteiro cronometrado de 5 min (dor → solução → anti-fraude → tickets → certificados imutáveis → governança → fechamento), check-list pré-demo e **plano B por cenário de falha** (a homologação manual é feature, não gambiarra);
+  - **PDF de prompts (entregável do rubric)**: comando `presenza:pdf-prompts` (dompdf + commonmark) compila os docs (`questionario-requisitos-p1` Q1–Q35, requisitos, stack, acordos, design) em `docs/prompts-ia.pdf` (1,8 MB, com capa para a equipe);
+  - Bug consertado a caminho: `collect([]) ?:` nunca cai no default em PHP (objeto sempre truthy) — option array `\?:` com array puro.
+- **Resultados:** suíte **OK — 76 testes, 239 asserções**; PDF gerado e versionado em `docs/`.
+
+---
+
+_Última atualização: 21/10/2026 01:41 — gerado pela skill `registro-hackathon`._
