@@ -1,4 +1,4 @@
-/* Presenza — tokens do design system (docs/design-p1.md) — CSS puro, sem build */
+﻿/* Presenza â€” tokens do design system (docs/design-p1.md) â€” CSS puro, sem build */
 :root {
   --primary: #15803D;
   --primary-600: #166534;
@@ -27,7 +27,7 @@
   --font-heading: 'Lexend', system-ui, sans-serif;
   --font-body: 'Source Sans 3', system-ui, sans-serif;
 
-  /* Escala 4/8 — ritmo de espaçamento único para títulos, cards, listas e seções */
+  /* Escala 4/8 â€” ritmo de espaÃ§amento Ãºnico para tÃ­tulos, cards, listas e seÃ§Ãµes */
   --space-1: .25rem;
   --space-2: .5rem;
   --space-3: .75rem;
@@ -55,7 +55,7 @@ h1 { font-size: 1.35rem; letter-spacing: -.01em; line-height: 1.25; }
 h1 .muted, h2 .muted { font-weight: 500; font-size: .82em; }
 a { color: var(--primary); }
 
-/* Acessibilidade — atalho de foco para o conteúdo */
+/* Acessibilidade â€” atalho de foco para o conteÃºdo */
 .sr-only {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
@@ -68,7 +68,7 @@ a { color: var(--primary); }
   font-weight: 600; text-decoration: none;
 }
 
-/* ── App shell: sidebar (navegação) + conteúdo ───────────────────────── */
+/* â”€â”€ App shell: sidebar (navegaÃ§Ã£o) + conteÃºdo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .casca {
   display: grid;
   grid-template-columns: var(--lateral-largura) 1fr;
@@ -104,12 +104,12 @@ a { color: var(--primary); }
   border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
 .casca-conteudo { min-width: 0; display: flex; flex-direction: column; }
 
-/* Ícones inline (SVG stroke 1.75, 18px — família única, lucide-like) */
+/* Ãcones inline (SVG stroke 1.75, 18px â€” famÃ­lia Ãºnica, lucide-like) */
 .icn { display: inline-block; width: 18px; height: 18px; flex-shrink: 0;
        vertical-align: -.2em; }
 .icn svg { display: block; width: 100%; height: 100%; }
 
-/* ── Topbar ──────────────────────────────────────────────────────────── */
+/* â”€â”€ Topbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .topbar {
   display: flex; align-items: center; gap: var(--space-5);
   background: var(--card); border-bottom: 1px solid var(--border);
@@ -126,7 +126,7 @@ a { color: var(--primary); }
                      border-radius: 8px; }
 .btn-ghost-pequeno:hover { border-color: var(--primary); color: var(--primary); }
 
-/* ── Cabeçalho de página + voltar ────────────────────────────────────── */
+/* â”€â”€ CabeÃ§alho de pÃ¡gina + voltar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-voltar {
   display: inline-flex; align-items: center; gap: var(--space-2);
   align-self: flex-start;
@@ -139,7 +139,7 @@ a { color: var(--primary); }
 .btn-voltar:hover { border-color: var(--primary); color: var(--primary); }
 .pagina-sub { color: var(--muted-foreground); margin: calc(-1 * var(--space-2)) 0 var(--space-5); }
 
-/* ── Conteúdo ────────────────────────────────────────────────────────── */
+/* â”€â”€ ConteÃºdo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .container { max-width: 1180px; width: 100%; margin: 0 auto;
              padding: var(--space-5) var(--space-6) var(--space-7); }
 .card {
@@ -153,7 +153,7 @@ h2 { font-size: 1.05rem; margin: var(--space-5) 0 var(--space-2); }
 .card > h2:first-child { margin-top: 0; }
 h3 { font-size: .95rem; }
 
-/* ── Botões (estados consistentes, ≥40px de altura) ──────────────────── */
+/* â”€â”€ BotÃµes (estados consistentes, â‰¥40px de altura) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   min-height: 40px;
@@ -189,7 +189,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, .btn:focus-vi
 
 label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1); }
 
-/* ── Badges ──────────────────────────────────────────────────────────── */
+/* â”€â”€ Badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .badge {
   display: inline-block;
   padding: .15rem .55rem;
@@ -207,7 +207,7 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
 .badge-em_andamento{ background: var(--status-facial); color: #fff; }
 .badge-encerrada   { background: var(--status-manual); color: #fff; }
 
-/* ── Estrutura geral ─────────────────────────────────────────────────── */
+/* â”€â”€ Estrutura geral â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .muted { color: var(--muted-foreground); font-size: .92rem; }
 .erro  { color: var(--destructive); font-size: .9rem; margin: var(--space-1) 0;
          list-style: none; padding: 0; }
@@ -222,7 +222,7 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
 .alert-erro { background: #FEE2E2; border: 1px solid #FECACA; }
 .alert-erro ul, .alert ul { margin: 0; padding-left: 1.25rem; }
 
-/* ── Tabelas ─────────────────────────────────────────────────────────── */
+/* â”€â”€ Tabelas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .table { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .table th, .table td { text-align: left; padding: .6rem .7rem;
                        border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -246,7 +246,7 @@ details summary { list-style: none; cursor: pointer; }
 details summary::-webkit-details-marker { display: none; }
 .form-manual select { max-width: 160px; display: inline-block; margin-bottom: var(--space-1); }
 
-/* ── Autenticação (guest) ────────────────────────────────────────────── */
+/* â”€â”€ AutenticaÃ§Ã£o (guest) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .auth { background: var(--background); min-height: 100vh; }
 .auth-wrap { max-width: 430px; margin: 0 auto; padding: var(--space-7) var(--space-4) var(--space-6);
              display: flex; flex-direction: column; }
@@ -261,7 +261,7 @@ details summary::-webkit-details-marker { display: none; }
 .check { display: flex; align-items: center; gap: var(--space-2); font-weight: 400; margin: var(--space-4) 0; }
 .check input { width: auto; margin: 0; }
 
-/* ── Hero (welcome) ──────────────────────────────────────────────────── */
+/* â”€â”€ Hero (welcome) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero { min-height: 100vh; display: grid; place-items: center;
         background: linear-gradient(135deg, #F0FDF4 65%, #DCFCE7); }
 .hero-inner { max-width: 640px; padding: var(--space-6); text-align: center; }
@@ -271,7 +271,7 @@ details summary::-webkit-details-marker { display: none; }
 .hero-acoes { display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6); }
 .btn-outline-h { border-color: var(--primary); }
 
-/* ── Verificação pública ─────────────────────────────────────────────── */
+/* â”€â”€ VerificaÃ§Ã£o pÃºblica â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .resultado { font-size: clamp(1.6rem, 3vw, 2.1rem); letter-spacing: .06em; }
 .resultado-valido         { color: var(--status-aprovado); }
 .resultado-expirado       { color: var(--status-recusado); }
@@ -283,13 +283,13 @@ details summary::-webkit-details-marker { display: none; }
 .qr { display: block; margin: var(--space-4) auto; border: 1px solid var(--border);
       padding: .4rem; border-radius: var(--radius); background: #fff; }
 
-/* ── Termo ───────────────────────────────────────────────────────────── */
+/* â”€â”€ Termo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .termo-card { max-width: none; }
 .termo-conteudo { background: var(--muted); border-radius: var(--radius);
                   padding: var(--space-4); font-size: .92rem; line-height: 1.65;
                   max-height: 280px; overflow: auto; margin-bottom: var(--space-4); }
 
-/* ——— Bloco RH (RF10–RF13/RF18–RF20/RF28) ——— */
+/* â€”â€”â€” Bloco RH (RF10â€“RF13/RF18â€“RF20/RF28) â€”â€”â€” */
 .form-inline { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
 .form-inline select, .form-inline input[type="text"] { min-width: 0; flex: 0 1 auto; max-width: 30rem; }
 .form-edicao { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); align-items: center; }
@@ -301,7 +301,7 @@ details summary::-webkit-details-marker { display: none; }
 .campo-busca { max-width: 340px; margin-left: auto; }
 .campo-busca::placeholder { color: var(--muted-foreground); }
 
-/* Formulário vertical (verificar) e grid (novo usuário) */
+/* FormulÃ¡rio vertical (verificar) e grid (novo usuÃ¡rio) */
 .form-vertical input { margin-bottom: var(--space-4); }
 .btn-bloco { width: 100%; }
 .grid-formulario { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3) var(--space-4); margin-bottom: var(--space-3); }
@@ -336,7 +336,7 @@ details summary::-webkit-details-marker { display: none; }
 .form-inline-vertical { display: flex; flex-direction: column; gap: var(--space-2); }
 .form-inline-vertical input, .form-inline-vertical textarea { width: 100%; }
 
-/* ── Responsivo: sidebar vira faixa horizontal rolável ───────────────── */
+/* â”€â”€ Responsivo: sidebar vira faixa horizontal rolÃ¡vel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 960px) {
   .casca { grid-template-columns: 1fr; }
   .lateral {
@@ -356,3 +356,35 @@ details summary::-webkit-details-marker { display: none; }
   .linha-aula { flex-direction: column; align-items: flex-start; }
   .topbar { padding: .7rem var(--space-4); }
 }
+
+/* ---- Reconhecimento facial (cÃ¢mera) â€” RF03 ---- */
+#rec-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(6, 20, 12, .72);
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--space-4);
+}
+.rec-caixa {
+  background: var(--superficie, #fff); color: inherit;
+  border-radius: 14px; padding: var(--space-5);
+  width: min(460px, 100%); box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+.rec-caixa h3 { margin: 0 0 var(--space-1); }
+.rec-caixa .mini { margin: 0 0 var(--space-3); color: var(--muted, #6b7280); }
+.rec-cena {
+  position: relative; overflow: hidden;
+  border-radius: 12px; background: #0b1f14; margin-bottom: var(--space-3);
+}
+.rec-video, #rec-video { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transform: scaleX(-1); }
+.rec-numero {
+  position: absolute; top: 10px; right: 12px;
+  font-size: 1.6rem; font-weight: 700; line-height: 1;
+  padding: .45rem .7rem; border-radius: 999px;
+  background: rgba(21, 128, 61, .88); color: #fff;
+}
+.rec-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+.rec-flash-agora { opacity: .85; }
+.rec-status { text-align: center; font-weight: 600; margin: 0 0 var(--space-3); color: var(--verde, #15803d); }
+.rec-status-erro { color: #b91c1c; }
+
+#rec-overlay[hidden] { display: none; }

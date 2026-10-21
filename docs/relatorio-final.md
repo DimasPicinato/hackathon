@@ -514,6 +514,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** widget incluído nos layouts `portal` (dashboard, RH, Admin, conta) e `app` (telas de conta), somando-se às páginas públicas (welcome, login, `/verificar` e resultado); teste feature novo confirma o widget no portal logado (RH) e a suíte fecha em **100 testes / 331 asserções**; RF29 e o design (`docs/design-assistente-ia.md`) atualizados — o widget segue público e não lê a sessão do usuário.
 
+> **P-48 · Simulação de câmera no reconhecimento facial (branch `reconhecimento-facial`)**
+> "Na branch reconhecimento-facial, adicione o reconhecimento facial via câmera do navegador, mesmo que simples — ou simule: simule com câmera o reconhecimento… e faça dar erro, porque não cadastramos nossos rostos."
+>
+> **Resultado:** overlay de **câmera real** (`getUserMedia`) em todo `form[data-facial]` (portal do colaborador e chamada do instrutor): abertura da câmera, contagem 3‑2‑1, captura com flash e consulta ao "cadastro biométrico" — e **recusa sempre**, pois as contas do seed não têm rosto cadastrado: "Rosto não reconhecido — melhor similaridade 34‑52% (limiar 85)" com dica por papel ("use a homologação manual" / instrutor registra), sem navegar e sem registrar (o POST facial nunca é disparado). Imagem da câmera **não é armazenada** (não sai do navegador); degradacão graciosa sem câmera/permissão (mensage de erro, nenhum registro); bug pegado no E2E: overlay declarado após o `<script>` fazia `getElementById` → null → saída silenciosa → submit nativo que registrava presença (movido antes do script); flash duplicidade foi limpo sem código de requisito; **100/331 verde**, E2E comprovado (simulação com `MediaStream` falso e fallback de câmera negada).
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -606,8 +611,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 24. **Assistente de IA público implementado ponta a ponta** (P-44) — runtime OpenCode em contêiner, widget nas páginas públicas, auditoria só do Admin, 98/325 verde — 21/10 12h10–13h45.
 25. **Domínio público alterado para http://** (P-45) — 21/10 13h30–13h36.
 26. **Assistente estável em produção + widget em todas as telas** (P-46/P-47) — timeout 100 s com retry de sessão, widget no portal logado, 100/331 verde — 21/10 14h05–14h35.
+27. **Simulação de câmera no reconhecimento facial** (P-48) — branch `reconhecimento-facial` — 21/10 15h35–16h08.
 
-## §9. Diário de bordo (`journey-log.md`, 45 sessões)
+## §9. Diário de bordo (`journey-log.md`, 46 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -668,8 +674,9 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 
 - **Nº 44 · 13h30–13h36 — Configuração:** domínio público passa a `http://` — defaults `APP_URL` do compose (app + scheduler) e docs vivos atualizados; conferido que nenhum middleware força HTTPS (QR e e-mails seguem o valor configurado). ✔
 - **Nº 45 · 14h05–14h35 — Código:** fallback do assistente em produção diagnosticado (primeira chamada estourava 60 s; modelo free responde em ~20 s) e corrigido com **timeout de 100 s** + retry só para falhas rápidas (sessão do runtime morta), com teste de regressão; **widget incluído em todas as telas** (layouts `portal` e `app`, além das públicas), teste do portal logado e RF29/design atualizados; **100/331 verde**, deploy validado no domínio (3/3 `ok`). ✔
+- **Nº 46 · 15h35–16h08 — Código (branch `reconhecimento-facial`):** simulação de câmera no reconhecimento facial — overlay de câmera real (`getUserMedia`), contagem 3-2-1, captura com flash; **como as contas não têm rosto cadastrado, a leitura sempre fica abaixo do limiar** (similaridade 34–52 ‹ 85) e recusa, orientando para a homologação manual; bug pegado no teste (overlay depois do `<script>` → saída silenciosa → submit nativo) e flash "(RF16)" no backend limpo; **100/331 verde**, E2E comprovado (sem navegação, sem registro). ✔
 
-*Última atualização do diário: 21/10/2026, 14h40.*
+*Última atualização do diário: 21/10/2026, 16h09.*
 
 ## §10. Estado final e evidências
 

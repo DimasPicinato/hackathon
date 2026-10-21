@@ -116,7 +116,7 @@ class PresencaService
             Auditoria::registrar('presenca_duplicada', $aula,
                 ['colaborador' => $colaborador->matricula], $atorId);
             throw ValidationException::withMessages([
-                'duplicidade' => 'Presença já registrada nesta aula para essa pessoa (RF16).',
+                'duplicidade' => 'Presença já registrada nesta aula para essa pessoa.',
             ]);
         }
     }

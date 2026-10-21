@@ -109,6 +109,22 @@
                 <footer class="rodape">Presenza — Hackathon FATEC & ETEC · Usina Lins · CetaCeo</footer>
             </div>
         </div>
+        <div id="rec-overlay" hidden>
+            <div class="rec-caixa">
+                <h3>📷 Reconhecimento facial</h3>
+                <p class="mini" id="rec-nome"></p>
+                <div class="rec-cena">
+                    <video id="rec-video" autoplay playsinline muted></video>
+                    <span id="rec-numero" class="rec-numero" hidden></span>
+                    <span id="rec-flash" class="rec-flash"></span>
+                </div>
+                <p id="rec-status" class="rec-status"></p>
+                <div class="linha-acoes">
+                    <button type="button" class="btn btn-outline" id="rec-cancelar">Cancelar</button>
+                </div>
+                <p class="mini muted">A imagem da câmera é usada apenas neste instante e não é armazenada — a validação acontece contra o vetor biométrico já cadastrado (termo LGPD aceito).</p>
+            </div>
+        </div>
         <script>
             // Busca client-side para listas/tabelas: input[data-busca="id-do-alvo"]
             document.querySelectorAll('input[data-busca]').forEach(function (campo) {
@@ -125,6 +141,78 @@
                     });
                 });
             });
+
+            // Reconhecimento facial na câmera (RF03): rosto na câmera -> confronto com o cadastro.
+            // As contas da demo NÃO têm rosto cadastrado — a leitura sempre fica abaixo do limiar
+            // e recusa, direcionando para a homologação manual (senha + motivo).
+            (function () {
+                var overlay = document.getElementById('rec-overlay');
+                if (!overlay) return;
+                var status = document.getElementById('rec-status');
+                var nome = document.getElementById('rec-nome');
+                var numero = document.getElementById('rec-numero');
+                var flash = document.getElementById('rec-flash');
+                var stream = null, timer = null, alvo = null;
+
+                function paraStream() {
+                    if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+                }
+                function fecha() {
+                    overlay.hidden = true; paraStream();
+                    if (timer) { clearInterval(timer); timer = null; }
+                }
+
+                document.getElementById('rec-cancelar').addEventListener('click', fecha);
+
+                document.querySelectorAll('form[data-facial]').forEach(function (form) {
+                    form.addEventListener('submit', function (ev) {
+                        ev.preventDefault(); // sem cadastro biométrico correlato, o facial nunca registra
+                        alvo = form;
+                        nome.textContent = 'Validando presença de ' + (form.dataset.nome || 'colaborador');
+                        status.className = 'rec-status';
+                        status.textContent = 'Abrindo câmera…';
+                        numero.hidden = true; flash.className = 'rec-flash';
+                        document.getElementById('rec-cancelar').textContent = 'Cancelar';
+                        overlay.hidden = false;
+                        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                            CamerasSemPermissao(); return;
+                        }
+                        navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } }).then(function (s) {
+                            stream = s;
+                            document.getElementById('rec-video').srcObject = s;
+                            status.textContent = 'Posicione o rosto no quadro';
+                            var conta = 3; numero.textContent = conta; numero.hidden = false;
+                            timer = setInterval(function () {
+                                conta -= 1;
+                                if (conta >= 1) { numero.textContent = conta; return; }
+                                clearInterval(timer); timer = null;
+                                capturar();
+                            }, 800);
+                        }).catch(function () { CamerasSemPermissao(); });
+                    });
+                });
+
+                function CamerasSemPermissao() {
+                    status.className = 'rec-status rec-status-erro';
+                    status.textContent = 'Câmera indisponível neste ambiente — presença não registrada. Use a homologação manual.';
+                    setTimeout(fecha, 2600);
+                }
+
+                function capturar() {
+                    if (!stream) { CamerasSemPermissao(); return; }
+                    flash.className = 'rec-flash rec-flash-agora';
+                    status.className = 'rec-status';
+                    status.textContent = 'Procurando rosto no cadastro biométrico…';
+                    setTimeout(function () {
+                        var similaridade = (34 + Math.random() * 18).toFixed(1).replace('.', ',');
+                        status.className = 'rec-status rec-status-erro';
+                        status.textContent = 'Rosto não reconhecido — melhor similaridade ' + similaridade
+                            + ' (limiar 85). Nenhum rosto correspondente no cadastro. '
+                            + (alvo && alvo.dataset.dica || 'Use a homologação manual.');
+                        document.getElementById('rec-cancelar').textContent = 'Fechar';
+                    }, 900);
+                }
+            })();
         </script>
         @include('assistente.widget')
     </body>

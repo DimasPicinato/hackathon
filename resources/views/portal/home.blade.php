@@ -121,7 +121,7 @@
             </div>
             <div class="linha-acoes">
                 @if ($aula->estaAtiva() && $inscricao->status === 'reservada')
-                    <form method="POST" action="{{ route('portal.presenca.facial') }}">@csrf
+                    <form method="POST" action="{{ route('portal.presenca.facial') }}" data-facial data-nome="{{ $user->name }}" data-dica="Peça a um instrutor para registrar sua presença por homologação manual.">@csrf
                         <input type="hidden" name="aula_id" value="{{ $aula->id }}">
                         <button class="btn btn-accent">📷 Validar presença agora (facial)</button>
                     </form>

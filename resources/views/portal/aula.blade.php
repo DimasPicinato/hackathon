@@ -67,7 +67,7 @@
                             <details>
                                 <summary class="btn btn-outline btn-pequeno">Registrar presença ▾</summary>
                                 <div class="acao-chamada">
-                                    <form method="POST" action="{{ route('portal.aula.presenca.facial', $aula) }}" class="inline">@csrf
+                                    <form method="POST" action="{{ route('portal.aula.presenca.facial', $aula) }}" class="inline" data-facial data-nome="{{ $pessoa->name }}">@csrf
                                         <input type="hidden" name="colaborador_id" value="{{ $pessoa->id }}">
                                         <button class="btn btn-accent btn-pequeno">📷 Reconhecimento facial</button>
                                     </form>

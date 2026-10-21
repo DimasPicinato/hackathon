@@ -674,4 +674,23 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 21/10/2026 14h40 — gerado pela skill `registro-hackathon`._
+## Nº 46 · CÓDIGO · Simulação de câmera no reconhecimento facial (branch `reconhecimento-facial`)
+
+- **Quando:** 21/10/2026 15h35 → 16h08
+- **O que foi feito:**
+  - Time pediu reconhecimento via **câmera do navegador, simulado**: "veja uma forma rápida… ou simule com câmera… e faça dar erro, porque não cadastramos nossos rostos";
+  - **Overlay de câmera real** (`getUserMedia`) no layout do portal, ligado a todo `form[data-facial]` (botão facial do colaborador na home e da chamada do instrutor): "Posicione o rosto no quadro" → contagem **3‑2‑1** → captura com efeito de flash → "Procurando rosto no cadastro biométrico…" → **recusa sempre**: "Rosto não reconhecido — melhor similaridade 34‑52% (limiar 85). Nenhum rosto correspondente no cadastro." + dica por papel (`data-dica`: colaborador → peça homologação ao instrutor; instrutor → use a homologação manual);
+  - **O formulário facial nunca é enviado** (preventDefault em todo submit de `data-facial`) — a decisão de registrar passa pela homologação manual (senha + motivo), que é a feature real antifraude;
+  - Imagem da câmera **não sai do navegador** (zero armazenamento — coerente com LGPD); degradação graciosa sem câmera/permissão/HTTPS (`rec-status-erro`, fecha sozinho);
+  - **Bug pegado no E2E** (agent-browser): a `<div id="rec-overlay">` estava **depois** do `<script>` → `getElementById` null → `return` silencioso → nenhum listener anexado → **submit nativo registrava presenças fantasma** (Alexandre/Fabrício/Leandro); movido para **antes** do script + `#rec-overlay[hidden]{display:none}` (o `display:flex` anulava o `hidden`); presenças/auditorias fantasma apagadas do banco (transação única em `-c` com 2 statements tinha rolado tudo no erro — lição);
+  - Flash de duplicidade em `PresencaService` limpo ("(RF16)" removido — regra da sessão 38);
+  - Teste completo com `MediaStream` falso: contagem → captura → similaridade 36,4 → **sem navegação, sem registro** ✔; banco intacto (3 presenças na aula 3).
+- **Artefatos:** `resources/views/layouts/portal.blade.php`, `resources/views/portal/home.blade.php`, `resources/views/portal/aula.blade.php`, `public/css/app.css`, `app/Services/PresencaService.php`
+- **Decisões / por quê:** a câmera dá a experiência visual do RF03 sem depender de enrollment real; a recusa modelada (similaridade < limiar) é a história honesta para a demo e leva naturalmente à homologação manual; simulação inteira no cliente (_facade_ de servidor intacta — 100/331).
+- **Prompts-chave:** "na branch reconhecimento-facial, adicione o reconhecimento facial corretamente usando a camera via navegador… ou então simule… faça com que sempre dê erro porque não cadastramos nossos rostos" — polido no relatório §6 (P-48).
+- **Resultados:** suíte **100 testes / 331 asserções verde**; E2E no navegador comprovando recusa sem registro; UI nos tokens do design system.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 16h09 — gerado pela skill `registro-hackathon`._
