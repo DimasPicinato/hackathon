@@ -226,4 +226,22 @@
 
 ---
 
-_Última atualização: 20/10/2026 23:28 — gerado pela skill `registro-hackathon`._
+## 17 · CÓDIGO · Domínio completo: migrations, models, enums e seed (SEED01–03)
+
+- **Quando:** 20/10/2026 23:29 → 23:38
+- **O que foi feito:**
+  - **5 migrations do domínio** cobrindo RF01–RF28: identidade (setores, extensão de `users` com matrícula/papéis acumuláveis em jsonb, termos LGPD versionados + aceites, biometrias com **vetor pgvector 128d**), treinamento (treinamentos, aulas com janela do instrutor, inscrições nominais com fila, motivos de homologação, presenças com **unique anti-fraude 1/pessoa/aula**), tickets (tipos, tickets, justificativas alteráveis), certificados (imutável por versão + log de verificações públicas) e sistema (notificações in-app, configurações Admin, auditorias);
+  - **8 enums** de domínio (Papel, Turno, MetodoPresenca, StatusAula, StatusInscricao, StatusJustificativa, StatusTicket, ResultadoVerificacao);
+  - **18 models** com relações + helpers de regra de negócio (ex.: `Aula::estaAtiva()` = janela facial do RF03; `Certificado::resultadoVerificacao()` = VÁLIDO/EXPIRADO do RF21/RF22; `User::temPapel()` = RF02; `Auditoria::registrar()` = RNF01);
+  - **Seeders SEED01–03**: 44 contas (34 colaboradores fictícios + admin/RH×2/instrutores×2 incl. externo/líderes de 5 setores) **todas com embedding biométrico fake** para a fachada da demo; catálogos populados (termo v1.0, 3 motivos, 3 tipos de ticket, configurações SMTP);
+  - **Cenários de demo**: NR10 concluído (presenças facial+manual, 3 certificados VÁLIDOS), NR35 em andamento (aula 1 encerrada, **aula 2 ATIVA hoje** com fila de espera nominal, falta com ticket+justificativa pendente, homologação auditada), Segurança da Informação concluído (**certificado PZ-2024-000087 EXPIRADO** para a verificação pública) + log de 3 verificações.
+- **Artefatos:** `database/migrations/2026_10_20_1000*-{1..5}_*.php`, `app/Enums/*` (8), `app/Models/*` (17 novos + `User` estendido), `database/seeders/*` (5)
+- **Decisões / por quê:** inscrições na **aula** (não no treinamento) — RF28 conta "vagas/convocados/presentes/faltas por sessão" e elegibilidade do RF18 é presença em todas as aulas; papéis como jsonb na conta (RF02 acumulável, 1 query a menos que pivô); anti-fraude do RF16 garantida por unique no banco, não só no código.
+- **Correções no caminho:** pluralizer do Eloquent não pluraliza português (`setor`→`setors`) → `$table` explícito nos models com terminação -ão/-es; colunas faltantes/parse error corrigidos no ato.
+- **Prompts-chave:** continuação direta do "dá play e manda bala" (sessão 16) — nenhuma dúvida material de aprovação AT01; divergências menores (Laravel 13/PHP 8.4) flaggadas no `stack.md`.
+- **Resultados:** `migrate:fresh --seed` verde no PostgreSQL: 44 users, 39 inscrições, 22 presenças, 4 certificados (2 estados demo validados via tinker), 3 verificações, 44 biometrias, 3 auditorias; aula ativa localizada ("Aula 2 — práticas em altura").
+- **Status:** Concluído — próximo passo: telas/portais (login+aceite do termo → portais por papel → chamada com fachada biométrica → verificação pública com QR, demo "wow").
+
+---
+
+_Última atualização: 20/10/2026 23:38 — gerado pela skill `registro-hackathon`._

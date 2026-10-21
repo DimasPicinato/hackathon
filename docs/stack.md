@@ -51,3 +51,17 @@ docker-compose.yml            # serviços (dev)
 docker-compose.homolog.yml    # estende serviços + app/scheduler buildados
 .env                          # dev: localhost | homolog usa env fixo do compose
 ```
+
+## 5. Atualização de execução (sessões 16–17 · 20/10/2026)
+
+Ajustes constatados ao rodar o scaffold — arquitetura e topologia **mantidas conforme Q35/AT02**:
+
+| Item | Decidido (Q35) | Executado | Por quê |
+|---|---|---|---|
+| PHP | 8.3 | **8.4** (`docker/php/Dockerfile`) | Esqueleto Laravel atual exige PHP ≥ 8.4.1 |
+| Laravel | 11 | **13** (`^13.17`, via `composer create-project` atual) | API usada no MVP (Blade/Eloquent/migrations) é idêntica; downgrades possíveis, mas somariam risco à j curta |
+| Porta do PG no host | 5432 | **5433** publicada | Evita conflito com PG local, se houver |
+| `.env` dev (hosts) | localhost | `host.docker.internal:5433/1025` | O app dev roda em contêiner; serviços continuam acessíveis via `localhost` a partir do host |
+| `MAIL_*` | SMTP | `smtp` → **Mailpit** no dev | Captura de e-mails p/ conferir RF23–25; conta real entra no painel Admin (RF23) |
+
+Validação: `migrate:fresh --seed` verde em PostgreSQL/pg16 — 44 contas com embeddings, NR10 válido, **NR35 com aula ativa e fila de espera**, certificado expirado para a demo de verificação pública (PZ-2024-000087).
