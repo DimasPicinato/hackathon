@@ -5,8 +5,8 @@
 > evitado, mas é permitido quando tornar a história do projeto mais clara
 > para a apresentação à banca. Último registro no rodapé.
 
-| Projeto escolhido                                                    | Integrantes | Início     | Status       |
-| -------------------------------------------------------------------- | ----------- | ---------- | ------------ |
+| Projeto escolhido                                                    | Integrantes                                                                                                                                                                                                                                                      | Início     | Status       |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------ |
 | **P1 — Gestão de Treinamentos Internos (RH)** (decidido 20/10/15:33) | Dimas Matheus Gomes Picinato, Sara Silva Marsola, João Marcel dos Santos Silva (principais); Bruno Miranda Barcelos Tremeschin Pereira Melo, João Lucas Martins Pazin, Matheus Roberto Baraúna da Silva, Matheus Pereira Jesus, Lucas Yuuji Murayama (coautores) | 20/10/2026 | em andamento |
 
 ---
@@ -138,9 +138,19 @@
 - **Resultados:** `docs/requisitos-p1.md` aprovado pelo time; base pronta para mockups e esqueleto.
 - **Status:** Concluído.
 
+## 11 · DISCUSSÃO · Avaliação de maturidade dos requisitos e plano de sequência
+
+- **Quando:** 20/10/2026 21:25
+- **O que foi feito:** avaliação de confiança do conjunto levantado (`docs/requisitos-p1.md`) vs. riscos de execução.
+- **Artefatos:** `docs/requisitos-p1.md`
+- **Decisões / por quê:** requisitos considerados **maduros** (ciclo completo, RF/RNF rastreáveis, ambiguidades resolvidas); pendências não-bloqueantes mapeadas: SMTP do time (`.env` na demo), fotos dos integrantes para o seed biométrico, direção visual para mockups e ensaio do simulador no notebook da banca. Fator-limite restante: prazo de desenvolvimento (encerra 21/10 14h). Sequência proposta: arquitetura enxuta → seed/esqueleto → portais → chamada+certificado → verificação pública (momento "wow").
+- **Prompts-chave:** pergunta do time sobre confiança em seguir a partir dos requisitos.
+- **Resultados:** sequência de execução acordada a confirmar; nenhum requisito crítico pendente.
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 21:20 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 21:25 — gerado pela skill `registro-hackathon`._
 
 ---
 
