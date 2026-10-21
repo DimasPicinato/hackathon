@@ -24,6 +24,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // RF05: conta desativada pelo RH não entra no portal
+        $desativada = \App\Models\User::query()
+            ->where('email', $request->email)
+            ->where('ativo', false)
+            ->exists();
+
+        if ($desativada) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'Conta desativada — procure o RH da Usina.',
+            ]);
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();

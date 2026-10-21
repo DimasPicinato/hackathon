@@ -351,4 +351,26 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:49 — gerado pela skill `registro-hackathon`._
+## 26 · CÓDIGO · RF10 feito real: colaborador abre o próprio ticket (com notificação ao RH)
+
+- **Quando:** 21/10/2026 01:15 → 01:27
+- **O que foi feito:**
+  - Form "Abrir ticket" na home (todos os papéis): tipo do colaborador catálogo (ativos apenas — RF26 desativa e o form recusa) + treinamento opcional + texto livre obrigatório (RF11);
+  - Auditoria `ticket_aberto` + **IDs também notificam cada RH ativo** (`ticket_novo`, RF24 — duplicado por papel, então 2 RHs = 2 notificações, testado);
+  - Interrupção do ambiente registrada com transparência: **Docker Desktop e mecanismo caíram com a reinicialização** — religamos o Docker Desktop pelo próprio molde (AT03: instrução, não instalação) e a topologia homolog re-subiu (`compose up -d`), banco e um reapareceram.
+- **Testes:** `AbrirTicketTest` (3): abre + 2 RHs notificados, tipo inativo recusado (integra com RF26), sem texto recusado.
+- **Resultados:** parcial verde (3/13) na primeira rodada da sessão.
+## 27 · CÓDIGO · RF07 e RF05 fechados: catálogo de treinamentos e CRUD de usuários
+
+- **Quando:** 21/10/2026 01:28 → 02:05
+- **O que foi feito:**
+  - **RF07** (`TreinamentosController` + view): RH/Admin criam/editam treinamentos (nome, carga, validade, setor) e **adicionam/ajustam aulas** (título, data, vagas, local; ordem calculada); **Líder cria apenas para o próprio setor** (setor imposto) e não toca treinamentos de fora (403); aula `em_andamento`/`encerrada` **não é re-agendada pela gestão** — a janela é do instrutor (RF06), abort 422 explicativo; auditoria em tudo;
+  - **RF05** (`UsuariosController` + view): RH/Admin **criam contas** (nome, e-mail, matrícula, setor, turno, **papéis acumuláveis**), **editam**, **desativam/reativam** e RH redefine senha; **Líder para liderados apenas redefinir** (escopo 403 fora); conta desativada **não loga** (guard no login: "Conta desativada — procure o RH");
+  - Notificação de boas-vindas e de senha redefinida (RF24); auditorias `usuario_criado/ajustado/desativado/reativado/senha_redefinida`;
+  - Bugs pegos pelos testes antes de ir pro verde: comparação de enum com string (`status !== 'agendada'` comparado a instância) e `Enum::is()` inexistente em enums nativos PHP.
+- **Testes:** `TreinamentosTest` (5) + `UsuariosTest` (5): criação com hash real de senha (não HLER claro), desativado recusa login (guest), desativar/reativar com trilha, líder fora do escopo 403 em senha e treinamento, colaborador 403.
+- **Resultados:** **suíte completa OK — 89 testes, 294 asserções, verde.** Faltam: matriz de conformidade (RF28 extra) para adjetivo 28/28 + README final.
+
+---
+
+_Última atualização: 21/10/2026 02:05 — gerado pela skill `registro-hackathon`._

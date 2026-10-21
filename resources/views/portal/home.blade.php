@@ -76,6 +76,8 @@
     </div>
     <nav class="form-inline">
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.reservas') }}">Reservas do time (RF08)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.treinamentos') }}">Treinamentos (RF07)</a>
+        <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.usuarios') }}">Usuários (RF05)</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.tickets') }}">Tickets ({{ $pendentes['tickets']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.justificativas') }}">Justificativas ({{ $pendentes['justificativas']->count() }})</a>
         <a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.certificados') }}">Certificados</a>
@@ -166,6 +168,26 @@
             @endif
         </table>
     </div>
+</div>
+
+<div class="card">
+    <h2>Abrir ticket <span class="muted">(RF10 — cancelar vaga, justificar falta, informação)</span></h2>
+    <form method="POST" action="{{ route('portal.ticket.abrir') }}" class="form-inline">@csrf
+        <select name="tipo_ticket_id" required>
+            <option value="">Tipo…</option>
+            @foreach (\App\Models\TipoTicket::where('ativo', true)->orderBy('nome')->get() as $tipo)
+                <option value="{{ $tipo->id }}">{{ $tipo->nome }}</option>
+            @endforeach
+        </select>
+        <select name="treinamento_id">
+            <option value="">Treinamento (opcional)…</option>
+            @foreach (\App\Models\Treinamento::orderBy('nome')->get() as $treinamento)
+                <option value="{{ $treinamento->id }}">{{ $treinamento->nome }}</option>
+            @endforeach
+        </select>
+        <input type="text" name="texto" placeholder="Explique em uma linha…" maxlength="1000" required>
+        <button class="btn btn-primary btn-pequeno">Abrir ticket</button>
+    </form>
 </div>
 
 <div class="card">

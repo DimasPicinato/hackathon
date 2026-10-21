@@ -9,7 +9,9 @@ use App\Http\Controllers\Rh\ConfiguracoesController;
 use App\Http\Controllers\Rh\JustificativasController;
 use App\Http\Controllers\Rh\RelatoriosController;
 use App\Http\Controllers\Rh\ReservasController;
+use App\Http\Controllers\Rh\TreinamentosController;
 use App\Http\Controllers\Rh\TicketsController;
+use App\Http\Controllers\Rh\UsuariosController;
 use App\Http\Controllers\TermoController;
 use App\Http\Controllers\VerificacaoPublicaController;
 use App\Models\Verificacao;
@@ -31,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('termo')->group(function () {
         Route::get('/portal', [PortalController::class, 'home'])->name('portal');
         Route::get('/dashboard', fn () => redirect()->route('portal'))->name('dashboard'); // compat Breeze/reset
+
+        // RF10 — abrir ticket (qualquer pessoa logada; RH resolve depois)
+        Route::post('/portal/tickets', [PortalController::class, 'abrirTicket'])->name('portal.ticket.abrir');
 
         // RF14.a — presença facial autônoma do colaborador
         Route::post('/portal/presenca/facial', [ChamadaController::class, 'facialAutonoma'])
@@ -73,6 +78,20 @@ Route::middleware('auth')->group(function () {
             Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
             Route::get('/relatorios/pessoas/csv', [RelatoriosController::class, 'csvPessoas'])->name('relatorios.pessoas');
             Route::get('/relatorios/sessoes/{aula}/csv', [RelatoriosController::class, 'csvSessao'])->name('relatorios.sessao');
+
+            // RF07 — catalogo de treinamentos e aulas (RH/Admin; líder no próprio setor)
+            Route::get('/treinamentos', [TreinamentosController::class, 'index'])->name('treinamentos');
+            Route::post('/treinamentos', [TreinamentosController::class, 'criar'])->name('treinamentos.criar');
+            Route::patch('/treinamentos/{treinamento}', [TreinamentosController::class, 'atualizar'])->name('treinamentos.atualizar');
+            Route::post('/treinamentos/{treinamento}/aulas', [TreinamentosController::class, 'criarAula'])->name('treinamentos.aula.criar');
+            Route::patch('/aulas/{aula}', [TreinamentosController::class, 'atualizarAula'])->name('treinamentos.aula.atualizar');
+
+            // RF05 — CRUD de usuários (RH/Admin; líder: só senha dos liderados)
+            Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
+            Route::post('/usuarios', [UsuariosController::class, 'criar'])->name('usuarios.criar');
+            Route::patch('/usuarios/{usuario}', [UsuariosController::class, 'atualizar'])->name('usuarios.atualizar');
+            Route::post('/usuarios/{usuario}/alternar-ativo', [UsuariosController::class, 'alternarAtivo'])->name('usuarios.alternar');
+            Route::post('/usuarios/{usuario}/senha', [UsuariosController::class, 'redefinirSenha'])->name('usuarios.senha');
 
             // RF26 — configurações (Admin/RH)
             Route::get('/configuracoes', [ConfiguracoesController::class, 'index'])->name('configuracoes');
