@@ -126,5 +126,6 @@
                 });
             });
         </script>
+        @include('assistente.widget')
     </body>
 </html>

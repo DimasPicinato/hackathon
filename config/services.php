@@ -42,7 +42,8 @@ return [
         'senha' => env('ASSISTENTE_SENHA', ''),
         'modelo' => env('ASSISTENTE_MODELO', 'opencode/big-pickle'),
         'agente' => env('ASSISTENTE_AGENTE', 'atende'),
-        'timeout' => (int) env('ASSISTENTE_TIMEOUT', 60),
+        'timeout' => (int) env('ASSISTENTE_TIMEOUT', 100),
+        'tentativas' => (int) env('ASSISTENTE_TENTATIVAS', 2),
     ],
 
 ];

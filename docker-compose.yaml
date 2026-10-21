@@ -85,6 +85,9 @@ services:
       ASSISTENTE_URL: http://assistente:4096
       ASSISTENTE_SENHA: ${OPENCODE_SERVER_PASSWORD:-presenza-assistente-demo}
       ASSISTENTE_MODELO: opencode/big-pickle
+      # O modelo free pode levar 60-100 s na primeira resposta (cold start/variação);
+      # sem retry em timeout (repetir só dobraria a espera) — ver RuntimeAssistente.
+      ASSISTENTE_TIMEOUT: "100"
     depends_on:
       postgres:
         condition: service_healthy

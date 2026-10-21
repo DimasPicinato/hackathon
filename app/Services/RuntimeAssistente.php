@@ -26,6 +26,33 @@ class RuntimeAssistente
     /** Cria (ou reaproveita) a sessão do runtime para a thread da aba e responde. */
     public function responder(string $sessao, string $pergunta): string
     {
+        $tentativas = max(1, (int) config('services.assistente.tentativas', 2));
+        $chave = $this->chave($sessao);
+
+        for ($tentativa = 1; $tentativa <= $tentativas; $tentativa++) {
+            $inicio = microtime(true);
+
+            try {
+                return $this->tentarResponder($sessao, $pergunta);
+            } catch (\Throwable $e) {
+                // Sessão do runtime pode ter morrido (restart/deploy): descarta o cache.
+                Cache::forget($chave);
+
+                // Só repete falhas RÁPIDAS (sessão inválida, 401/404). Timeout/latência
+                // do modelo não se resolve repetindo — repetir só dobraria a espera.
+                $rapida = (microtime(true) - $inicio) < 15;
+
+                if (! $rapida || $tentativa === $tentativas) {
+                    throw $e;
+                }
+            }
+        }
+
+        throw new \RuntimeException('Runtime sem resposta.');
+    }
+
+    private function tentarResponder(string $sessao, string $pergunta): string
+    {
         $sessaoRuntime = $this->sessaoRuntime($sessao);
 
         $this->post("/api/session/{$sessaoRuntime}/prompt", ['text' => $pergunta]);
@@ -41,10 +68,15 @@ class RuntimeAssistente
         return $resposta;
     }
 
+    private function chave(string $sessao): string
+    {
+        return "assistente:sessao:{$sessao}";
+    }
+
     /** Reaproveita a sessão do runtime por thread (cache de 30 min); cria quando necessário. */
     private function sessaoRuntime(string $sessao): string
     {
-        $chave = "assistente:sessao:{$sessao}";
+        $chave = $this->chave($sessao);
 
         $id = Cache::get($chave);
 

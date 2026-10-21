@@ -6,6 +6,7 @@ namespace Tests\Feature;
 use App\Enums\Papel;
 use App\Models\AssistenteMensagem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\Concerns\CriaFixtures;
 use Tests\TestCase;
@@ -86,6 +87,45 @@ class AssistenteTest extends TestCase
         $this->get('/')->assertOk()->assertSee('Assistente Presenza', false);
         $this->get(route('verificar.busca'))->assertOk()->assertSee('Assistente Presenza', false);
         $this->get(route('login'))->assertOk()->assertSee('Assistente Presenza', false);
+    }
+
+    public function test_portal_interno_tambem_exibe_o_widget(): void
+    {
+        $rh = $this->criarRh();
+        $this->aceitarTermo($rh);
+
+        $this->actingAs($rh)
+            ->get(route('portal'))
+            ->assertOk()
+            ->assertSee('Assistente Presenza', false)
+            ->assertSee('/assistente', false); // endpoint público usado pelo widget
+    }
+
+    public function test_falha_rapida_descarta_sessao_morta_e_repete(): void
+    {
+        Cache::put('assistente:sessao:thread-retry', 'ses_morto', now()->addMinutes(30));
+
+        Http::fake([
+            '*/api/session/ses_morto/prompt' => Http::response(['message' => 'sessão não existe'], 404),
+            '*/api/session' => Http::response(['data' => ['id' => 'ses_novo']], 200),
+            '*/api/session/ses_novo/prompt' => Http::response(['data' => ['id' => 'msg_1']], 200),
+            '*/api/experimental/session/ses_novo/wait' => Http::response([], 204),
+            '*/api/session/ses_novo/message' => Http::response(['data' => [
+                ['type' => 'assistant', 'content' => [['type' => 'text', 'text' => 'Resposta após recriar a sessão.']]],
+            ]], 200),
+        ]);
+
+        $this->postJson(route('assistente.responder'), [
+            'sessao' => 'thread-retry',
+            'pergunta' => 'Como funciona a fila?',
+        ])
+            ->assertOk()
+            ->assertJson([
+                'estado' => 'ok',
+                'resposta' => 'Resposta após recriar a sessão.',
+            ]);
+
+        $this->assertSame('ses_novo', Cache::get('assistente:sessao:thread-retry'));
     }
 
     public function test_admin_ve_as_conversas_e_rh_nao(): void

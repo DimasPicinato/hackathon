@@ -34,5 +34,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @include('assistente.widget')
     </body>
 </html>
