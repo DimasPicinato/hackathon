@@ -68,7 +68,8 @@ Aprovação RF01–RF28/RNF01–06 em [`docs/requisitos-p1.md`](docs/requisitos-
 decision log técnico em [`docs/stack.md`](docs/stack.md); identidade visual em [`docs/design-p1.md`](docs/design-p1.md);
 runbook do deploy no Coolify em [`docs/deploy-coolify.md`](docs/deploy-coolify.md);
 transcrição das perguntas de requisitos em [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md);
-evidência cronológica IA (24+ sessões) em [`journey-log.md`](journey-log.md).
+volume de evidência dos prompts (PDF entregue à banca) em [`docs/prompts-ia.pdf`](docs/prompts-ia.pdf) — inclui o anexo com os **53 prompts originais das conversas** ([`docs/prompts-conversas.md`](docs/prompts-conversas.md), extração reproduzível por [`scripts/extrair-prompts-conversas.php`](scripts/extrair-prompts-conversas.php));
+evidência cronológica IA (42 sessões) em [`journey-log.md`](journey-log.md).
 
 ## Testes
 
