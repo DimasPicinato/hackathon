@@ -476,9 +476,24 @@
 - **Artefatos:** `docker/php/Dockerfile`, `.dockerignore`, `docker-compose.yaml`, `README.md`
 - **Decisões / por quê:** imagem autossuficiente elimina a classe inteira de erros de fonte ausente (local = VPS, mesma família de build); WORKDIR `/presenza` afasta qualquer montagem obliqua em `/app`; custo: mudança de código exige rebuild (aprovado — o fluxo de dev segue pelo `docker run` one-off de dev).
 - **Prompts-chave:** log do Coolify com o erro do composer; IA liga o `Could not open input file: artisan` ao bind vazio (não ao código) e troca a estratégia de "runtime install" para "imagem embarcada";
-- **Resultados:** pilha verde local (build + up + smoke 200); envio pendente: push/redeploy na VPS.
-- **Status:** Parcial (redeploy na VPS pendente).
+- **Resultados:** pilha verde local (build + up + smoke 200); **redeploy confirmado pelo time: `https://hackathon.dpicinato.com` respondendo**.
+- **Status:** Concluído.
 
 ---
 
-_Última atualização: 21/10/2026 03:01 — gerado pela skill `registro-hackathon`._
+## Nº 35 · DOCUMENTAÇÃO · Runbook do deploy no Coolify (`docs/deploy-coolify.md`)
+
+- **Quando:** 21/10/2026 03:09
+- **O que foi feito:**
+  - Runbook com os 4 problemas reais do deploy + *gotcha* local (sintoma → causa raiz → ação, com commits `4514fbe`/`3ecf784`/`2e123d2` e referências às issues do Coolify), estado atual da stack, checklist de redeploy e acessos (domínio `hackathon.dpicinato.com`, debug `:18000`, Mailpit `:8025`);
+  - Seção de **prompts-chave polidos** (contexto → objetivo → restrições → formato), cada um com o resultado objetivo (P1 include, P2 porta, P3 domínio, P4 runtime, P5 documentação);
+  - Link no README (bloco de documentação); Nº 34 fechado (deploy confirmado pelo time).
+- **Artefatos:** `docs/deploy-coolify.md`, `README.md`, `journey-log.md`
+- **Decisões / por quê:** runbook e não post de bug: os bloqueios são padrões de plataforma (`include` ignorado, painel na 8000, porta interna no domínio, bind vazio no `up`) — reutilizável em nova VPS/deploy do zero; prompts embutidos pedidos pelo time (alimentação direta do PDF de prompts da banca).
+- **Prompts-chave:** "finalmente funcionou, documente esses problemas que tiveram em questão do docker e as ações para resolver, inclua alguns prompts também na documentação disso" — polido em P5 dentro do próprio runbook;
+- **Resultados:** guia único de recuperação de deploy + evidência de raciocínio para a banca; caminho completo de depuração documentado.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 03:09 — gerado pela skill `registro-hackathon`._

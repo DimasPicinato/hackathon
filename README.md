@@ -64,6 +64,7 @@ Verificação pública (sem login): `http://localhost:18000/verificar` — códi
 
 Aprovação RF01–RF28/RNF01–06 em [`docs/requisitos-p1.md`](docs/requisitos-p1.md);
 decision log técnico em [`docs/stack.md`](docs/stack.md); identidade visual em [`docs/design-p1.md`](docs/design-p1.md);
+runbook do deploy no Coolify em [`docs/deploy-coolify.md`](docs/deploy-coolify.md);
 transcrição das perguntas de requisitos em [`docs/questionario-requisitos-p1.md`](docs/questionario-requisitos-p1.md);
 evidência cronológica IA (24+ sessões) em [`journey-log.md`](journey-log.md).
 
