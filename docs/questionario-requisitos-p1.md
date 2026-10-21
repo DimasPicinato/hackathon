@@ -163,3 +163,20 @@ Documento consolidado: `docs/requisitos-p1.md` · Histórico: `journey-log.md` (
 ## Confirmação final
 
 Time validou o resumo consolidado (após o ajuste acima): `Correto, gera a doc` → requisitos consolidados em `docs/requisitos-p1.md` e aprovados.
+
+---
+
+## Rodada de design (Q31–Q33) — após o documento de requisitos
+
+### Q31 — Paleta de cores
+**Pergunta:** Paleta base para o produto (mesma linguagem em todos os portais e no certificado), candidatas extraídas do dataset da skill `ui-ux-pro-max`.
+**Resposta:** `Agro verde + laranja segurança (recomendado)` — verde `#15803D` + laranja `#EA580C`.
+**Impacto:** `docs/design-p1.md` §2 (paleta) e tokens de status.
+
+### Q32 — Tipografia
+**Resposta:** `Lexend + Source Sans 3 (recomendado)` (legibilidade/a11y; números tabulares).
+**Impacto:** `docs/design-p1.md` §3.
+
+### Q33 — Kit de skills de design/UI-UX
+**Resposta:** `Confirma o kit (recomendado)` — ui-ux-pro-max + frontend-design + ui-styling + design-system + web-design-guidelines; opcionais banner/slides/shadcn/firecrawl-clone.
+**Impacto:** `docs/design-p1.md` §5.

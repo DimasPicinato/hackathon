@@ -160,6 +160,23 @@
 - **Resultados:** verificação positiva — ambas carregam corretamente pelo tool `skill` a partir do diretório global.
 - **Status:** Concluído.
 
+## 13 · DECISÃO · Design system: paleta "Agro verde + laranja segurança", tipografia Lexend/Source Sans 3 e kit de skills
+
+- **Quando:** 20/10/2026 21:45 → 22:11
+- **O que foi feito:**
+  - Estudo das paletas candidatas no dataset da skill `ui-ux-pro-max` (SaaS geral, e-learning, slate industrial, agro/farm tech);
+  - **Decisões (Q31–Q33 do questionário de design, via OpenCode):**
+    - **Paleta**: verde agro `#15803D` (identidade) + laranja de segurança industrial `#EA580C` (ações/alertas NR) + neutros slate + fundo `#F0FDF4` — "a cor da usina e a cor da segurança";
+    - **Tokens de status**: facial `#16A34A`, manual âmbar `#D97706`, APROVADO/RECUSADO, fila, expirado — ligação direta com RF12/RF15/RF17/RF21;
+    - **Tipografia**: **Lexend** (títulos) + **Source Sans 3** (corpo) — Lexend desenhada para legibilidade/a11y (público industrial); números tabulares em tabelas e no código do certificado;
+    - **Kit de skills**: `ui-ux-pro-max` + `frontend-design` + `ui-styling` + `design-system` + `web-design-guidelines` (auditoria pré-banca); opcionais: banner/slides/shadcn/firecrawl-clone (site da usina);
+  - Obs.: Python não instalado nesta máquina — script `--persist` da skill indisponível; tokens transpostos manualmente (fonte: CSV do dataset, leitura direta).
+- **Artefatos:** `docs/design-p1.md`
+- **Decisões / por quê:** identidade agro + cultura de segurança dos NRs geram narrativa forte na banca; acessibilidade como decisão de design visível (Lexend).
+- **Prompts-chave:** "vamos decidir uma paleta de cores e um conjunto de skills para design e UI/UX" — respondido pelo dataset da skill + confirmação em questionário (Q31–Q33).
+- **Resultados:** tokens prontos para os mockups; pendências leves: instalar Python (geração de `design-system/MASTER.md` via script) e verificar cores do site oficial da Usina Lins (alinhamento de marca).
+- **Status:** Concluído.
+
 ---
 
-_Última atualização: 20/10/2026 21:27 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 22:11 — gerado pela skill `registro-hackathon`._
