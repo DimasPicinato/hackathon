@@ -1,11 +1,11 @@
-@extends('layouts.portal')
+﻿@extends('layouts.portal')
 
 @section('titulo', 'Reservas — Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>Reservas nominais <span class="muted">(RF05/RF08 — Líder/RH manda o time)</span></h1>
-@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
 <div class="card">

@@ -3,9 +3,9 @@
 @section('titulo', 'UsuÃ¡rios â€” Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">â† Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>UsuÃ¡rios <span class="muted">(RF05 â€” sem self-service)</span></h1>
-@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
 @if ($souRh)

@@ -1,9 +1,9 @@
-@extends('layouts.portal')
+﻿@extends('layouts.portal')
 
 @section('titulo', 'Relatórios — Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>Relatórios <span class="muted">(RF28)</span></h1>
 
 <div class="card">

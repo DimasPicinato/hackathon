@@ -1,11 +1,11 @@
-@extends('layouts.portal')
+﻿@extends('layouts.portal')
 
 @section('titulo', 'Justificativas — Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>Justificativas de faltas <span class="muted">(RF12–RF13)</span></h1>
-@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
 
 <div class="card">
     <h2>Registro direto pela gestão (RF13 — sem ticket, a qualquer momento)</h2>

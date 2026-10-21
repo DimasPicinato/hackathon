@@ -1,11 +1,11 @@
-@extends('layouts.portal')
+﻿@extends('layouts.portal')
 
 @section('titulo', 'Configurações — Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>Configurações <span class="muted">(RF26 — Admin/RH)</span></h1>
-@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
 @if ($errors->any())<p class="flash-erros">{{ $errors->first() }}</p>@endif
 
 <div class="card">

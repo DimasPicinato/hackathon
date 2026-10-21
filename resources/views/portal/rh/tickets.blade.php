@@ -1,11 +1,11 @@
-@extends('layouts.portal')
+﻿@extends('layouts.portal')
 
 @section('titulo', 'Tickets — Presenza')
 
 @section('conteudo')
-<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>Tickets <span class="muted">(RF10–RF12)</span></h1>
-@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
 
 @forelse ($tickets as $ticket)
     <div class="card">

@@ -8,6 +8,7 @@
 @endphp
 
 @section('conteudo')
+<a class="btn-voltar" href="{{ route('portal') }}"><x-icon nome="seta-esquerda"/> Voltar</a>
 <h1>{{ $aula->treinamento->nome }}</h1>
 <p><strong>{{ $aula->titulo }}</strong>
     <span class="badge badge-{{ $aula->status->value }}">{{ $aula->status->value }}</span>
@@ -40,7 +41,8 @@
             <tr>
                 <td><strong>{{ $pessoa->name }}</strong><br><span class="muted">{{ $pessoa->matricula }}</span></td>
                 <td>
-                    @if ($inscricao->status === 'lista_espera')
+                    @if ($inscricao->status === 'cancelada')
+                        <span class="badge badge-cancelada">cancelada</span>
                     @elseif ($inscricao->status === 'lista_espera')
                         <span class="badge badge-fila">fila · pos. {{ $inscricao->posicao_fila }}</span>
                     @elseif ($inscricao->status === 'reservada')
