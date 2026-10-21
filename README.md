@@ -22,7 +22,8 @@ Hackathon FATEC & ETEC — Usina Lins · Problema 1 (gestão de treinamentos + c
 - **Laravel 13 (PHP 8.4)** + Blade + Alpine.js — sem build de Node (`css` de tokens + Alpine vendido)
 - **PostgreSQL 16 + pgvector** — embeddings de biometria facial (`vector(128)`), fachada simulável para demo (RNF06)
 - **dompdf** (certificados/relatórios) · **php-qrcode** (QR público) · **Mailpit** (e-mails dev)
-- **Testes**: PHPUnit feature no próprio Postgres — `OK: 76 testes, 239 asserções`
+- **Testes**: PHPUnit feature no próprio Postgres — `OK: 93 testes, 305 asserções`
+- **28/28 RFs implementados** (RF01–RF28), com auditoria em cada ação sensível (RNF01)
 
 ## Como rodar
 
@@ -48,10 +49,10 @@ Todas as senhas `Password@123` · e-mails `nome.completo@usinalins.local`:
 
 | Papel | Login | Cenário |
 |---|---|---|
-| RH | `isabela.cristina.fonseca` | tickets, certificados, configurações, reservas |
+| RH | `isabela.cristina.fonseca` | tickets, certificados, configurações, reservas, treinamentos, usuários, matriz de conformidade |
 | Instrutor externo | `klaus.werner.steiner` | chamada facial/homologação |
-| Líder | `heloisa.fernandes.peixoto` | reservas do time, justificativas (RF13) |
-| Colaborador na fila | `otavio.martins.gomes` | promoção de fila (RF09) |
+| Líder | `heloisa.fernandes.peixoto` | reservas do time, justificativas (RF13), senha dos liderados |
+| Colaborador na fila | `otavio.martins.gomes` | promoção de fila (RF09), abrir ticket (RF10) |
 
 Verificação pública (sem login): `http://localhost:8000/verificar` — códigos de demonstração: `PZ-2025-000101` (VÁLIDO), `PZ-2024-000087` (EXPIRADO).
 

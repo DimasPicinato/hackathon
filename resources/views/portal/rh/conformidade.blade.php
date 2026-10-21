@@ -1,0 +1,41 @@
+@extends('layouts.portal')
+
+@section('titulo', 'Matriz de conformidade — Presenza')
+
+@section('conteudo')
+<p><a href="{{ route('portal') }}">← Voltar ao portal</a></p>
+<h1>Matriz de conformidade <span class="muted">(RF28 — precisa fazer o quê?)</span></h1>
+@if (session('ok'))<p class="flash-ok">{{ session('ok') }}</p>@endif
+
+<div class="card" style="overflow-x: auto;">
+    <table class="table">
+        <tr>
+            <th>Pessoa</th>
+            <th>Setor</th>
+            @foreach ($treinamentos as $treinamento)
+                <th>{{ $treinamento->nome }}<br><span class="muted">validade {{ $treinamento->validade_meses ?? '—' }}m</span></th>
+            @endforeach
+        </tr>
+        @foreach ($pessoas as $pessoa)
+            <tr>
+                <td><strong>{{ $pessoa->name }}</strong></td>
+                <td class="muted">{{ $pessoa->setor?->nome ?? '—' }}</td>
+                @foreach ($treinamentos as $treinamento)
+                    @php
+                        $celula = $matriz[$pessoa->id][$treinamento->id] ?? null;
+                        $legenda = ['vigente' => 'aprovado', 'expirado' => 'recusado', 'em_curso' => 'pendente', 'pendente' => 'fila', 'sem_oferta' => 'agendada'];
+                    @endphp
+                    @if ($celula)
+                        <td>
+                            <span class="badge badge-{{ $legenda[$celula[0]] }}">{{ $celula[0] }}</span>
+                            <span class="muted">{{ $celula[1] }}</span>
+                        </td>
+                    @else
+                        <td><span class="muted">n/a</span></td>
+                    @endif
+                @endforeach
+            </tr>
+        @endforeach
+    </table>
+</div>
+@endsection

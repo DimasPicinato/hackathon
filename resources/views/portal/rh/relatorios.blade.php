@@ -8,6 +8,7 @@
 
 <div class="card">
     <h2>Exportações</h2>
+    <p><a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.conformidade') }}">📊 Matriz de conformidade</a></p>
     <p><a class="btn btn-primary btn-pequeno" href="{{ route('portal.rh.relatorios.pessoas') }}">⬇ CSV — histórico por pessoa</a></p>
     <p class="muted">Presenças, certificados vigentes e validade de todos os colaboradores.</p>
 </div>

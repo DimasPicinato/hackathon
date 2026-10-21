@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
                 ->name('certificados.reemitir');
 
             Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
+            Route::get('/conformidade', [RelatoriosController::class, 'conformidade'])->name('conformidade');
             Route::get('/relatorios/pessoas/csv', [RelatoriosController::class, 'csvPessoas'])->name('relatorios.pessoas');
             Route::get('/relatorios/sessoes/{aula}/csv', [RelatoriosController::class, 'csvSessao'])->name('relatorios.sessao');
 

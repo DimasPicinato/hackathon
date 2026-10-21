@@ -373,4 +373,16 @@
 
 ---
 
-_Última atualização: 21/10/2026 02:05 — gerado pela skill `registro-hackathon`._
+## 28 · CÓDIGO · Matriz de conformidade (RF28+) e encerramento 28/28 — README atualizado
+
+- **Quando:** 21/10/2026 02:06 → 02:24
+- **O que foi feito:**
+  - **Matriz de conformidade** (`portal/rh/conformidade`): para cada pessoa × treinamento aplicável, badge de situação — **VIGENTE** (com data), **EXPIRADO**, **EM_CURSO (x/y aulas)**, **PENDENTE**; treinamento restrito a outro setor vira célula n/a (aplicabilidade por setor na visão do júri); Líder vê apenas liderados;
+  - README atualizado para **"28/28 RFs implementados"** (93 testes/305 asserções), tabela de papéis da demo ampliada (RF10, RF07, RF05); roteiro de demo atualizado (93/305 no plano B);
+  - Smoke homolog: as 3 telas novas (conformidade, treinamentos, usuários) **200 com o DB semeado**.
+- **Testes:** `ConformidadeTest` (4): vigente/expirado/em_curso na mesma tela, n/a para setor não aplicável, líder restrito, 403 colaborador.
+- **Resultados:** **suíte final OK — 93 testes, 305 asserções, verde.** **REQUISITOS FECHADOS: 28/28 RFs** (alcance alemão: RF07 e RF05 entraram nesta noite após aprovação da equipe).
+
+---
+
+_Última atualização: 21/10/2026 02:24 — gerado pela skill `registro-hackathon`._

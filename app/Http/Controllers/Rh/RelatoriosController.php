@@ -14,6 +14,67 @@ class RelatoriosController extends Controller
 {
     use EscopoGestao;
 
+    /**
+     * RF28 — matriz de conformidade: para cada pessoa × treinamento aplicável,
+     * qual é a situação (vigente / expirado / em curso x/y / pendente).
+     */
+    public function conformidade(Request $request)
+    {
+        $this->garantirGestor();
+
+        $treinamentos = \App\Models\Treinamento::with(['aulas.presencas'])->orderBy('nome')->get();
+
+        $pessoas = User::query()->where('ativo', true)
+            ->whereJsonContains('papeis', 'colaborador')
+            ->with(['setor', 'certificados', 'presencas'])
+            ->orderBy('name')->get();
+
+        if ($request->user()->temPapel('lider')) {
+            $pessoas = $pessoas->where('setor_id', $request->user()->setor_id)->values();
+        }
+
+        $matriz = [];
+
+        foreach ($treinamentos as $treinamento) {
+            foreach ($pessoas as $pessoa) {
+                if ($treinamento->setor_id !== null && $treinamento->setor_id !== $pessoa->setor_id) {
+                    continue; // treinamento não se aplica a este setor
+                }
+
+                $certificado = $pessoa->certificados
+                    ->where('treinamento_id', $treinamento->id)
+                    ->filter(fn ($c) => $c->substituido_por_id === null)
+                    ->sortByDesc('valido_ate')
+                    ->first();
+
+                if ($certificado) {
+                    $estado = $certificado->valido_ate?->isFuture() ? 'vigente' : 'expirado';
+                    $detalhe = $certificado->valido_ate?->format('d/m/Y');
+                } else {
+                    $total = $treinamento->aulas->count();
+                    $feitas = $treinamento->aulas
+                        ->filter(fn ($aula) => $aula->presencas->contains('user_id', $pessoa->id))->count();
+
+                    if ($total === 0) {
+                        [$estado, $detalhe] = ['sem_oferta', 'Aulas: 0'];
+                    } elseif ($feitas === 0) {
+                        [$estado, $detalhe] = ['pendente', '—'];
+                    } else {
+                        [$estado, $detalhe] = ['em_curso', "{$feitas}/{$total} aula(s)"];
+                    }
+                }
+
+                $matriz[$pessoa->id][$treinamento->id] = [$estado, $detalhe];
+            }
+        }
+
+        return view('portal.rh.conformidade', [
+            'treinamentos' => $treinamentos,
+            'pessoas' => $pessoas,
+            'matriz' => $matriz,
+        ]);
+    }
+
     public function index(Request $request)
     {
         $this->garantirGestor();
