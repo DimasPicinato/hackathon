@@ -1,6 +1,6 @@
 ---
 name: registro-hackathon
-description: Documenta em journey-log.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
+description: Documenta em journey-log.md, de forma resumida e cronológica, toda discussão, decisão, documentação ou trabalho feito com IA neste repositório (hackathon FATEC/ETEC Usina Lins). Além disso, faz o polimento de quase todo prompt enviado pelo time (legibilidade/estrutura) e documenta os resultados obtidos, e mantém o relatório de entrega docs/relatorio-final.md sempre sincronizado com o que foi feito. Use ao final de qualquer tarefa concluída, quando o usuário pedir "registre isso", "documente no registro", "polir esse prompt", ou tiver criado/alterado artefatos do projeto.
 ---
 
 # Skill: Registro de Sessões do Hackathon
@@ -88,9 +88,25 @@ _Última atualização: <dd/MM/yyyy HH:MM> — gerado pela skill `registro-hacka
 - Não citar nomes de modelos de IA; dizer "IA usada para X" (o PDF de prompts ficará a cargo do grupo).
 - Se o usuário pedir para revisar/compactar o registro inteiro, sempre preserve a ordem cronológica original e o seu rótulo Nº.
 
+## Manutenção do relatório final de entrega (`docs/relatorio-final.md`)
+
+`docs/relatorio-final.md` é o documento-base do **PDF exigido pela banca** (todos os prompts + processo). Ele **evolui junto com o projeto**: a IA o mantém atualizado em toda sessão registrada, **sem esperar pedido explícito** do time. Não é opcional:journey-log e relatório andam sempre juntos.
+
+Regras por tipo de mudança:
+
+- **Nova sessão de trabalho** (código, configuração, decisão, discussão, pesquisa, teste) → além de registrar `Nº+1` no `journey-log.md`, atualize o relatório:
+  - **§6 (Prompts do desenvolvimento):** acrescente o prompt desta sessão **polido** (contexto → objetivo → restrições → formato), com o **próximo número da sequência** (P-40, P-41, …) e o **resultado** obtido;
+  - **§9 (Diário de bordo):** acrescente o resumo da nova sessão (mesma informação do journey-log, condensada);
+  - **§8 (Passos):** inclua o passo na cronologia executiva, se aplicável.
+- **Mudança em requisitos, design, stack, acordos, deploy ou demo** → sincronize também **§3, §4, §5, §10** conforme o caso.
+- **Mudança em números/estado** (testes/asserções, RFs fechados, credenciais, códigos de verificação, URL, contagem de sessões) → atualize o **ATO 1** (§1.4, §1.5) e o **§10** — nunca deixe dado defasado no documento que vira PDF.
+- **Estilo:** edite pontualmente as seções afetadas; **preserve a numeração** (ATO/§/P-xx/Nº), a estrutura e o tom do documento. Não reescreva o que já está aprovado.
+- **Prompts:** a menos que o time peça outra coisa, os prompts polidos ficam registrados no **§6 do relatório** (o `prompts/` continua opcional para reuso externo).
+
 ## Verificações antes de terminar
 
 - [ ] Novo Nº é exatamente o maior Nº antigo + 1.
 - [ ] Entrada está após a última com a mesma data ou depois (ordem cronológica respeitada).
 - [ ] Links de artefatos são relativos e de fato existem.
+- [ ] `docs/relatorio-final.md` sincronizado com esta sessão (§6 prompt novo com resultado, §9 diário, §8 passos, números do ATO 1/§10 quando mudarem).
 - [ ] Rodapé "Última atualização" foi regerado.

@@ -51,6 +51,8 @@ docker compose up -d --build              # sem -f: o padrão É o compose de ho
 
 Todas as senhas `Password@123` · e-mails `nome.completo@exemplo.com`:
 
+> **Termo LGPD:** o seed já deixa **todas as contas com o aceite do termo v1.0** pré-assinado (login direto ao portal). A tela do termo volta a aparecer se o RH publicar **nova versão** em Configurações.
+
 | Papel | Login | Cenário |
 |---|---|---|
 | RH | `isabela.cristina.fonseca` | tickets, certificados, configurações, reservas, treinamentos, usuários, matriz de conformidade |

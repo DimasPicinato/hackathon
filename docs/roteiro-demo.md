@@ -18,8 +18,7 @@
 "Na Usina Lins, quem atesta presença em treinamento é a assinatura numa lista de chamada. O certificado que sai disso não tem como conferir." → abre `/verificar` com QR do PZ-2025.
 
 **0:30–1:15 — A solução em 30 segundos**
-- Colaborador (`otavio.martins.gomes`) faz **login**.
-- **RF04**: portal bloqueia até o aceite do termo LGPD (mostrar a tela do termo!). Explica: consentimento explícito de biometria.
+- Colaborador (`otavio.martins.gomes@exemplo.com`) faz **login** — todas as contas do seed já têm o **termo LGPD aceito** (o aceite volta a ser exigido quando o RH publicar nova versão do termo, mostrado em 4:00).
 - Portal: aula **NR35 em andamento** → botão **"Validar presença agora (facial)"** → presença registrada + auditoria.
 
 **1:15–2:15 — A exceção com anti-fraude (RF15)**
@@ -37,7 +36,7 @@
 - **Relatórios** (RF28): resumo por sessão + CSV por pessoa aberto no Excel.
 
 **4:00–4:45 — Governança + correição**
-- **Configurações (RF26)**: publicar **nova versão do termo** → login qualquer já re-pede aceite (RF04 à prova de adversário).
+- **Configurações**: publicar **nova versão do termo** → login qualquer já re-pede aceite (consentimento LGPD à prova de adversário).
 - Mailpit: e-mails reais chegando (lembrete/reset).
 - Lembretes RF25: scheduler rodando sozinho no compose de homologação (`schedule:list`).
 

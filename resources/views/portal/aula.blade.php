@@ -15,6 +15,7 @@
     · {{ $aula->data_inicio->format('d/m/Y H:i') }} · {{ $aula->local }}
     · instrutor: {{ $aula->instrutor?->name }}</p>
 
+@if ($aula->status === StatusAula::Agendada)
     <div class="alert alert-erro">
         A aula ainda não foi iniciada — a validação de presença abre quando o instrutor iniciar a aula.
     </div>

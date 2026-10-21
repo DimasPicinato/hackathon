@@ -551,4 +551,36 @@
 
 ---
 
-_Última atualização: 21/10/2026 05:00 — gerado pela skill `registro-hackathon`._
+## Nº 39 · DOCUMENTAÇÃO · Relatório final da entrega (ATO 1 + ATO 2) compilado
+
+- **Quando:** 21/10/2026 11:12
+- **O que foi feito:**
+  - Compilação do documento único para o PDF de entrega exigido no enunciado ("todos os prompts criados pelo grupo"): **ATO 1** em síntese (tecnologias, arquitetura, metodologia) e **ATO 2** detalhado (desafio e critérios da banca, acordos AT01–AT04, requisitos RF01–RF28/RNF/SEED, design system, **39 prompts cronológicos polidos com resultado**, transcrição Q1–Q35, passos do desenvolvimento, diário de bordo das 38 sessões e estado final com evidências);
+  - Fontes consolidadas: `journey-log.md`, docs (requisitos, questionário, design, stack, acordos, deploy-coolify, roteiro-demo), README e `composer.json` (versões reais: Laravel 13/PHP 8.4);
+  - **Governança de manutenção do relatório**: nova seção "Manutenção do relatório final de entrega" na skill `registro-hackathon` (regras por tipo de mudança: prompt → §6, sessão → §9, cronologia → §8, números → ATO 1/§10) + item no checklist final; bloco `<processo-presenza>` no `AGENTS.md` para que **toda sessão de IA** saiba que journey-log e relatório andam juntos, sem esperar pedido do time.
+- **Artefatos:** `docs/relatorio-final.md`, `.agents/skills/registro-hackathon/SKILL.md`, `AGENTS.md`
+- **Decisões / por quê:** a banca exige um PDF com todos os prompts e avalia clareza/completude; consolidar tudo em um único .md facilita a conversão — e a manutenção automática (via skill + AGENTS.md) garante que o relatório nunca fique defasado conforme o time pedir atualizações.
+- **Prompts-chave:** "faça um .md que contenha: ATO 1 (tecnologias, arquitetura, metodologia) e ATO 2 detalhado (prompts, passos, diário de bordo, requisitos) — tudo necessário para o PDF final exigido em problemas.docx"; emenda: "documente também (na skill registro-hackathon ou AGENTS.md) para que a IA vá completando o relatório conforme eu for pedindo atualizações".
+- **Resultados:** `docs/relatorio-final.md` criado e pronto para conversão em PDF; regra de sincronização ativa na skill e no `AGENTS.md`.
+- **Status:** Concluído.
+
+---
+
+## Nº 40 · CÓDIGO · Hotfix da chamada + seed com termo LGPD aceito por todos
+
+- **Quando:** 21/10/2026 09h30 → 11h17
+- **O que foi feito:**
+  - **Hotfix P0**: ParseError em `aula.blade.php` (`elseif` órfão — o meu edit anterior tinha engolido a linha `@if ($aula->status === StatusAula::Agendada)`); `php -l` + suíte full verde de novo; **Docker Desktop caiu de novo** nesta janela (processo zero) — reaberto e dev reerguido (`:8000` 200 confirmado);
+  - **Seed LGPD**: time pediu todas as contas já com aceite do termo — primeira tentativa no `UserSeeder` rodou **antes** do `CatalogoSeeder` (0 aceites); movido para o `CatalogoSeeder`, logo após criar o termo ativo, com `INSERT ... SELECT` + `ON CONFLICT DO NOTHING` → **44/44 contas com aceite**; login agora vai direto ao portal (smoke: `/portal` 200, sem gate);
+  - Tela do termo continua prevista na demo ao **publicar nova versão** em Configurações (roteiro dos 4:00 inalterado);
+  - Coerência de domínio: SMTP/catálogo (`smtp.exemplo.com`, `presenza@exemplo.com`) e README (nota do aceite pré-assinado) alinhados; roteiro-demo atualizado (passo do termo sai do 0:30, e-mails completos);
+  - **93/305 verde**.
+- **Artefatos:** `database/seeders/CatalogoSeeder.php`, `database/seeders/UserSeeder.php`, `resources/views/portal/aula.blade.php`, `docs/roteiro-demo.md`, `README.md`, `docs/relatorio-final.md`
+- **Decisões / por quê:** demo não pode começar com portão travando o fluxo — aceite pré-assinado mantém o RF04 real (nova versão re-pede aceite) sem espiar a demo no login;
+- **Prompts-chave:** "faça com que todos os usuários no seed já tenham aceitado os termos da LGPD" (+ hotfix reportado com stack trace colado pelo time);
+- **Resultados:** aceites 44/44 no banco; login→portal direto comprovado; suíte verde; dev de pé.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 11:17 — gerado pela skill `registro-hackathon`._
