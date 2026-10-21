@@ -57,6 +57,11 @@
                             <a class="lateral-link {{ $botaoAtivo('portal.rh.configuracoes') }}" href="{{ route('portal.rh.configuracoes') }}">
                                 <x-icon nome="configuracoes"/> Configurações
                             </a>
+                            @if ($u->temPapel('admin'))
+                                <a class="lateral-link {{ $botaoAtivo('portal.rh.assistente.conversas') }}" href="{{ route('portal.rh.assistente.conversas') }}">
+                                    <x-icon nome="tickets"/> Conversas do assistente
+                                </a>
+                            @endif
                         @endif
                     @endif
                 </nav>

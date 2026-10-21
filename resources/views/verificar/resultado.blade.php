@@ -51,5 +51,6 @@
                 @endif
             </div>
         </div>
+        @include('assistente.widget')
     </body>
 </html>

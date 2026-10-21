@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    // RF29–RF34/RNF07 — runtime do Assistente de IA (opencode serve interno)
+    'assistente' => [
+        'url' => env('ASSISTENTE_URL', 'http://127.0.0.1:4096'),
+        'usuario' => env('ASSISTENTE_USUARIO', 'opencode'),
+        'senha' => env('ASSISTENTE_SENHA', ''),
+        'modelo' => env('ASSISTENTE_MODELO', 'opencode/big-pickle'),
+        'agente' => env('ASSISTENTE_AGENTE', 'atende'),
+        'timeout' => (int) env('ASSISTENTE_TIMEOUT', 60),
+    ],
+
 ];

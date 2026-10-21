@@ -15,6 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'termo' => \App\Http\Middleware\ExigirAceiteTermo::class, // RF04
         ]);
+
+        // RF29 — chat público anônimo: sem token CSRF (o widget aparece também em páginas
+        // sem sessão). Proteção: validação de tamanho + zero acesso a dados do sistema
+        // (RNF09: sem rate limit, decisão registrada do time).
+        $middleware->validateCsrfTokens(except: [
+            'assistente',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

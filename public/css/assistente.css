@@ -1,0 +1,186 @@
+/* RF29–RF34 — widget do Assistente Presenza (tokens de docs/design-p1.md, sem build) */
+[x-cloak] { display: none !important; }
+
+.assistente-botao {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 60;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-primary);
+  font: 700 1.3rem/1 var(--font-heading);
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .22);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.assistente-botao:hover,
+.assistente-botao:focus-visible {
+  transform: scale(1.05);
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.assistente-painel {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + 68px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-width: calc(100vw - 2 * var(--space-4));
+  height: 480px;
+  max-height: calc(100vh - 120px);
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, .25);
+  overflow: hidden;
+}
+
+.assistente-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-heading);
+}
+
+.assistente-fechar {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--space-1);
+}
+
+.assistente-aviso {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: .78rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.assistente-mensagens {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  overflow-y: auto;
+  background: var(--card);
+}
+
+.assistente-msg {
+  max-width: 85%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  font-size: .92rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.assistente-msg-assistente {
+  align-self: flex-start;
+  background: var(--background);
+  border: 1px solid var(--border);
+}
+
+.assistente-msg-voce {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--on-primary);
+}
+
+.assistente-digitando {
+  align-self: flex-start;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: .88rem;
+}
+
+.assistente-form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+
+.assistente-form textarea {
+  flex: 1;
+  resize: none;
+  min-height: 40px;
+  max-height: 96px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  color: inherit;
+  background: var(--card);
+}
+
+.assistente-form textarea:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+.assistente-enviar {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-primary);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.assistente-enviar:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.assistente-rodape {
+  margin: 0;
+  padding: var(--space-1) var(--space-4) var(--space-2);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: .72rem;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .assistente-painel {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: none;
+    height: calc(100vh - 56px);
+    max-height: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .assistente-botao {
+    right: var(--space-3);
+    bottom: var(--space-3);
+  }
+}

@@ -29,6 +29,24 @@ services:
       - "1025:1025"    # SMTP (captura todos os e-mails do dev)
       - "8025:8025"    # Web UI de e-mails capturados
 
+  assistente:
+    # RF29–RF34/RNF07 — runtime do Assistente (OpenCode serve + agente "atende").
+    # A imagem embute a pasta docs/ (fonte de conhecimento); o agente é somente leitura
+    # (docs/.opencode/opencode.json) e o Laravel conversa com ele pela API HTTP interna.
+    build:
+      context: .
+      dockerfile: docker/opencode/Dockerfile
+    container_name: presenza-assistente
+    working_dir: /docs
+    environment:
+      # Senha fixa de DEMO do servidor do runtime (Basic auth usado pelo Laravel).
+      OPENCODE_SERVER_PASSWORD: ${OPENCODE_SERVER_PASSWORD:-presenza-assistente-demo}
+      # Chave do gateway de modelos (mesmo valor do .env do time, nunca commitada).
+      OPENCODE_API_KEY: ${OPENCODE_API_KEY:-}
+    expose:
+      - "4096"
+    restart: unless-stopped
+
   app:
     build:
       context: .
@@ -63,10 +81,16 @@ services:
       MAIL_ENCRYPTION: null
       MAIL_FROM_ADDRESS: "presenza@usinalins.local"
       MAIL_FROM_NAME: "Presenza"
+      # Assistente de IA (RF29) — runtime interno do compose (nome do serviço: assistente)
+      ASSISTENTE_URL: http://assistente:4096
+      ASSISTENTE_SENHA: ${OPENCODE_SERVER_PASSWORD:-presenza-assistente-demo}
+      ASSISTENTE_MODELO: opencode/big-pickle
     depends_on:
       postgres:
         condition: service_healthy
       mailpit:
+        condition: service_started
+      assistente:
         condition: service_started
     # Reset total (aprovado pela equipe): cada (re)início do contêiner refaz o banco
     # com o seed completo da demo (SEED01–04). Para conservar dados ao vivo, NÃO

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AulaController;
+use App\Http\Controllers\AssistenteController;
 use App\Http\Controllers\ChamadaController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\Rh\CertificadosController;
@@ -24,6 +25,9 @@ Route::get('/', fn () => view('welcome'));
 Route::get('/verificar', [VerificacaoPublicaController::class, 'busca'])->name('verificar.busca');
 Route::get('/verificar/{codigo}', [VerificacaoPublicaController::class, 'mostrar'])->name('verificar.mostrar');
 Route::get('/verificar/{codigo}/pdf', [VerificacaoPublicaController::class, 'pdf'])->name('verificar.pdf');
+
+// RF29 — Assistente de IA público (sem login; widget nas páginas abertas)
+Route::post('/assistente', [AssistenteController::class, 'responder'])->name('assistente.responder');
 
 // ─── Autenticado: termo LGPD (RF04) antes de qualquer portal ──────────────────
 Route::middleware('auth')->group(function () {
@@ -100,6 +104,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/configuracoes/motivos/{motivo}/alternar', [ConfiguracoesController::class, 'alternarMotivo'])->name('configuracoes.motivo.alternar');
             Route::post('/configuracoes/tipos/{tipo}/alternar', [ConfiguracoesController::class, 'alternarTipo'])->name('configuracoes.tipo.alternar');
             Route::post('/configuracoes/termo/publicar', [ConfiguracoesController::class, 'publicarTermo'])->name('configuracoes.termo.publicar');
+
+            // RF33 — conversas do assistente (somente Admin; o controller aplica o gate)
+            Route::get('/assistente', [AssistenteController::class, 'conversas'])->name('assistente.conversas');
         });
     });
 });

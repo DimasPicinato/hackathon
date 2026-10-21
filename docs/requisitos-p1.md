@@ -102,3 +102,31 @@ Contas internas **acumulam papéis** (ex.: colaborador que também é líder). D
 - Portal com login facial (biometria só na presença — decisão Q10/Q11).
 - Módulos de refeitório e de visitas (problemas 2 e 3 do desafio).
 - Integração real com o RH da Usina (hoje: importação/seed).
+
+---
+
+## 7. Extensão — Assistente de IA público (Q36–Q59, 21/10/2026)
+
+> Discussão completa e fatos do ambiente: `docs/questionario-requisitos-assistente-ia.md` · Mockup: `docs/design-assistente-ia.md` · Fonte de conhecimento: pasta `docs/` + `docs/mapa-paginas.md`.
+> Pauta: widget **público** (sem login) para visitantes, com respostas **extras** ao fluxo (nunca substituindo os RFs 01–28).
+
+### 7.1 Requisitos funcionais
+
+- **RF29 — Widget público "Assistente Presenza"**: chat acessível **sem login** via botão flutuante nas páginas públicas (home `/`, login e verificação de certificado `/verificar`); interface em **PT-BR**; identidade neutra "Assistente Presenza".
+- **RF30 — Fonte de conhecimento**: respostas baseadas **exclusivamente na documentação do projeto** (`docs/`, montada read-only no agente) + `docs/mapa-paginas.md` (rotas e conteúdo das telas). **Sem acesso ao banco nem a qualquer dado do sistema**; quem quiser verificar um certificado é **orientado à página de verificação** (RF21) — nem verificação de código acontece no chat (Q56).
+- **RF31 — Escopo de temas restrito ao Presenza**: responde sobre fluxos, telas, certificados e o produto; **recusa educada** perguntas fora do escopo (economia de quota — Q51).
+- **RF32 — Zero PII (LGPD)**: o chat **não recebe nem envia dado pessoal** (nada de nome, CPF, foto, setor); não existe "usuário logado" no contexto público (Q42).
+- **RF33 — Registro e auditoria**: toda conversa é gravada (**pergunta, resposta, IP, data/hora**) em tabela própria, **visível só ao Admin**; **aviso fixo no widget** informa a gravação (Q50/Q58 — cobre o IP como dado pessoal).
+- **RF34 — Histórico do visitante**: a conversa vive **só na aba aberta** (fechar/recarregar zera); recuperar depois não acontece (o registro permanece no Admin, via RF33).
+
+### 7.2 Requisitos não funcionais adicionais
+
+- **RNF07 — Arquitetura (exceção AT01)**: runtime **OpenCode em contêiner próprio** no `docker-compose.yaml` (agente configurado em `opencode.json`: PT-BR, modelo e permissões de só-leitura); o **Laravel** conversa com a API HTTP do runtime e renderiza o widget (Blade/Alpine vendored, sem build); docs montadas **read-only** por volume; modelo **`opencode/big-pickle`** ($0, trocável via `.env`) com **API key** do gateway via `.env` (nunca commitada).
+- **RNF08 — Resiliência (RNF06)**: falha do runtime/gateway/quota → **mensagem de cortesia** orientando falar com o RH / abrir ticket; **nunca impede** os fluxos principais da demo.
+- **RNF09 — Risco aceito**: **sem limite de taxa** no endpoint público (decisão Q45); a quota gratuita da conta do time fica exposta — aceito conscientemente pelo time na AT01 desta sessão.
+- **UX da resposta**: resposta exibida **em bloco único** com **indicador de carregamento** enquanto o modelo responde (sem streaming — Q47).
+
+### 7.3 Estado e demo
+
+- Documentado e aprovado pelo time em 21/10/2026 (manhã); **implementação pendente da aprovação do mockup** (`docs/design-assistente-ia.md`).
+- Demo: entra no **fim do roteiro de 5 min** como fechamento ("diferencial de IA") — `docs/roteiro-demo.md`.

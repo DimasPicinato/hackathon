@@ -24,5 +24,6 @@
                 </div>
             </div>
         </header>
+        @include('assistente.widget')
     </body>
 </html>

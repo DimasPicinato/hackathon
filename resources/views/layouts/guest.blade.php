@@ -22,5 +22,6 @@
                 @yield('conteudo')
             </div>
         </div>
+        @include('assistente.widget')
     </body>
 </html>
