@@ -32,9 +32,15 @@
     </form>
 
     <div class="demo-creds">
-        <strong>Contas da demo</strong> · senha única: <code>Password@123</code><br>
-        admin: <code>fernanda.carvalho.duarte</code> · RH: <code>isabela.cristina.fonseca</code><br>
-        instrutor: <code>klaus.werner.steiner</code> · líder: <code>heloisa.fernandes.peixoto</code> · colaborador: <code>otavio.martins.gomes</code>
-        <small>@usinalins.local</small>
+        <strong>Contas da demo</strong>
+        <p class="demo-senha">Senha única: <code>Password@123</code></p>
+        <ul class="lista-credenciais">
+            <li><span class="badge badge-facial">Admin</span><code>fernanda.carvalho.duarte</code></li>
+            <li><span class="badge badge-fila">RH</span><code>isabela.cristina.fonseca</code></li>
+            <li><span class="badge badge-manual">Instrutor</span><code>klaus.werner.steiner</code></li>
+            <li><span class="badge badge-pendente">Líder</span><code>heloisa.fernandes.peixoto</code></li>
+            <li><span class="badge badge-aprovado">Colaborador</span><code>otavio.martins.gomes</code></li>
+        </ul>
+        <p class="demo-dominio">E-mail completo = login acima <code>@usinalins.local</code></p>
     </div>
 @endsection

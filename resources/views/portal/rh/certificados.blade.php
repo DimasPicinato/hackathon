@@ -19,6 +19,7 @@
             <p class="muted">Ninguém elegível ainda.</p>
         @else
             <table class="table">
+                <thead><tr><th>Elegível</th><th></th></tr></thead>
                 @foreach ($elegiveisPorTreinamento[$treinamento->id] as $elegivel)
                     <tr>
                         <td>{{ $elegivel->name }} <span class="muted">({{ $elegivel->matricula }})</span></td>

@@ -17,10 +17,10 @@
                 <h1>Verificar certificado</h1>
                 <p class="muted">Insira o código impresso no certificado ou escaneie o QR.</p>
 
-                <form method="GET" action="{{ route('verificar.busca') }}">
-                    <label for="q">Código</label>
+                <form method="GET" action="{{ route('verificar.busca') }}" class="form-vertical">
+                    <label for="q">Código do certificado</label>
                     <input id="q" name="q" placeholder="ex.: PZ-2025-000101" required autofocus>
-                    <button class="btn btn-primary" type="submit">Verificar</button>
+                    <button class="btn btn-primary btn-bloco" type="submit">Verificar certificado</button>
                 </form>
             </div>
         </div>

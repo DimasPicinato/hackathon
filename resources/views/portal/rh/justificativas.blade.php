@@ -8,8 +8,7 @@
 
 
 <div class="card">
-    <h2>Registro direto pela gestão (RF13 — sem ticket, a qualquer momento)</h2>
-    <form method="POST" action="{{ route('portal.rh.justificativas.registrar') }}" class="form-inline">@csrf
+    <h2>Registro direto pela gestão (RF13 — sem ticket, a qualquer momento)</h2>    <form method="POST" action="{{ route('portal.rh.justificativas.registrar') }}" class="form-inline">@csrf
         <select name="user_id" required>
             <option value="">Colaborador…</option>
             @foreach (\App\Models\User::query()->where('ativo', true)->whereJsonContains('papeis', 'colaborador')->orderBy('name')->get() as $pessoa)
@@ -32,8 +31,14 @@
     </form>
 </div>
 
+<div class="cabeca-tabela">
+    <h2>Justificativas registradas</h2>
+    <input type="search" class="campo-busca" data-busca="lista-justificativas" placeholder="Buscar por pessoa, aula, status…" aria-label="Buscar justificativas">
+</div>
+
+<div id="lista-justificativas">
 @forelse ($justificativas as $just)
-    <div class="card">
+    <div class="card" data-linha>
         <div class="linha-aula">
             <div>
                 <strong>{{ $just->user->name }}</strong> <span class="muted">({{ $just->user->setor?->nome }})</span><br>
@@ -64,4 +69,5 @@
 @empty
     <p class="muted">Nenhuma justificativa.</p>
 @endforelse
+</div>
 @endsection

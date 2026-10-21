@@ -104,5 +104,22 @@
                 <footer class="rodape">Presenza — Hackathon FATEC & ETEC · Usina Lins · CetaCeo</footer>
             </div>
         </div>
+        <script>
+            // Busca client-side para listas/tabelas: input[data-busca="id-do-alvo"]
+            document.querySelectorAll('input[data-busca]').forEach(function (campo) {
+                var alvo = document.getElementById(campo.dataset.busca);
+                if (!alvo) return;
+                campo.addEventListener('input', function () {
+                    var consulta = campo.value.trim().toLowerCase();
+                    var linhas = alvo.tagName === 'TABLE'
+                        ? alvo.querySelectorAll('tbody tr')
+                        : alvo.querySelectorAll('[data-linha]');
+                    linhas.forEach(function (linha) {
+                        var mostra = !consulta || linha.textContent.toLowerCase().indexOf(consulta) !== -1;
+                        linha.style.display = mostra ? '' : 'none';
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

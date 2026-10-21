@@ -233,6 +233,7 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
               gap: var(--space-4); padding: var(--space-3) 0;
               border-bottom: 1px dashed var(--border); }
 .linha-aula:last-child { border-bottom: 0; }
+.linha-aula > div:first-child { flex: 1 1 55%; min-width: 260px; }
 .linha-acoes { display: flex; gap: var(--space-2); flex-shrink: 0; flex-wrap: wrap; }
 .form-manual { max-width: 330px; }
 .form-manual .mini { font-size: .78rem; color: var(--muted-foreground);
@@ -258,9 +259,6 @@ details summary::-webkit-details-marker { display: none; }
 .acoes-login a { font-size: .9rem; }
 .check { display: flex; align-items: center; gap: var(--space-2); font-weight: 400; margin: var(--space-4) 0; }
 .check input { width: auto; margin: 0; }
-.demo-creds { margin-top: var(--space-5); padding: var(--space-3); background: var(--muted);
-              border-radius: var(--radius); font-size: .78rem; color: var(--muted-foreground); line-height: 1.6; }
-.demo-creds code { background: #fff; padding: .05rem .3rem; border-radius: 4px; color: var(--primary); }
 
 /* ── Hero (welcome) ──────────────────────────────────────────────────── */
 .hero { min-height: 100vh; display: grid; place-items: center;
@@ -291,8 +289,36 @@ details summary::-webkit-details-marker { display: none; }
                   max-height: 280px; overflow: auto; margin-bottom: var(--space-4); }
 
 /* ——— Bloco RH (RF10–RF13/RF18–RF20/RF28) ——— */
-.form-inline { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.form-inline { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
 .form-inline select, .form-inline input[type="text"] { min-width: 0; flex: 0 1 auto; max-width: 30rem; }
+.form-edicao { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); align-items: center; }
+.form-edicao input, .form-edicao select { max-width: 220px; }
+.celula-acoes { min-width: 320px; }
+.celula-acoes form:first-child { margin-top: 0; }
+.cabeca-tabela { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.cabeca-tabela h2 { margin: 0; }
+.campo-busca { max-width: 340px; margin-left: auto; }
+.campo-busca::placeholder { color: var(--muted-foreground); }
+
+/* Formulário vertical (verificar) e grid (novo usuário) */
+.form-vertical input { margin-bottom: var(--space-4); }
+.btn-bloco { width: 100%; }
+.grid-formulario { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3) var(--space-4); margin-bottom: var(--space-3); }
+.grid-formulario .campo-largo { grid-column: span 2; }
+.grid-formulario .form-envio { display: flex; align-items: flex-end; }
+.grid-formulario button { min-height: calc(1rem + 2.2rem); }
+
+/* Credenciais da demo (login) */
+.demo-creds { margin-top: var(--space-5); padding: var(--space-4); background: var(--muted); border-radius: var(--radius); }
+.demo-creds > strong { font-family: var(--font-heading); font-size: .95rem; }
+.demo-senha { margin: var(--space-2) 0; font-size: .85rem; color: var(--muted-foreground); }
+.lista-credenciais { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.lista-credenciais li { display: flex; align-items: center; gap: var(--space-2); background: #fff;
+                         border: 1px solid var(--border); border-radius: 8px; padding: .45rem .6rem; }
+.lista-credenciais li .badge { flex: 0 0 5.4rem; text-align: center; }
+.lista-credenciais code { color: var(--primary); font-size: .85rem; user-select: all; }
+.demo-dominio { margin: var(--space-3) 0 0; font-size: .8rem; color: var(--muted-foreground); }
+.demo-creds code { background: #fff; padding: .1rem .35rem; border-radius: 4px; }
 
 .flash-ok   { background: var(--status-aprovado); color: #fff; padding: .6rem .9rem;
               border-radius: var(--radius); margin: 0 0 var(--space-4); }

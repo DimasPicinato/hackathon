@@ -496,4 +496,40 @@
 
 ---
 
-_Última atualização: 21/10/2026 03:09 — gerado pela skill `registro-hackathon`._
+## Nº 36 · CÓDIGO · Revisão de layout: sidebar por papel, botão Voltar em tudo e ritmo de espaçamento 4/8
+
+- **Quando:** 21/10/2026 03:10 → 03:41
+- **O que foi feito:**
+  - Pedido do time ("revise o layout… espaçamentos e intuitividade… botões de voltar e menus laterais claros") virou um **app shell** novo: sidebar fixa por papel (todos: Início; RH/Admin: grupo **GESTÃO** completo com Tickets e Configurações; Líder só o que tem âmbito) com estado ativo por rota (`routeIs`), rótulo de grupo e pé com Meu perfil + Sair;
+  - **Botão "Voltar" padronizado** nas 10 telas que tinham link solto (tickets, justificativas, reservas, treinamentos, certificados, relatórios, conformidade, usuários, configurações, chamada da aula) — a seta quebrada (mojibake) em `usuarios` também morreu aqui;
+  - Componente `<x-icon>`: família única de SVG (stroke uniforme, 18px, currentColor, `aria-hidden`), usado pela sidebar e pelo voltar; skip-link "Pular para o conteúdo" + `flash-ok`/`flash-erros` e `alert`s centralizados no layout (desduplicados das views);
+  - **CSS em escala 4/8** (`--space-1..7`): cards, tabelas, títulos, formulários e container com ritmo único; hover/focus consistentes; sidebar vira faixa horizontal rolável `<960px` (sem JS);
+  - Bug achado de passada na chamada da aula: `@if` vazio engolia o badge de fila — corrigido (fila + cancelada renderizam);
+  - Validação: suíte **93/305 verde**; smoke autenticado nas 10 páginas como RH (`ativo` correto em cada, `voltar` presente, zero 500); **screenshots reais** com automação de navegador (portal, tickets, matriz, usuários) — pegou no ato os ícones gigantes (wrapper `.icn` faltando no componente) e corrigiu com rebuild;
+  - Compatibilidade com o Nº 32–35 preservada: como o código agora é **embutido na imagem**, o rebuild (`docker compose up -d --build`) aplica a UI tanto local (`:18000`) quanto no redeploy da VPS.
+- **Artefatos:** `public/css/app.css`, `resources/views/layouts/portal.blade.php`, `resources/views/components/icon.blade.php`, `resources/views/portal/aula.blade.php`, `resources/views/portal/rh/*.blade.php`
+- **Decisões / por quê:** substitui "tudo na home + link textual de volta" por navegação de aplicativo — menos cliques para o júri percorrer os RFs e caráter mais profissional; sidebar servida no servidor (sem Alpine/JS) para não quebrar sem rede;
+- **Prompts-chave:** "faça uma revisão no layout… espaçamentos e intuitividade… botões de voltar para páginas anteriores, e menus laterais claros e intuitivos" — IA partiu das guias de UX (hierarquia de navegação, ritmo 4/8, estados de foco) aplicadas ao design system verde/laranja existente;
+- **Resultados:** validado em 3 níveis (testes, smoke HTTP autenticado, screenshots); UI aplicada no build local; pendente: redeploy na VPS quando o time quiser.
+- **Status:** Concluído.
+
+---
+
+## Nº 37 · CÓDIGO · Polimento de UI 2: mojibake eliminado, login com listinha de credenciais e listas com busca
+
+- **Quando:** 21/10/2026 03:45 → 04:10
+- **O que foi feito:**
+  - Time apontou: botões/inputs colados em `/verificar`, textos colados na lista de contas da `/login`, **caracteres errados** (ex.: "UsuÃ¡rios" em `/portal/rh/usuarios`) e pedido de **listas como tabelas com pesquisa**;
+  - **Causa-raiz das mojibake** (item 1 de 33 do método): dupla codificação UTF-8 em exatamente 2 arquivos — `docs/roteiro-demo.md` (81 pontos) e `portal/rh/usuarios.blade.php` (15) — resto da árvore **limpa**, comprovada por varredura byte-a-byte (padrões `C3 83 C2 xx` etc. via grep com arquivo de padrões no contêiner; o primeiro scan com 'Ã' deu falso positivo em "NÃO" — a letra Ã existe no PT!); ambos reescritos do zero (roteiro também atualizado p/ porta 18000 + seed automático);
+  - **Login repaginado**: bloco "Contas da demo" virou listinha com badge de papel por linha + `user-select:all` no e-mail (clique-copia), senha única destacada, dominínio explicado uma vez só;
+  - **Busca client-side** (5 linhas de JS inline, sem build): `input[data-busca="id"]` filtra `<tbody tr>` de tabelas **ou** cards com `data-linha`; aplicado em **Usuários** (agora tabela de verdade: Usuário/Setor/Turno/Papéis/Status/Ações, 57 linhas filtráveis), **Matriz de conformidade** (thead formal + busca por nome/setor), **Tickets** e **Justificativas** (cards filtráveis); formulário "Novo usuário" virou grid com labels;
+  - Espaçamentos: `form-inline` gap maior, `.linha-aula` com coluna principal flexível (ticket não espreme mais o texto), inputs distanciados no `/verificar` (botão full-width)');
+- **Artefatos:** `docs/roteiro-demo.md`, `resources/views/auth/login.blade.php`, `resources/views/portal/rh/{usuarios,conformidade,tickets,justificativas,certificados}.blade.php`, `resources/views/verificar/busca.blade.php`, `public/css/app.css`, `layouts/portal.blade.php` (JS de busca)
+- **Decisões / por quê:** busca no cliente (sem servidor) porque as listas são pequenas/passadas inteiras e a demo não pode depender de rede; tabelas substituem cards-exclusivos onde a densidade de informação manda (57 pessoas);
+- **Prompts-chave:** "…botões e inputs muito colados… textos muito colados na /login… deixe a lista de e-mails e a senha numa listinha mais bem feita… caracteres errados como UsuÃ¡rios… para as listas, algo mais próximo de tabelas com pesquisa";
+- **Resultados:** 93/305 verde; rebuild aplicado localmente; screenshots conferidos (login, usuários, matriz, tickets) — nenhum mojibake restante nas páginas servidas.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 04:10 — gerado pela skill `registro-hackathon`._

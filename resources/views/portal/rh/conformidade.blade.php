@@ -8,7 +8,12 @@
 
 
 <div class="card" style="overflow-x: auto;">
-    <table class="table">
+    <div class="cabeca-tabela">
+        <h2>Pessoas × treinamentos</h2>
+        <input type="search" class="campo-busca" data-busca="tabela-matriz" placeholder="Buscar por nome ou setor…" aria-label="Buscar na matriz">
+    </div>
+    <table class="table" id="tabela-matriz">
+        <thead>
         <tr>
             <th>Pessoa</th>
             <th>Setor</th>
@@ -16,6 +21,8 @@
                 <th>{{ $treinamento->nome }}<br><span class="muted">validade {{ $treinamento->validade_meses ?? '—' }}m</span></th>
             @endforeach
         </tr>
+        </thead>
+        <tbody>
         @foreach ($pessoas as $pessoa)
             <tr>
                 <td><strong>{{ $pessoa->name }}</strong></td>
@@ -36,6 +43,7 @@
                 @endforeach
             </tr>
         @endforeach
+        </tbody>
     </table>
 </div>
 @endsection

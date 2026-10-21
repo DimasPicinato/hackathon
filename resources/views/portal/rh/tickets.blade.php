@@ -7,8 +7,14 @@
 <h1>Tickets <span class="muted">(RF10–RF12)</span></h1>
 
 
+<div class="card">
+    <div class="cabeca-tabela">
+        <h2>Fila de trabalho</h2>
+        <input type="search" class="campo-busca" data-busca="lista-tickets" placeholder="Buscar por nº, tipo, pessoa…" aria-label="Buscar tickets">
+    </div>
+    <div id="lista-tickets">
 @forelse ($tickets as $ticket)
-    <div class="card">
+    <div class="card" data-linha>
         <div class="linha-aula">
             <div>
                 <strong>#{{ $ticket->id }} · {{ $ticket->tipoTicket->nome }}</strong>
@@ -67,4 +73,6 @@
 @empty
     <p class="muted">Nenhum ticket.</p>
 @endforelse
+    </div>
+</div>
 @endsection
