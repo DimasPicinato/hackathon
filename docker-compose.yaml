@@ -38,7 +38,15 @@ services:
         condition: service_healthy
       mailpit:
         condition: service_started
-    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+    # Reset total (aprovado pela equipe): cada (re)início do contêiner refaz o banco
+    # com o seed completo da demo (SEED01–04). Para conservar dados ao vivo, NÃO
+    # recriar/reiniciar o contêiner durante a apresentação.
+    command:
+      - sh
+      - -c
+      - |
+        php artisan migrate:fresh --seed --force
+        exec php artisan serve --host=0.0.0.0 --port=8000
 
   scheduler:
     build:

@@ -418,4 +418,19 @@
 
 ---
 
-_Última atualização: 21/10/2026 01:59 — gerado pela skill `registro-hackathon`._
+## 31 · CONFIGURAÇÃO · Seed automático no `up` (reset total aprovado pela equipe)
+
+- **Quando:** 21/10/2026 02:00 → 02:10
+- **O que foi feito:**
+  - Pergunta AT01 ao time (reset total vs. só-que-banco-vazio) — resposta: **reset total**; comando do `app` no `docker-compose.yaml` agora executa `migrate:fresh --seed --force` antes do `serve` (banco repovado a cada (re)início do contêiner com SEED01–04);
+  - Aviso documentado no README: `restart`/recriação **apaga dados ao vivo** — não reiniciar durante a apresentação; primeiros acessos após `up` aguardam ~20 s pelo seed;
+  - Validação ao vivo: `up --force-recreate app` → contêiner refeito, seed rodou sozinho (57 contas, 3 tickets abertos, 15 certificados conferidos no banco) e `/verificar` em `200 OK` após ~30 s.
+- **Artefatos:** `docker-compose.yaml`, `README.md`
+- **Decisões / por quê:** demo "à prova de esquecimento": qualquer máquina do time sobe a apresentação já semeada, sem lembrar do comando manual; custo: dados criados ao vivo não sobrevivem a restart (aceito pelo time na pergunta);
+- **Prompts-chave:** "quero que rode o seed quando eu subir o docker-compose.yaml" — AR01 aplicado: IA apresentou as duas políticas com recomendação e o time escolheu reset total;
+- **Resultados:** comprovado em execução: subida com seed 100% automático, servidor após o seed, dados da demo conferidos.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 21/10/2026 02:10 — gerado pela skill `registro-hackathon`._

@@ -38,9 +38,10 @@ docker run --rm -v .:/app -w /app -p 8000:8000 presenza/php php artisan serve --
 ### Homologação/demonstração (topologia AT02)
 
 ```sh
-docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app + scheduler, lembretes RF25)
-docker compose exec app php artisan migrate:fresh --seed --force
+docker compose up -d --build              # sem -f: o padrão É o compose de homologação (app + scheduler)
 ```
+
+**Seed automático (reset total — aprovado pela equipe):** a cada (re)criação do contêiner `app` o banco é repovado com `migrate:fresh --seed` (SEED01–04, ~15 s) antes do `serve`. Logo após `up`, aguarde ~20 s para o primeiro `200`. `docker compose restart` **apaga e resemeia** — não reinicie o contêiner durante a apresentação se quiser conservar dados criados ao vivo.
 
 `docker-compose.yaml` (padrão do compose) = topologia completa de homologação — inclui os serviços via `include` e adiciona `app` + `scheduler` com env fixa; `docker-compose.dev.yaml` = apenas `postgres` + `mailpit`.
 
