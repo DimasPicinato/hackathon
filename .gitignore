@@ -10,11 +10,38 @@ desktop.ini
 
 # Segredos/ambiente (nunca versionar)
 .env
+.env.backup
+.env.production
 .env.*
 
-# Dependências de ferramentas (se surgirem)
+# Dependências de ferramentas
 node_modules/
 __pycache__/
+vendor/
 
 # Temp do OpenCode
 .opencode/tmp/
+
+# Laravel (padrões do esqueleto)
+*.log
+.DS_Store
+.phpactor.json
+.phpunit.result.cache
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml

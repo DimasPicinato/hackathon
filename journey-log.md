@@ -203,6 +203,27 @@
 - **Resultados:** stack travada; instruções de instalação emitidas ao time (Docker Desktop requisito único).
 - **Status:** Concluído — scaffolding aguarda Docker instalado no ambiente.
 
+## 16 · CÓDIGO · Scaffold do Presenza rodando: Laravel + Docker (AT02) + auth Breeze + assets sem-build
+
+- **Quando:** 20/10/2026 22:56 → 23:28
+- **O que foi feito:**
+  - Docker Desktop iniciado (daemon v29.9.1/Compose v5.6.0);
+  - Projeto Laravel gerado por contêiner Composer e movido para a raiz do repositório (mesclando `.gitignore` do time com os padrões Laravel);
+  - **Imagem `presenza/php` (PHP 8.4 + extensões: pdo_pgsql, gd, bcmath, zip + Composer integrado)** — ajuste: esqueleto Laravel atual exige PHP ≥ 8.4.1 (original pensado era 8.3; alinhado);
+  - `docker-compose.yml` (dev/testes): `postgres` (pgvector/pg16 — suporte a vetor biométrico) + `mailpit` (captura de e-mails) com IK emitories persistente e healthcheck — conforme AT02;
+  - `docker-compose.homolog.yml`: `include` do compose de serviços + `app`/`scheduler` buildados com env fixo (hosts = nomes de serviço) — conforme AT02;
+  - `.env` dev configurado (pg em `host.docker.internal:5433`, Mailpit `:1025`, APP_NAME=Presenza) + `.env.example` espelhado;
+  - Migrações base aplicadas no PostgreSQL;
+  - Dependências: dompdf, php-qrcode +.dev debugbar/boost/breeze; **Breeze (Blade) scaffolding** de login/reset (RF01/RF28);
+  - **Assets sem build**: removido `@vite` das telas; `public/css/app.css` com tokens do design system + Alpine.js vendored (`public/js/alpine.min.js`);
+  - Laravel Boost instalado (skills de Laravel entraram no ambiente);
+  - Smoke test: container dev rodando em `localhost:8000` — home e /login respondendo 200.
+- **Artefatos:** `docker/php/Dockerfile`, `docker-compose.yml`, `docker-compose.homolog.yml`, `docker/.env`(implícito), `public/css/app.css`, `public/js/alpine.min.js`, app Laravel completo na raiz
+- **Decisões / por quê:** decisão da sessão 14; serviços rodam em contêiner (AT03); Build UI para o MVP (menos peças);ação real da usina vem depois da fachada aprovada.
+- **Prompts-chave:** "docker instalado, dá play e manda bala" — execução direta sob decisões aprovadas (Q35), sem novas aprovações necessárias.
+- **Resultados:** MVP básico em pé: banco+serviços nocivos e auth com reset-lzy; baseima code-level pronta para o entity injection.
+- **Status:** Concluído — próximo passo: migrations/seed do domínio (RF06–RF27) e telas conforme requisitos.
+
 ---
 
-_Última atualização: 20/10/2026 22:55 — gerado pela skill `registro-hackathon`._
+_Última atualização: 20/10/2026 23:28 — gerado pela skill `registro-hackathon`._

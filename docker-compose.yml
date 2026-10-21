@@ -1,0 +1,30 @@
+# Presenza — Serviços de desenvolvimento/testes (AT02)
+# A aplicação roda em contêiner dedicada via CLI do Docker, apontando para
+# host.docker.internal nas portas publicadas abaixo (o .env do dev usa essas).
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: presenza-postgres
+    environment:
+      POSTGRES_USER: presenza
+      POSTGRES_PASSWORD: presenza_dev
+      POSTGRES_DB: presenza
+    ports:
+      - "5433:5432"   # host 5433 -> evita conflito com PG local, se houver
+    volumes:
+      - presenza_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U presenza -d presenza"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: presenza-mailpit
+    ports:
+      - "1025:1025"    # SMTP (captura todos os e-mails do dev)
+      - "8025:8025"    # Web UI de e-mails capturados
+
+volumes:
+  presenza_pgdata:

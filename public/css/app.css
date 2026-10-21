@@ -1,0 +1,94 @@
+/* Presenza — tokens do design system (docs/design-p1.md) — CSS puro, sem build */
+:root {
+  --primary: #15803D;
+  --primary-600: #166534;
+  --on-primary: #FFFFFF;
+  --secondary: #22C55E;
+  --on-secondary: #0F172A;
+  --accent: #EA580C;
+  --on-accent: #0F172A;
+  --background: #F0FDF4;
+  --foreground: #14532D;
+  --card: #FFFFFF;
+  --card-foreground: #14532D;
+  --muted: #E8F0F1;
+  --muted-foreground: #475569;
+  --border: #BBF7D0;
+  --destructive: #DC2626;
+  --on-destructive: #FFFFFF;
+  --ring: #15803D;
+  --status-facial: #16A34A;
+  --status-manual: #D97706;
+  --status-aprovado: #16A34A;
+  --status-recusado: #DC2626;
+  --status-pendente: #F59E0B;
+  --status-fila: #0891B2;
+  --radius: 10px;
+  --font-heading: 'Lexend', system-ui, sans-serif;
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font: 16px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--font-heading); margin: 0 0 .5rem; }
+
+a { color: var(--primary); }
+
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: .6rem 1.1rem;
+  border-radius: var(--radius);
+  border: 0;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+.btn-primary { background: var(--primary); color: var(--on-primary); }
+.btn-accent  { background: var(--accent); color: var(--on-accent);}
+.btn-outline { border: 1px solid var(--primary); color: var(--primary); background: transparent; }
+
+input, select, textarea {
+  width: 100%;
+  padding: .55rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--foreground);
+  font: inherit;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible, .btn:focus-visible {
+  outline: 2px solid var(--ring); outline-offset: 2px;
+}
+
+label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+
+.badge {
+  display: inline-block;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+.badge-facial      { background: var(--status-facial); color: #fff; }
+.badge-manual      { background: var(--status-manual); color: #fff; }
+.badge-aprovado    { background: var(--status-aprovado); color: #fff; }
+.badge-recusado    { background: var(--status-recusado); color: #fff; }
+.badge-pendente    { background: var(--status-pendente); color: #fff; }
+.badge-fila        { background: var(--status-fila); color: #fff; }

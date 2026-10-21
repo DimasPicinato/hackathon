@@ -1,0 +1,69 @@
+# Presenza — Homologação/demonstração (AT02)
+# ESTENDE o compose de serviços (via include) e adiciona a aplicação DEFINITIVA,
+# com variáveis de ambiente FIXAS neste arquivo (compatibilidade de rede:
+# hosts = nomes de serviço da rede interna do compose).
+include:
+  - docker-compose.yml
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: presenza-app
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8000
+      # Hosts internos do compose (jamais localhost aqui — rede própria do compose)
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: presenza
+      DB_USERNAME: presenza
+      DB_PASSWORD: presenza_dev
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: "1025"
+      MAIL_ENCRYPTION: null
+      MAIL_FROM_ADDRESS: "presenza@usinalins.local"
+      MAIL_FROM_NAME: "Presenza"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: presenza-scheduler
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: presenza
+      DB_USERNAME: presenza
+      DB_PASSWORD: presenza_dev
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: "1025"
+      MAIL_ENCRYPTION: null
+      MAIL_FROM_ADDRESS: "presenza@usinalins.local"
+      MAIL_FROM_NAME: "Presenza"
+    depends_on:
+      app:
+        condition: service_started
+    command: ["php", "artisan", "schedule:work"]
