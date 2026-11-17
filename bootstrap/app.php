@@ -12,12 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // App atrás do proxy (TLS termina no proxy) e do compose interno: confiar em
-        // X-Forwarded-* APENAS de IPs de rede privada docker (172.16.0.0/12) faz o
-        // Laravel gerar URLs https:// (QR RF21, e-mails) e cookies secure — e evita
+        // App atrás do proxy (TLS termina no proxy): confiar em X-Forwarded-* de IPs de
+        // REDES PRIVADAS (RFC1918 — cobre a rede do compose e do proxy do Coolify) faz o
+        // Laravel gerar URLs https:// (QR RF21, e-mails, forms) e cookies secure — e evita
         // que um cliente público forje X-Forwarded-For para poluir auditorias de IP.
         // Em local (artisan serve, sem proxy) nada muda; ajuste via TRUSTED_PROXIES.
-        $middleware->trustProxies(at: (string) env('TRUSTED_PROXIES', '172.16.0.0/12'));
+        $middleware->trustProxies(at: (string) env('TRUSTED_PROXIES', '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'));
 
         $middleware->alias([
             'termo' => \App\Http\Middleware\ExigirAceiteTermo::class, // RF04
