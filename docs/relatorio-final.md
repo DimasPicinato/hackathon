@@ -11,7 +11,7 @@
 | **Produto** | **Presenza** |
 | **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
-| **Estado final** | 34/34 RFs implementados · 100 testes / 331 asserções verdes · aplicação no ar em `http://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
+| **Estado final** | 34/34 RFs implementados · 100 testes / 331 asserções verdes · aplicação no ar em `https://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
 **Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (45 sessões registradas por IA) e as evidências finais.
 
@@ -31,7 +31,7 @@
 | QR Code | **chillerlan/php-qrcode** | QR do certificado → página pública de verificação (RF21) |
 | E-mail (dev) | **Mailpit** | Captura de todos os e-mails da demo com UI web |
 | Infra | **Docker + Docker Compose** (dev e homologação) | `postgres` + `mailpit` (dev); `app` + `scheduler` buildados (homolog) |
-| Deploy | **Coolify em VPS** | Domínio `http://hackathon.dpicinato.com` |
+| Deploy | **Coolify em VPS** | Domínio `https://hackathon.dpicinato.com` |
 | Testes | **PHPUnit** (feature) rodando no PostgreSQL real | 93 testes / 305 asserções |
 | Versionamento | **Git / GitHub** | Processo e código versionados |
 | IA | **IA generativa de preferência do time, operada via agente OpenCode (CLI)** com *skills* (`grilling`, `ui-ux-pro-max`, `frontend-design`, `ui-styling`, `design-system`, `web-design-guidelines`, `laravel-best-practices`, `testing-best-practices`, `registro-hackathon`) | 100% do código escrito por IA; decisões sempre com o time (AT01) |
@@ -65,7 +65,7 @@ Transversal: Auditoria de eventos sensíveis (RNF01) · Termo LGPD versionado + 
 Infra (AT02): docker-compose.dev.yaml = postgres (:5433) + mailpit (:8025)
               docker-compose.yaml   = idem + app (:18000→8000) + scheduler, env fixo,
               código e vendor EMBUTIDOS na imagem (local = VPS)
-Deploy: Coolify (VPS) → http://hackathon.dpicinato.com
+Deploy: Coolify (VPS) → https://hackathon.dpicinato.com
 ```
 
 Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simulável** (RNF06) com embeddings no pgvector; a integridade da chamada é garantida por **constraints no banco** (unique), não só por código; o certificado é **imutável por versão** (reemissão mata o código antigo na verificação pública).
@@ -87,7 +87,7 @@ Pontos-chave: a biometria nunca toca hardware real — é uma **fachada simuláv
 - **34/34 requisitos funcionais** (RF01–RF34) implementados e cobertos por testes: **100 testes / 331 asserções verdes** no PostgreSQL real.
 - **Assistente de IA público** (RF29–RF34): runtime OpenCode em contêiner com agente somente leitura de `docs/`, widget sem login **em todas as telas** (públicas e portal logado) em bloco único, cortesia em falha e auditoria das conversas visível só ao Admin.
 - Demo de 5 min com "momento uau": reemissão de certificado → código antigo vira **NÃO ENCONTRADO** na verificação pública ao vivo.
-- Aplicação publicada: `http://hackathon.dpicinato.com` · códigos de demonstração: `PZ-2025-000101` (VÁLIDO) e `PZ-2024-000087` (EXPIRADO).
+- Aplicação publicada: `https://hackathon.dpicinato.com` · códigos de demonstração: `PZ-2025-000101` (VÁLIDO) e `PZ-2024-000087` (EXPIRADO).
 
 ## 1.5 Quesitos da banca → como o projeto atende
 
@@ -698,7 +698,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 ### Verificação pública (sem login)
 
-`http://hackathon.dpicinato.com/verificar` · códigos: **`PZ-2025-000101` (VÁLIDO)** · **`PZ-2024-000087` (EXPIRADO)**.
+`https://hackathon.dpicinato.com/verificar` · códigos: **`PZ-2025-000101` (VÁLIDO)** · **`PZ-2024-000087` (EXPIRADO)**.
 
 ### Qualidade
 

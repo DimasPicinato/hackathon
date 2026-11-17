@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -11,17 +12,36 @@ use Illuminate\Support\Str;
  *
  * Contrato HTTP provado localmente (OpenCode v2.x):
  *   POST /api/session                         cria a sessão (agente + modelo)
- *   POST /api/session/{id}/prompt             envia a pergunta ({text})
+ *   POST /api/session/{id}/prompt             envia a pergunta ({text}) e devolve data.id
  *   POST /api/experimental/session/{id}/wait  aguarda a conclusão
  *   GET  /api/session/{id}/message            lê as mensagens (content[].text)
  *
  * Auth: HTTP Basic — usuário "opencode" + senha fixa do servidor
  * (OPENCODE_SERVER_PASSWORD no contêiner / ASSISTENTE_SENHA no Laravel).
+ *
+ * Integridade da resposta (auditoria 17/11):
+ * - só aceitamos texto de assistant gerado DEPOIS do prompt enviado (nada de resposta "antiga");
+ * - texto que é claramente erro do gateway (auth/quota/rate limit) vira falha, não resposta;
+ * - a sessão runtime é serializada por lock (evita respostas cruzadas em chamadas concorrentes).
  */
 class RuntimeAssistente
 {
     /** Resposta de cortesia quando o runtime/gateway falha (RNF08). */
     public const CORTESIA = 'O assistente está indisponível neste momento. Fale com o RH da Usina ou abra um ticket pelo portal.';
+
+    /** Textos que indicam erro do gateway do modelo (não são resposta legítima). */
+    private const PADROES_ERRO_GATEWAY = [
+        'authentication required',
+        'unauthorized',
+        'api key',
+        'rate limit',
+        'quota',
+        'insufficient',
+        'exceeded',
+    ];
+
+    /** Tempo de vida do lock por thread (maior que o timeout total do ciclo). */
+    private const LOCK_TTL_SEGUNDOS = 130;
 
     /** Cria (ou reaproveita) a sessão do runtime para a thread da aba e responde. */
     public function responder(string $sessao, string $pergunta): string
@@ -36,12 +56,16 @@ class RuntimeAssistente
                 return $this->tentarResponder($sessao, $pergunta);
             } catch (\Throwable $e) {
                 // Sessão do runtime pode ter morrido (restart/deploy): descarta o cache.
-                Cache::forget($chave);
+                // Timeout não invalida a sessão — só a espera falhou (ContextException vem
+                // do client Http; descartar aqui perderia o contexto sem necessidade).
+                $rapida = (microtime(true) - $inicio) < 15;
+
+                if ($rapida && ! $e instanceof ConnectionException) {
+                    Cache::forget($chave);
+                }
 
                 // Só repete falhas RÁPIDAS (sessão inválida, 401/404). Timeout/latência
                 // do modelo não se resolve repetindo — repetir só dobraria a espera.
-                $rapida = (microtime(true) - $inicio) < 15;
-
                 if (! $rapida || $tentativa === $tentativas) {
                     throw $e;
                 }
@@ -51,21 +75,37 @@ class RuntimeAssistente
         throw new \RuntimeException('Runtime sem resposta.');
     }
 
+    /** Ciclo prompt → wait → leitura, serializado por thread (nada de respostas cruzadas). */
     private function tentarResponder(string $sessao, string $pergunta): string
     {
-        $sessaoRuntime = $this->sessaoRuntime($sessao);
+        $lock = Cache::lock("assistente:lock:{$sessao}", self::LOCK_TTL_SEGUNDOS);
 
-        $this->post("/api/session/{$sessaoRuntime}/prompt", ['text' => $pergunta]);
+        // Se outra chamada da MESMA thread está em andamento, esperamos a vez dela
+        // (evita intercalar prompt/wait/message de duas perguntas na mesma sessão).
+        $lock->block(min(115, (int) config('services.assistente.timeout', 100)));
 
-        $this->post("/api/experimental/session/{$sessaoRuntime}/wait", []);
+        try {
+            $sessaoRuntime = $this->sessaoRuntime($sessao);
 
-        $resposta = $this->ultimaResposta($sessaoRuntime);
+            $enviado = $this->post("/api/session/{$sessaoRuntime}/prompt", ['text' => $pergunta]);
+            $idPrompt = $enviado['data']['id'] ?? null;
 
-        if ($resposta === null) {
-            throw new \RuntimeException('Runtime sem resposta de texto.');
+            if (! is_string($idPrompt) || $idPrompt === '') {
+                throw new \RuntimeException('Runtime não retornou o id do prompt.');
+            }
+
+            $this->post("/api/experimental/session/{$sessaoRuntime}/wait", []);
+
+            $resposta = $this->respostaDoTurno($sessaoRuntime, $idPrompt);
+
+            if ($resposta === null) {
+                throw new \RuntimeException('Runtime sem resposta de texto para o turno atual.');
+            }
+
+            return $resposta;
+        } finally {
+            $lock->release();
         }
-
-        return $resposta;
     }
 
     private function chave(string $sessao): string
@@ -101,26 +141,73 @@ class RuntimeAssistente
         return $id;
     }
 
-    /** Última mensagem do assistente com bloco de texto (formato: data[].content[].text). */
-    private function ultimaResposta(string $sessaoRuntime): ?string
+    /**
+     * Texto do assistant gerado APENAS para o turno identificado por $idPrompt.
+     * Devolve null quando o turno não produziu resposta — nunca devolve resposta de
+     * pergunta anterior (stale) nem texto que seja erro do gateway do modelo.
+     */
+    private function respostaDoTurno(string $sessaoRuntime, string $idPrompt): ?string
     {
         $resposta = $this->get("/api/session/{$sessaoRuntime}/message");
 
         $mensagens = $resposta['data'] ?? [];
 
-        foreach (array_reverse($mensagens) as $mensagem) {
+        $indicePrompt = null;
+
+        foreach ($mensagens as $indice => $mensagem) {
+            if (($mensagem['id'] ?? null) === $idPrompt) {
+                $indicePrompt = $indice;
+                break;
+            }
+        }
+
+        if ($indicePrompt === null) {
+            return null;
+        }
+
+        foreach (array_slice($mensagens, $indicePrompt + 1) as $mensagem) {
             if (($mensagem['type'] ?? null) !== 'assistant') {
                 continue;
             }
 
+            // O contrato pode sinalizar falha do turno no próprio objeto da mensagem.
+            if (isset($mensagem['error']) && $mensagem['error'] !== null) {
+                return null;
+            }
+
             foreach ($mensagem['content'] ?? [] as $bloco) {
-                if (($bloco['type'] ?? null) === 'text' && isset($bloco['text']) && trim($bloco['text']) !== '') {
-                    return trim($bloco['text']);
+                if (($bloco['type'] ?? null) !== 'text' || ! isset($bloco['text'])) {
+                    continue;
                 }
+
+                $texto = trim($bloco['text']);
+
+                if ($texto === '') {
+                    continue;
+                }
+
+                if ($this->pareceErroGateway($texto)) {
+                    return null; // erro do provedor não é resposta legítima (RNF08 cobre)
+                }
+
+                return $texto;
             }
         }
 
         return null;
+    }
+
+    private function pareceErroGateway(string $texto): bool
+    {
+        $achatado = strtolower(Str::limit($texto, 300, ''));
+
+        foreach (self::PADROES_ERRO_GATEWAY as $padrao) {
+            if (str_contains($achatado, $padrao)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @return array{id: string, providerID: string} */
@@ -139,7 +226,7 @@ class RuntimeAssistente
                 (string) config('services.assistente.senha'),
             )
             ->acceptJson()
-            ->timeout((int) config('services.assistente.timeout', 60));
+            ->timeout((int) config('services.assistente.timeout', 100));
     }
 
     /** @return array<mixed> */

@@ -29,8 +29,8 @@
                             {{ $mensagem->estado === 'ok' ? 'respondida' : 'cortesia' }}
                         </span>
                     </td>
-                    <td>{{ $mensagem->pergunta }}</td>
-                    <td>{{ $mensagem->resposta }}</td>
+                    <td class="celula-texto">{{ \Illuminate\Support\Str::limit($mensagem->pergunta, 240) }}</td>
+                    <td class="celula-texto">{{ \Illuminate\Support\Str::limit($mensagem->resposta, 240) }}</td>
                     <td>{{ $mensagem->ip ?? '—' }}</td>
                 </tr>
             @empty

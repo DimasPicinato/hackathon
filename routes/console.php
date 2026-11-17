@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // RF25 — lembretes rodando por conta própria no serviço `scheduler` (homologação)
 Schedule::command('presenza:lembretes')->hourly();
+
+// LGPD/Q58 — retenção das conversas do assistente: apaga registros > 30 dias (diário)
+Schedule::command('presenza:limpar-assistente')->daily();

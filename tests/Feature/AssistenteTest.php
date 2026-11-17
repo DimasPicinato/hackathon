@@ -21,11 +21,11 @@ class AssistenteTest extends TestCase
     {
         Http::fake([
             '*/api/session' => Http::response(['data' => ['id' => 'ses_teste']], 200),
-            '*/api/session/ses_teste/prompt' => Http::response(['data' => ['id' => 'msg_teste']], 200),
+            '*/api/session/ses_teste/prompt' => Http::response(['data' => ['id' => 'msg_prompt_1']], 200),
             '*/api/experimental/session/ses_teste/wait' => Http::response(['data' => []], 200),
             '*/api/session/ses_teste/message' => Http::response(['data' => [
-                ['type' => 'user', 'payload' => ['text' => 'pergunta']],
-                ['type' => 'assistant', 'content' => [['type' => 'text', 'text' => $resposta]]],
+                ['id' => 'msg_prompt_1', 'type' => 'user', 'payload' => ['text' => 'pergunta']],
+                ['id' => 'msg_assistant_1', 'type' => 'assistant', 'content' => [['type' => 'text', 'text' => $resposta]]],
                 ['type' => 'idle', 'outcome' => 'succeeded'],
             ]], 200),
         ]);
@@ -108,10 +108,11 @@ class AssistenteTest extends TestCase
         Http::fake([
             '*/api/session/ses_morto/prompt' => Http::response(['message' => 'sessão não existe'], 404),
             '*/api/session' => Http::response(['data' => ['id' => 'ses_novo']], 200),
-            '*/api/session/ses_novo/prompt' => Http::response(['data' => ['id' => 'msg_1']], 200),
+            '*/api/session/ses_novo/prompt' => Http::response(['data' => ['id' => 'msg_prompt_2']], 200),
             '*/api/experimental/session/ses_novo/wait' => Http::response([], 204),
             '*/api/session/ses_novo/message' => Http::response(['data' => [
-                ['type' => 'assistant', 'content' => [['type' => 'text', 'text' => 'Resposta após recriar a sessão.']]],
+                ['id' => 'msg_prompt_2', 'type' => 'user'],
+                ['id' => 'msg_assistant_2', 'type' => 'assistant', 'content' => [['type' => 'text', 'text' => 'Resposta após recriar a sessão.']]],
             ]], 200),
         ]);
 
@@ -126,6 +127,87 @@ class AssistenteTest extends TestCase
             ]);
 
         $this->assertSame('ses_novo', Cache::get('assistente:sessao:thread-retry'));
+    }
+
+    /** A3 — erro do gateway do modelo NÃO pode vir como resposta legítima. */
+    public function test_erro_do_gateway_vira_cortesia_e_nao_resposta(): void
+    {
+        Cache::put('assistente:sessao:thread-gateway', 'ses_teste', now()->addMinutes(30));
+
+        Http::fake([
+            '*/api/session' => Http::response(['data' => ['id' => 'ses_teste']], 200),
+            '*/api/session/ses_teste/prompt' => Http::response(['data' => ['id' => 'msg_prompt_9']], 200),
+            '*/api/experimental/session/ses_teste/wait' => Http::response([], 204),
+            '*/api/session/ses_teste/message' => Http::response(['data' => [
+                ['id' => 'msg_prompt_9', 'type' => 'user'],
+                ['id' => 'msg_err', 'type' => 'assistant', 'content' => [['type' => 'text', 'text' => 'Authentication required']]],
+            ]], 200),
+        ]);
+
+        $resposta = $this->postJson(route('assistente.responder'), [
+            'sessao' => 'thread-gateway',
+            'pergunta' => 'Onde verifico um certificado?',
+        ])
+            ->assertOk() // RNF08
+            ->assertJson(['estado' => 'fallback'])
+            ->json('resposta');
+
+        $this->assertStringContainsString('indisponível', $resposta);
+    }
+
+    /** A4 — a resposta tem que ser do turno atual; resposta antiga não vale. */
+    public function test_segunda_pergunta_nao_recebe_a_resposta_da_anterior(): void
+    {
+        Cache::put('assistente:sessao:thread-stale', 'ses_teste', now()->addMinutes(30));
+
+        Http::fake([
+            '*/api/session' => Http::response(['data' => ['id' => 'ses_teste']], 200),
+            '*/api/session/ses_teste/prompt' => Http::response(['data' => ['id' => 'msg_prompt_2']], 200),
+            '*/api/experimental/session/ses_teste/wait' => Http::response([], 204),
+            '*/api/session/ses_teste/message' => Http::response(['data' => [
+                ['id' => 'msg_prompt_1', 'type' => 'user'],
+                ['id' => 'msg_resp_1', 'type' => 'assistant', 'content' => [['type' => 'text', 'text' => 'Resposta ANTIGA']]],
+                ['id' => 'msg_prompt_2', 'type' => 'user'],
+                // turno atual falhou silenciosamente: nenhuma assistant depois de msg_prompt_2
+                ['type' => 'idle', 'outcome' => 'succeeded'],
+            ]], 200),
+        ]);
+
+        $this->postJson(route('assistente.responder'), [
+            'sessao' => 'thread-stale',
+            'pergunta' => 'Como funciona a fila de espera?',
+        ])
+            ->assertOk()
+            ->assertJson(['estado' => 'fallback']); // cortesia, nunca a resposta anterior
+    }
+
+    /** M3 — trim e formato da sessão na validação server-side. */
+    public function test_pergunta_so_com_espacos_e_sessao_malformada_sao_recusadas(): void
+    {
+        $this->postJson(route('assistente.responder'), ['sessao' => 'thread-ok-123', 'pergunta' => '   '])
+            ->assertStatus(422);
+
+        $this->postJson(route('assistente.responder'), ['sessao' => 'thread com espacos!', 'pergunta' => 'Pergunta válida aqui'])
+            ->assertStatus(422);
+
+        $this->assertDatabaseCount('assistente_mensagens', 0);
+    }
+
+    /** LGPD/Q58 — retenção: purge de conversas com mais de 30 dias. */
+    public function test_purge_apaga_apenas_conversas_com_mais_de_30_dias(): void
+    {
+        $antiga = AssistenteMensagem::forceCreate([
+            'sessao' => 'thread-antiga', 'pergunta' => 'p', 'resposta' => 'r', 'estado' => 'ok',
+            'ip' => '10.0.0.9', 'created_at' => now()->subDays(31), 'updated_at' => now()->subDays(31),
+        ]);
+        AssistenteMensagem::forceCreate([
+            'sessao' => 'thread-recente', 'pergunta' => 'p', 'resposta' => 'r', 'estado' => 'ok', 'ip' => '10.0.0.9',
+        ]);
+
+        $this->artisan('presenza:limpar-assistente')->assertSuccessful();
+
+        $this->assertDatabaseMissing('assistente_mensagens', ['sessao' => 'thread-antiga']);
+        $this->assertDatabaseHas('assistente_mensagens', ['sessao' => 'thread-recente']);
     }
 
     public function test_admin_ve_as_conversas_e_rh_nao(): void

@@ -175,6 +175,8 @@
     width: 100%;
     max-width: none;
     height: calc(100vh - 56px);
+    /* dvh: em mobile, 100vh inclui a barra dinâmica — com teclado aberto o input saía da tela */
+    height: calc(100dvh - 56px);
     max-height: none;
     border-radius: var(--radius) var(--radius) 0 0;
   }

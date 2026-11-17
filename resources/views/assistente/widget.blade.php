@@ -39,6 +39,7 @@
                 abrir: false,
                 carregando: false,
                 pergunta: '',
+                seq: 1,
                 sessao: (window.crypto && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)),
                 mensagens: [{
                     id: 1,
@@ -51,26 +52,36 @@
                     const texto = this.pergunta.trim();
                     if (texto.length < 3) return;
 
-                    this.mensagens.push({ id: Date.now(), autor: 'voce', texto: texto });
+                    this.mensagens.push({ id: this.seq++, autor: 'voce', texto: texto });
                     this.pergunta = '';
                     this.carregando = true;
                     this.rolar();
 
                     try {
+                        // O servidor pode levar até ~100 s (modelo free com cold start);
+                        // aborta um pouco além disso para o painel nunca ficar preso.
                         const resposta = await fetch('/assistente', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                            body: JSON.stringify({ sessao: this.sessao, pergunta: texto })
+                            body: JSON.stringify({ sessao: this.sessao, pergunta: texto }),
+                            signal: AbortSignal.timeout(120000)
                         });
-                        const dados = await resposta.json();
-                        this.mensagens.push({
-                            id: Date.now() + 1,
-                            autor: 'assistente',
-                            texto: dados.resposta || 'Não consegui responder agora. Fale com o RH da Usina.'
-                        });
+                        let dados = null;
+                        try { dados = await resposta.json(); } catch (e) { dados = null; }
+
+                        if (resposta.ok && dados && dados.estado === 'ok') {
+                            this.mensagens.push({ id: this.seq++, autor: 'assistente', texto: dados.resposta });
+                        } else if (resposta.status === 422) {
+                            this.mensagens.push({ id: this.seq++, autor: 'assistente',
+                                texto: 'A pergunta precisa ter entre 3 e 500 caracteres. Tente reformular.' });
+                        } else {
+                            // fallback/erro do servidor: a cortesia do servidor quando existir
+                            this.mensagens.push({ id: this.seq++, autor: 'assistente',
+                                texto: (dados && dados.resposta) || 'O assistente está indisponível neste momento. Fale com o RH da Usina ou abra um ticket pelo portal.' });
+                        }
                     } catch (erro) {
                         this.mensagens.push({
-                            id: Date.now() + 1,
+                            id: this.seq++,
                             autor: 'assistente',
                             texto: 'O assistente está indisponível neste momento. Fale com o RH da Usina ou abra um ticket pelo portal.'
                         });

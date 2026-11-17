@@ -229,6 +229,9 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
 .table thead th { font-family: var(--font-heading); font-size: .78rem;
                   text-transform: uppercase; letter-spacing: .04em; color: var(--muted-foreground); }
 .table tbody tr:hover { background: rgba(21, 128, 61, .04); }
+/* Células de texto longo (ex.: conversas do assistente): limita largura e quebra
+   strings sem espaços em vez de estourar a tabela */
+.table .celula-texto { max-width: 420px; overflow-wrap: anywhere; }
 
 .linha-aula { display: flex; align-items: center; justify-content: space-between;
               gap: var(--space-4); padding: var(--space-3) 0;

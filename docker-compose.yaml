@@ -45,6 +45,17 @@ services:
       OPENCODE_API_KEY: ${OPENCODE_API_KEY:-}
     expose:
       - "4096"
+    # Healthcheck real: a API só responde com Basic auth — checa /doc com a senha do env.
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:4096/doc',{headers:{Authorization:'Basic '+Buffer.from('opencode:'+process.env.OPENCODE_SERVER_PASSWORD).toString('base64')}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     restart: unless-stopped
 
   app:
@@ -66,7 +77,7 @@ services:
       # valores FIXOS abaixo; local, o .env do time continua podendo sobrescrever.
       # APP_URL fixo = domínio público — QR (RF21) e links de e-mail o usam; APP_KEY
       # é fixa de DEMO no repositório (gerar nova se o projeto crescer de escopo).
-      APP_URL: ${APP_URL:-http://hackathon.dpicinato.com}
+      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
       APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       # Hosts internos do compose (jamais localhost aqui — rede própria do compose)
       DB_CONNECTION: pgsql
@@ -94,7 +105,7 @@ services:
       mailpit:
         condition: service_started
       assistente:
-        condition: service_started
+        condition: service_healthy
     # Reset total (aprovado pela equipe): cada (re)início do contêiner refaz o banco
     # com o seed completo da demo (SEED01–04). Para conservar dados ao vivo, NÃO
     # recriar/reiniciar o contêiner durante a apresentação.
@@ -115,7 +126,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
-      APP_URL: ${APP_URL:-http://hackathon.dpicinato.com}
+      APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
       APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       DB_CONNECTION: pgsql
       DB_HOST: postgres
