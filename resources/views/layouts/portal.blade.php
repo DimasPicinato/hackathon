@@ -6,6 +6,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('titulo', 'Presenza')</title>
         <link rel="stylesheet" href="/css/app.css">
+        {{-- RF03/RF14 — face-api.js vendored (sem build): extrai o embedding no navegador --}}
+        <script src="/vendor/face-api/face-api.min.js" defer></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
     </head>
@@ -67,6 +69,9 @@
                 </nav>
 
                 <div class="lateral-pe">
+                    <a class="lateral-link {{ $botaoAtivo('portal.biometria.*') }}" href="{{ route('portal.biometria.mostrar') }}">
+                        <x-icon nome="camera"/> Cadastro facial
+                    </a>
                     <a class="lateral-link {{ $botaoAtivo('profile.*') }}" href="{{ route('profile.edit') }}">
                         <x-icon nome="perfil"/> Meu perfil
                     </a>
@@ -127,5 +132,6 @@
             });
         </script>
         @include('assistente.widget')
+        @include('partials.camera-facial')
     </body>
 </html>

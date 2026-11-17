@@ -10,6 +10,11 @@ class Biometria extends Model
 {
     protected $fillable = ['user_id', 'modelo', 'ativo'];
 
+    protected $casts = [
+        'ativo' => 'boolean',
+        'capturado_em' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

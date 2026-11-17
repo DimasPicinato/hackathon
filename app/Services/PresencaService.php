@@ -15,11 +15,46 @@ use Illuminate\Validation\ValidationException;
 // RF03, RF14–RF17 — regras centralizadas da chamada (facial + homologação manual)
 class PresencaService
 {
-    public function registrarFacial(Aula $aula, User $colaborador, ?int $atorId = null, ?string $ip = null): Presenca
+    public function __construct(private BiometriaService $biometria)
+    {
+    }
+
+    /**
+     * RF14 — presença facial REAL: o embedding capturado no navegador precisa
+     * reconhecer o colaborador (pgvector, cosseno >= limiar). A identidade vem do
+     * rosto, não do parâmetro; divergência é recusada e auditada (RF16/RNF01).
+     */
+    public function registrarFacial(Aula $aula, User $colaborador, ?int $atorId = null, ?string $ip = null, ?array $embedding = null): Presenca
     {
         $this->garantirJanelaAtiva($aula);           // RF03
         $this->garantirConsentimento($colaborador);  // RF04
         $this->garantirAusenciaDuplicidade($aula, $colaborador, $atorId); // RF16
+
+        $match = $embedding ? $this->biometria->identificar($embedding) : null;
+
+        if ($match === null) {
+            Auditoria::registrar('presenca_facial_rejeitada', $aula, [
+                'colaborador' => $colaborador->matricula,
+                'motivo' => $embedding ? 'nenhum cadastro acima do limiar' : 'captura sem embedding',
+            ], $atorId ?? $colaborador->id, $ip);
+
+            throw ValidationException::withMessages([
+                'facial' => 'Rosto não reconhecido — confirme o cadastro biométrico do colaborador ou use a homologação manual (RF14/RF15).',
+            ]);
+        }
+
+        if ($match['user']->id !== $colaborador->id) {
+            // Anti-fraude: o rosto reconhecido NÃO é o do colaborador reivindicado.
+            Auditoria::registrar('presenca_facial_divergente', $aula, [
+                'reivindicado' => $colaborador->matricula,
+                'reconhecido' => $match['user']->matricula,
+                'similaridade' => $match['similaridade'],
+            ], $atorId ?? $colaborador->id, $ip);
+
+            throw ValidationException::withMessages([
+                'facial' => 'O rosto capturado não corresponde ao cadastro do colaborador indicado — presença não registrada (RF16).',
+            ]);
+        }
 
         $presenca = Presenca::create([
             'aula_id' => $aula->id,
@@ -30,7 +65,8 @@ class PresencaService
 
         Auditoria::registrar('presenca_facial', $presenca, [
             'aula' => $aula->titulo,
-            'similidade' => 'fachada-demo (cosseno/pgvector)', // RNF06: fachada, sem hardware
+            'similaridade' => number_format($match['similaridade'] * 100, 1, ',', '').'% (cosseno/pgvector)',
+            'modelo' => BiometriaService::MODELO,
         ], $atorId ?? $colaborador->id, $ip);
 
         return $presenca;

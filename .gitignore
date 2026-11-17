@@ -18,6 +18,8 @@ desktop.ini
 node_modules/
 __pycache__/
 vendor/
+# Exceção: face-api.js vendored é asset de runtime (RF03) — é versionado
+!public/vendor/
 
 # Temp do OpenCode
 .opencode/tmp/

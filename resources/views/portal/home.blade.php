@@ -121,7 +121,8 @@
             </div>
             <div class="linha-acoes">
                 @if ($aula->estaAtiva() && $inscricao->status === 'reservada')
-                    <form method="POST" action="{{ route('portal.presenca.facial') }}">@csrf
+                    {{-- RF14.a — captura real: embedding no navegador via partial camera-facial --}}
+                    <form method="POST" action="{{ route('portal.presenca.facial') }}" data-facial data-modo="presenca" data-nome="{{ $user->name }}">@csrf
                         <input type="hidden" name="aula_id" value="{{ $aula->id }}">
                         <button class="btn btn-accent">📷 Validar presença agora (facial)</button>
                     </form>

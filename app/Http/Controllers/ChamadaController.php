@@ -15,32 +15,55 @@ class ChamadaController extends Controller
     {
     }
 
-    // RF14.a — o colaborador valida a própria presença pela câmera
+    // RF14.a — o colaborador valida a própria presença pela câmera (embedding do navegador)
     public function facialAutonoma(Request $request)
     {
+        // form HTML chega com o vetor como string JSON; API JSON chega como array
+        $request->merge(['embedding' => $this->decodificarEmbedding($request->input('embedding'))]);
+
         $data = $request->validate([
             'aula_id' => ['required', 'integer', 'exists:aulas,id'],
+            'embedding' => ['required', 'array', 'size:128'],
+            'embedding.*' => ['numeric', 'between:-2,2'],
         ]);
 
         $aula = Aula::findOrFail($data['aula_id']);
-        $this->presenca->registrarFacial($aula, $request->user(), null, $request->ip());
+        $this->presenca->registrarFacial($aula, $request->user(), null, $request->ip(), $data['embedding']);
 
         return redirect()->route('portal')
             ->with('status', "Presença registrada por reconhecimento facial em '{$aula->titulo}'.");
     }
 
-    // RF14.b — instrutor executa o reconhecimento para o colaborador
+    /** RF14.b — instrutor executa o reconhecimento para o colaborador */
     public function facialViaInstrutor(Request $request, Aula $aula)
     {
         $this->autorizarInstrutor($aula);
 
-        $data = $request->validate(['colaborador_id' => ['required', 'integer', 'exists:users,id']]);
+        $request->merge(['embedding' => $this->decodificarEmbedding($request->input('embedding'))]);
+
+        $data = $request->validate([
+            'colaborador_id' => ['required', 'integer', 'exists:users,id'],
+            'embedding' => ['required', 'array', 'size:128'],
+            'embedding.*' => ['numeric', 'between:-2,2'],
+        ]);
         $colaborador = User::findOrFail($data['colaborador_id']);
 
-        $this->presenca->registrarFacial($aula, $colaborador, $aula->instrutor_id, $request->ip());
+        $this->presenca->registrarFacial($aula, $colaborador, $aula->instrutor_id, $request->ip(), $data['embedding']);
 
         return redirect()->route('portal.aula.mostrar', $aula)
             ->with('status', "Presença de {$colaborador->name} registrada por reconhecimento facial.");
+    }
+
+    /** O vetor facial chega como string JSON (form HTML) ou array (API JSON). */
+    private function decodificarEmbedding(mixed $valor): mixed
+    {
+        if (is_string($valor)) {
+            $decodificado = json_decode($valor, true);
+
+            return is_array($decodificado) ? $decodificado : [];
+        }
+
+        return $valor;
     }
 
     // RF15 — homologação manual: senha do colaborador + motivo do catálogo (ou novo)

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\AssistenteController;
+use App\Http\Controllers\BiometriaController;
 use App\Http\Controllers\ChamadaController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\Rh\CertificadosController;
@@ -44,6 +45,10 @@ Route::middleware('auth')->group(function () {
         // RF14.a — presença facial autônoma do colaborador
         Route::post('/portal/presenca/facial', [ChamadaController::class, 'facialAutonoma'])
             ->name('portal.presenca.facial');
+
+        // RF03/RNF01 — autocadastro biométrico (enrollment do próprio rosto)
+        Route::get('/portal/biometria', [BiometriaController::class, 'mostrar'])->name('portal.biometria.mostrar');
+        Route::post('/portal/biometria', [BiometriaController::class, 'cadastrar'])->name('portal.biometria.cadastrar');
 
         // RF06/RF14.b/RF15 — chamada conduzida pelo instrutor
         Route::get('/portal/aulas/{aula}', [ChamadaController::class, 'aula'])->name('portal.aula.mostrar');
