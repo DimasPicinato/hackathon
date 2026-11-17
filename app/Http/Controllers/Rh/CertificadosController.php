@@ -55,7 +55,7 @@ class CertificadosController extends Controller
             $request->ip(),
         );
 
-        return back()->with('ok', "Certificado {$certificado->codigo} emitido (RF19) — verificável no QR público.");
+        return back()->with('ok', "Certificado {$certificado->codigo} emitido — verificável no QR público.");
     }
 
     public function reemitir(Request $request, Certificado $certificado)
@@ -64,6 +64,6 @@ class CertificadosController extends Controller
 
         $novo = CertificadoService::reemitir($certificado, $request->user(), $request->ip());
 
-        return back()->with('ok', "Reemissão (RF20): {$certificado->codigo} → {$novo->codigo} (v{$novo->versao}). O código antigo deixa de verificar.");
+        return back()->with('ok', "Reemissão concluída: {$certificado->codigo} → {$novo->codigo} (versão {$novo->versao}). O código antigo deixa de verificar.");
     }
 }

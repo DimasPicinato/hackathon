@@ -38,7 +38,7 @@ class EnviarLembretesAula extends Command
                     Notificacao::create([
                         'user_id' => $inscricao->user_id,
                         'titulo' => 'Fila de espera: posição ' . $inscricao->posicao_fila,
-                        'corpo' => "{$nomeAula}: você está na posição {$inscricao->posicao_fila} da fila — se alguém cancelar, a vaga é sua automaticamente (RF09).",
+                        'corpo' => "{$nomeAula}: você está na posição {$inscricao->posicao_fila} da fila de espera — se alguém cancelar, a vaga é sua automaticamente.",
                         'tipo' => 'lembrete_fila',
                         'link' => '/portal',
                     ]);

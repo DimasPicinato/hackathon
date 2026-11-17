@@ -18,9 +18,9 @@
             <button type="button" class="btn btn-accent" id="rec-capturar" disabled>Capturar</button>
             <button type="button" class="btn btn-outline" id="rec-cancelar">Cancelar</button>
         </div>
-        <p class="mini muted">A imagem da câmera é processada apenas neste dispositivo e não é
-            armazenada nem enviada — só o vetor biométrico (128 números, sem rosto) chega ao
-            servidor, contra o cadastro com termo LGPD aceito (RF04).</p>
+        <p class="mini muted">A imagem da câmera é usada apenas neste instante e nunca é armazenada
+            nem enviada — o que chega ao servidor é apenas um código numérico que representa o seu
+            rosto, comparado ao seu cadastro protegido pelo termo de privacidade que você aceitou.</p>
     </div>
 </div>
 
@@ -68,7 +68,7 @@
 
     function carregarModelos() {
         if (modelosOk) return Promise.resolve(true);
-        definirStatus('Carregando modelo facial…');
+        definirStatus('Preparando o reconhecimento facial…');
         var opcoes = { inputSize: 320, scoreThreshold: 0.5 };
         return Promise.all([
             faceapi.nets.tinyFaceDetector.loadFromUri('/models/faceapi'),
@@ -90,7 +90,7 @@
                         if (!rostoVisivel) {
                             rostoVisivel = true;
                             botaoCapturar.disabled = false;
-                            definirStatus('Rosto detectado — posicionado bem iluminado, clique em Capturar.', 'ok');
+                            definirStatus('Rosto detectado! Fique bem iluminado, olhe para a câmera e clique em Capturar.', 'ok');
                         }
                     } else if (rostoVisivel) {
                         rostoVisivel = false;
@@ -124,7 +124,7 @@
 
     function capturar() {
         botaoCapturar.disabled = true;
-        definirStatus('Extraindo vetor biométrico…');
+        definirStatus('Analisando o rosto…');
         clearInterval(loop);
         loop = null;
 
@@ -134,7 +134,7 @@
             .then(function (resultado) {
                 if (!resultado || !resultado.descriptor) {
                     pararCamera();
-                    definirStatus('Não consegui ler o rosto no instante da captura — tente de novo.', 'erro');
+                    definirStatus('Não conseguimos ler o seu rosto no momento da captura. Ajuste a iluminação, fique bem próximo da câmera e tente de novo.', 'erro');
                     return;
                 }
                 var embedding = Array.from(resultado.descriptor);
@@ -145,7 +145,7 @@
             })
             .catch(function () {
                 pararCamera();
-                definirStatus('Falha ao processar a captura — tente novamente.', 'erro');
+                definirStatus('Algo deu errado ao analisar a captura. Tente novamente.', 'erro');
             });
     }
 
@@ -156,7 +156,7 @@
         overlay.hidden = false;
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            definirStatus('Este navegador não expõe câmera (getUserMedia) — use a homologação manual (RF15).', 'erro');
+            definirStatus('Seu navegador não permite o uso da câmera aqui. Peça ao instrutor para registrar a sua presença manualmente.', 'erro');
             return;
         }
 
@@ -172,14 +172,14 @@
                     iniciarDeteccao();
                 })
                 .catch(function () {
-                    definirStatus('Não consegui acessar a câmera (permissão negada ou em uso) — use a homologação manual (RF15).', 'erro');
+                    definirStatus('Não foi possível usar a câmera — verifique se a permissão foi concedida e se ela não está sendo usada por outro programa. Enquanto isso, o instrutor pode registrar a sua presença manualmente.', 'erro');
                 });
         };
 
         carregarModelos()
             .then(function () { iniciarCamera(); })
             .catch(function () {
-                definirStatus('Não consegui carregar o modelo facial (rede/CDP bloqueada) — use a homologação manual (RF15).', 'erro');
+                definirStatus('Não foi possível preparar o reconhecimento facial agora. Tente novamente em instantes ou peça o registro manual ao instrutor.', 'erro');
             });
     }
 

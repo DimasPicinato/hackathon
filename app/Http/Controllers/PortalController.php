@@ -81,7 +81,7 @@ class PortalController extends Controller
                 ]);
             });
 
-        return back()->with('ok', "Ticket #{$ticket->id} aberto — RH notificado e vai resolver (RF10/RF12).");
+        return back()->with('ok', "Ticket #{$ticket->id} aberto — o RH foi notificado e vai resolver.");
     }
 
     // helper de domínio para as views (aulas ativas do usuário)

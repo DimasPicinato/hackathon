@@ -103,7 +103,7 @@ class RelatoriosController extends Controller
         return response()->streamDownload(function () use ($aula) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // BOM: Excel/Excel PT entende acentuação
-            fputcsv($out, ['Presenza — relatório da sessão (RF28)'], ';');
+            fputcsv($out, ['Presenza — relatório da sessão'], ';');
             fputcsv($out, ['Treinamento', $aula->treinamento->nome], ';');
             fputcsv($out, ['Aula', $aula->titulo, 'Ordem', $aula->ordem], ';');
             fputcsv($out, ['Data', $aula->data_inicio->format('d/m/Y H:i'), 'Local', $aula->local, 'Status', $aula->status->value], ';');
@@ -145,7 +145,7 @@ class RelatoriosController extends Controller
         return response()->streamDownload(function () use ($pessoas) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF");
-            fputcsv($out, ['Presenza — histórico por pessoa (RF28)'], ';');
+            fputcsv($out, ['Presenza — histórico por pessoa'], ';');
             fputcsv($out, ['Nome', 'Matrícula', 'Setor', 'Turno', 'Presenças', 'Certificados vigentes', 'Válidos até'], ';');
 
             foreach ($pessoas as $pessoa) {

@@ -13,7 +13,7 @@
         </header>
 
         <p class="assistente-aviso">
-            &#9888; Esta conversa é registrada para auditoria (IP e data). Não envie dados pessoais.
+            &#9888; Esta conversa fica registrada com data e horário para segurança do serviço. Não envie dados pessoais.
         </p>
 
         <div class="assistente-mensagens" x-ref="lista" aria-live="polite">

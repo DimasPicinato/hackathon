@@ -54,7 +54,7 @@ class TreinamentosController extends Controller
             'nome' => $treinamento->nome,
         ], $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Treinamento \"{$treinamento->nome}\" criado — adicione as aulas abaixo (RF07).");
+        return back()->with('ok', "Treinamento \"{$treinamento->nome}\" criado — adicione as aulas abaixo.");
     }
 
     public function atualizar(Request $request, Treinamento $treinamento)
@@ -73,7 +73,7 @@ class TreinamentosController extends Controller
 
         Auditoria::registrar('treinamento_ajustado', $treinamento, $dados, $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Treinamento \"{$treinamento->nome}\" atualizado (RF07).");
+        return back()->with('ok', "Treinamento \"{$treinamento->nome}\" atualizado com sucesso.");
     }
 
     public function criarAula(Request $request, Treinamento $treinamento)
@@ -100,7 +100,7 @@ class TreinamentosController extends Controller
             'treinamento' => $treinamento->nome,
         ], $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Aula {$aula->ordem} de \"{$treinamento->nome}\" criada — instrutor assume pela tela própria (RF06).");
+        return back()->with('ok', "Aula {$aula->ordem} de \"{$treinamento->nome}\" criada — o instrutor assume pela tela própria.");
     }
 
     public function atualizarAula(Request $request, Aula $aula)
@@ -109,7 +109,7 @@ class TreinamentosController extends Controller
         $this->autorizarTreinamento($request, $aula->treinamento);
 
         abort_if($aula->status !== StatusAula::Agendada, 422,
-            'Aula em andamento/encerrada não é re-agendada aqui — a janela é controlada pelo instrutor (RF06).');
+            'Aula em andamento ou encerrada não é re-agendada aqui — a janela é controlada pelo instrutor.');
 
         $dados = $request->validate([
             'titulo' => 'required|string|max:150',
@@ -122,7 +122,7 @@ class TreinamentosController extends Controller
 
         Auditoria::registrar('aula_ajustada', $aula, $dados, $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Aula {$aula->ordem} ajustada (RF07).");
+        return back()->with('ok', "Aula {$aula->ordem} ajustada com sucesso.");
     }
 
     private function soLider(Request $request): bool
@@ -146,6 +146,6 @@ class TreinamentosController extends Controller
             return;
         }
 
-        abort(403, 'Fora do seu escopo (RF07).');
+        abort(403, 'Esta ação está fora do seu escopo.');
     }
 }

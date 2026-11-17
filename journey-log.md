@@ -710,4 +710,22 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 17/11/2026 15h30 — gerado pela skill `registro-hackathon`._
+## Nº 48 — CÓDIGO — Copy 100% amigável: fim de códigos internos (RFxx) e jargão nas mensagens ao usuário + traduções pt-BR
+
+- **Quando:** 17/11/2026 16h10–17h00
+- **O que foi feito:**
+  - **Varredura completa** por mensagens visíveis ao usuário com códigos internos (RF03, RF09, RF15…), jargão técnico (vetor, embedding, modelo mock-facenet-v1, seed, auditoria, cosseno/pgvector) ou redação de desenvolvedor — em flashes, erros de validação, notificações, mensagens de 403, cabeçalhos de CSV e JS da câmera;
+  - **Câmera facial reescrita para usuário real:** "Não foi possível usar a câmera — verifique se a permissão foi concedida e se ela não está sendo usada por outro programa. Enquanto isso, o instrutor pode registrar a sua presença manualmente." (antes: "…permissão negada ou em uso — use a homologação manual (RF15)"); demais status do overlay também reescritos ("Preparando o reconhecimento facial…", "Analisando o rosto…", etc.);
+  - **Tela de cadastro facial** sem jargão (nada de "vetor de 128 dimensões", "modelo mock-facenet-v1", "auditoria `biometria_cadastro`") — agora fala de "código numérico que representa o seu rosto", "cadastro de demonstração", "captura substitui a anterior";
+  - **~35 mensagens corrigidas** em `PresencaService` (erros de facial/homologação/duplicidade/termo/janela), `AulaController`, `PortalController`, `BiometriaController`, `EscopoGestao` (403s), RH (certificados, configurações, justificativas, usuários, tickets, reservas, treinamentos), notificações (`VagaService`, `EnviarLembretesAula`, `CertificadoService`) e CSVs de relatório;
+  - **Bug de UX grave corrigido:** sem pasta `lang`, o login exibia literalmente `auth.failed` para senha errada — criadas traduções pt-BR (`lang/pt_BR/{auth,passwords,validation}.php`) + `APP_LOCALE=pt_BR` no `.env`, `.env.example` e compose; todas as validações de formulário agora falam português;
+  - **Aviso do widget do assistente** reescrito: "Esta conversa fica registrada com data e horário para segurança do serviço. Não envie dados pessoais." (antes citava "auditoria (IP e data)").
+- **Artefatos:** `resources/views/partials/camera-facial.blade.php`, `resources/views/portal/biometria.blade.php`, `resources/views/assistente/widget.blade.php`, `app/Services/PresencaService.php`, `app/Services/VagaService.php`, `app/Services/CertificadoService.php`, `app/Console/Commands/EnviarLembretesAula.php`, `app/Http/Controllers/{Aula,Portal,Biometria}Controller.php`, `app/Http/Controllers/Concerns/EscopoGestao.php`, `app/Http/Controllers/Rh/*.php`, `lang/pt_BR/*`, `.env`, `.env.example`, `docker-compose.yaml`
+- **Decisões / por quê:** códigos de requisito (RFxx) ficam nos docs e nos comentários de código — nunca na interface; a trilha de auditoria (banco) mantém os detalhes técnicos como evidência; mensagens sempre dizem **o que aconteceu** e **o que a pessoa pode fazer agora**.
+- **Prompts-chave:** "deixe esse aviso melhor para o usuário 'Não consegui acessar a câmera (permissão negada ou em uso) — use a homologação manual (RF15).' navegue pelo sistema e sempre deixe as mensagens claras para o usuário, nunca deixe mensagens com requisitos ou termos técnicos… no sistema há várias mensagens do gênero, corrija todas" (P-49).
+- **Resultados:** suíte completa **111 testes / 367 asserções verde**; smoke no navegador confirmou login com senha errada ("E-mail ou senha incorretos. Verifique e tente novamente."), tela de cadastro facial e caminho de câmera negada com a copy nova.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 17/11/2026 17h00 — gerado pela skill `registro-hackathon`._

@@ -44,7 +44,7 @@ class ConfiguracoesController extends Controller
 
         Auditoria::registrar('motivo_criado', $motivo, ['nome' => $motivo->nome], $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Motivo \"{$motivo->nome}\" disponível para homologação (RF26).");
+        return back()->with('ok', "Motivo \"{$motivo->nome}\" disponível para o registro manual de presença.");
     }
 
     public function alternarMotivo(Request $request, MotivoHomologacao $motivo)
@@ -80,7 +80,7 @@ class ConfiguracoesController extends Controller
 
         Auditoria::registrar('termo_publicado', $termo, ['versao' => $termo->versao], $request->user()->id, $request->ip());
 
-        return back()->with('ok', "Termo {$termo->versao} publicado (RF26) — redirecionamento ao aceite valerá para TODOS (RF04).");
+        return back()->with('ok', "Termo {$termo->versao} publicado — o aceite será solicitado a todos no próximo acesso.");
     }
 
     public function alternarTipo(Request $request, TipoTicket $tipo)

@@ -41,6 +41,6 @@ class BiometriaController extends Controller
         $biometria = $this->biometria->cadastrar($request->user(), $data['embedding'], null, $request->ip());
 
         return redirect()->route('portal.biometria.mostrar')
-            ->with('status', 'Rosto cadastrado com sucesso — presença facial habilitada (RF03).');
+            ->with('status', 'Rosto cadastrado com sucesso — presença por reconhecimento facial liberada.');
     }
 }

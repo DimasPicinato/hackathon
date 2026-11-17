@@ -39,7 +39,7 @@ class PresencaService
             ], $atorId ?? $colaborador->id, $ip);
 
             throw ValidationException::withMessages([
-                'facial' => 'Rosto não reconhecido — confirme o cadastro biométrico do colaborador ou use a homologação manual (RF14/RF15).',
+                'facial' => 'Rosto não reconhecido. Verifique se esta pessoa já registrou o rosto no cadastro facial ou registre a presença manualmente (com senha e motivo).',
             ]);
         }
 
@@ -52,7 +52,7 @@ class PresencaService
             ], $atorId ?? $colaborador->id, $ip);
 
             throw ValidationException::withMessages([
-                'facial' => 'O rosto capturado não corresponde ao cadastro do colaborador indicado — presença não registrada (RF16).',
+                'facial' => 'O rosto capturado não corresponde ao cadastro da pessoa indicada. A presença não foi registrada.',
             ]);
         }
 
@@ -86,7 +86,7 @@ class PresencaService
             Auditoria::registrar('homologacao_senha_incorreta', $aula,
                 ['colaborador' => $colaborador->matricula], $instrutor->id, $ip);
             throw ValidationException::withMessages([
-                'senha' => 'A senha informada não é a senha de acesso do próprio colaborador (RF15).',
+                'senha' => 'A senha informada não é a senha de acesso da própria pessoa.',
             ]);
         }
 
@@ -103,7 +103,7 @@ class PresencaService
         }
 
         if (! $motivo) {
-            throw ValidationException::withMessages(['motivo_id' => 'Informe o motivo da homologação (RF15).']);
+            throw ValidationException::withMessages(['motivo_id' => 'Informe o motivo do registro manual.']);
         }
 
         $presenca = Presenca::create([
@@ -129,7 +129,7 @@ class PresencaService
     {
         if (! $aula->estaAtiva()) {
             throw ValidationException::withMessages([
-                'aula' => 'A presença facial só é registrada com aula em andamento — instrutor iniciou e ainda não encerrou (RF03).',
+                'aula' => 'A presença facial só pode ser registrada com a aula em andamento — o instrutor precisa iniciá-la e ainda não ter encerrado.',
             ]);
         }
     }
@@ -138,7 +138,7 @@ class PresencaService
     {
         if (! $colaborador->aceitouTermoVigente()) {
             throw ValidationException::withMessages([
-                'termo' => "{$colaborador->name} ainda não aceitou o termo LGPD: presença apenas por homologação manual (RF04).",
+                'termo' => "{$colaborador->name} ainda não aceitou o termo de privacidade: a presença precisa ser registrada manualmente pelo instrutor.",
             ]);
         }
     }
@@ -152,7 +152,7 @@ class PresencaService
             Auditoria::registrar('presenca_duplicada', $aula,
                 ['colaborador' => $colaborador->matricula], $atorId);
             throw ValidationException::withMessages([
-                'duplicidade' => 'Presença já registrada nesta aula para essa pessoa (RF16).',
+                'duplicidade' => 'Presença já registrada nesta aula para essa pessoa.',
             ]);
         }
     }

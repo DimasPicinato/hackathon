@@ -88,7 +88,7 @@ class TicketsController extends Controller
             $ticket->user, $treinamento, $request->user()->id, $request->ip(),
         );
 
-        return "Vagas canceladas em {$liberadas} aula(s); fila de espera promovida automaticamente (RF09).";
+        return "Vagas canceladas em {$liberadas} aula(s); fila de espera promovida automaticamente.";
     }
 
     /** RF12: resolver "Justificar falta" cria/altera a justificativa da aula escolhida. */

@@ -65,7 +65,7 @@ class ReservasController extends Controller
                 ['aula_id' => $aula->id, 'user_id' => $pessoa->id],
                 ['status' => 'reservada', 'posicao_fila' => null, 'reservado_por_id' => $request->user()->id],
             );
-            $resultado = "Vaga nominal reservada (RF05/RF08) — {$aula->treinamento->nome}, {$aula->titulo}.";
+            $resultado = "Vaga nominal reservada — {$aula->treinamento->nome}, {$aula->titulo}.";
 
             Notificacao::create([
                 'user_id' => $pessoa->id,
@@ -84,7 +84,7 @@ class ReservasController extends Controller
             Notificacao::create([
                 'user_id' => $pessoa->id,
                 'titulo' => "Você entrou na fila de espera (posição {$posicao})",
-                'corpo' => "{$aula->treinamento->nome} — {$aula->titulo}: se abrir vaga, será promovido(a) automaticamente (RF09).",
+                'corpo' => "{$aula->treinamento->nome} — {$aula->titulo}: se abrir vaga, você será promovido(a) automaticamente.",
                 'tipo' => 'fila_entrada',
             ]);
         }
@@ -119,6 +119,6 @@ class ReservasController extends Controller
             'tipo' => 'inscricao_cancelada',
         ]);
 
-        return back()->with('ok', "Reserva de {$inscricao->user->name} cancelada; fila promovida (RF09).");
+        return back()->with('ok', "Reserva de {$inscricao->user->name} cancelada; fila de espera promovida.");
     }
 }

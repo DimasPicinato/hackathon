@@ -57,7 +57,7 @@ class VagaService
         Notificacao::create([
             'user_id' => $proxima->user_id,
             'titulo' => 'Você foi promovido(a) da fila de espera!',
-            'corpo' => "{$aula->treinamento->nome} — {$aula->titulo}: abriu uma vaga e você assumiu automaticamente (RF09).",
+            'corpo' => "{$aula->treinamento->nome} — {$aula->titulo}: abriu uma vaga e você assumiu automaticamente.",
             'tipo' => 'fila_promocao',
         ]);
 

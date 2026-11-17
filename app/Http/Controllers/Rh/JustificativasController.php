@@ -96,6 +96,6 @@ class JustificativasController extends Controller
             'tipo' => 'justificativa_alterada',
         ]);
 
-        return back()->with('ok', "Justificativa registrada para {$alvo->name} (RF13) — status {$dados['status']}.");
+        return back()->with('ok', "Justificativa registrada para {$alvo->name} — status {$dados['status']}.");
     }
 }

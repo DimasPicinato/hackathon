@@ -28,7 +28,7 @@ class AulaController extends Controller
 
         $this->notificarRh($aula, 'Aula iniciada', "{$aula->treinamento->nome} — {$aula->titulo}: janela de presença facial ABERTA.");
 
-        return back()->with('status', "Aula iniciada — presenças faciais liberadas para '{$aula->titulo}' (RF03).");
+        return back()->with('status', "Aula iniciada — o reconhecimento facial está liberado para '{$aula->titulo}'.");
     }
 
     public function encerrar(Request $request, Aula $aula)
@@ -44,9 +44,9 @@ class AulaController extends Controller
             'encerrada_em' => now(),
         ]);
 
-        $this->notificarRh($aula, 'Aula encerrada', "{$aula->treinamento->nome} — {$aula->titulo}: chamada fechada. Fora da janela, resta homologação manual (RF03).");
+        $this->notificarRh($aula, 'Aula encerrada', "{$aula->treinamento->nome} — {$aula->titulo}: chamada fechada. Fora da janela, presença somente por registro manual.");
 
-        return back()->with('status', "Aula encerrada — RH notificado (RF06).");
+        return back()->with('status', "Aula encerrada — o RH foi notificado.");
     }
 
     private function autorizar(Aula $aula): void
@@ -54,7 +54,7 @@ class AulaController extends Controller
         $user = request()->user();
 
         if ($aula->instrutor_id !== $user->id && ! $user->temPapel('admin')) {
-            abort(403, 'Aula não é sua (RF06).');
+            abort(403, 'Esta aula não é conduzida por você.');
         }
     }
 

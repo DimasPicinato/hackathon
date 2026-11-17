@@ -26,7 +26,7 @@ class CertificadoService
     {
         if (! static::elegivel($colaborador, $treinamento)) {
             throw ValidationException::withMessages([
-                'elegibilidade' => "{$colaborador->name} não compareceu a todas as aulas — sem certificado (RF18).",
+                'elegibilidade' => "{$colaborador->name} não compareceu a todas as aulas — sem certificado.",
             ]);
         }
 

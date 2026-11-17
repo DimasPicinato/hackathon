@@ -73,6 +73,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      APP_LOCALE: pt_BR
       # Zero variáveis p/ definir fora do compose: na VPS/Coolify (sem .env) valem os
       # valores FIXOS abaixo; local, o .env do time continua podendo sobrescrever.
       # APP_URL fixo = domínio público — QR (RF21) e links de e-mail o usam; APP_KEY
@@ -126,6 +127,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      APP_LOCALE: pt_BR
       APP_URL: ${APP_URL:-https://hackathon.dpicinato.com}
       APP_KEY: ${APP_KEY:-base64:AO4Ysfddk86NQxE3NENRHDm3NQpgmnNjaPxtBoSrEm0=}
       DB_CONNECTION: pgsql

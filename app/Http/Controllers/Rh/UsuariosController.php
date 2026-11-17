@@ -69,7 +69,7 @@ class UsuariosController extends Controller
             'tipo' => 'conta',
         ]);
 
-        return back()->with('ok', "{$usuario->name} criado(a) — senha inicial configurada pelo RH (RF05).");
+        return back()->with('ok', "{$usuario->name} criado(a) com sucesso — senha inicial definida.");
     }
 
     public function atualizar(Request $request, User $usuario)
@@ -91,7 +91,7 @@ class UsuariosController extends Controller
             'papeis' => $usuario->papeis,
         ], $request->user()->id, $request->ip());
 
-        return back()->with('ok', "{$usuario->name} atualizado(a) (RF05).");
+        return back()->with('ok', "{$usuario->name} atualizado(a) com sucesso.");
     }
 
     public function alternarAtivo(Request $request, User $usuario)
@@ -126,6 +126,6 @@ class UsuariosController extends Controller
             'tipo' => 'conta',
         ]);
 
-        return back()->with('ok', "Senha de {$usuario->name} redefinida (RF05).");
+        return back()->with('ok', "Senha de {$usuario->name} redefinida com sucesso.");
     }
 }

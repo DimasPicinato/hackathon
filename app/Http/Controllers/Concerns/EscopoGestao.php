@@ -23,7 +23,7 @@ trait EscopoGestao
         $u = request()->user();
 
         if (! ($u?->temPapel('rh') || $u?->temPapel('admin'))) {
-            abort(403, 'Emissão de certificados é exclusiva do RH (RF19).');
+            abort(403, 'A emissão de certificados é exclusiva do RH.');
         }
     }
 
@@ -43,6 +43,6 @@ trait EscopoGestao
             return;
         }
 
-        abort(403, 'Fora do seu escopo: Líder atua apenas nos liderados (RF12).');
+        abort(403, 'Esta ação está fora do seu escopo: o Líder atua apenas com os liderados.');
     }
 }
