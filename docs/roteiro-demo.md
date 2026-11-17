@@ -1,6 +1,6 @@
 ﻿# Roteiro de demonstração — 5 minutos
 
-**Regra de ouro (RNF06): a biometria é FACHADA simulável. Nada depende de câmera real ao vivo.**
+**Regra de ouro (RNF06): a biometria agora é FUNCIONAL (câmera no navegador → embedding → pgvector), e qualquer falha de câmera/permissão/rosto não reconhecido cai de forma segura na HOMOLOGAÇÃO MANUAL — a demo nunca trava.**
 
 ## Antes de começar (checklist)
 
@@ -8,8 +8,9 @@
 - [ ] App respondendo: `http://localhost:18000/verificar` → 200
 - [ ] Mailpit aberto em aba separada: `http://localhost:8025`
 - [ ] Telas prontas em abas: `/verificar/PZ-2024-000087` (EXPIRADO) e `/verificar/PZ-2025-000101` (VÁLIDO)
-- [ ] Suíte verde: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → 100 testes / 331 asserções
-- [ ] Assistente no ar: `docker compose ps assistente` → **Up** (runtime interno `:4096`; a API interna responde só na rede do compose)
+- [ ] Suíte verde: `docker run --rm -v .:/app -w /app hackaton-app:latest php artisan test` → 111 testes / 367 asserções
+- [ ] Assistente no ar: `docker compose ps assistente` → **Up (healthy)** (runtime interno `:4096`; a API interna responde só na rede do compose)
+- [ ] **Webcam funcionando no navegador da demo** (o facial é real — teste o autocadastro antes da apresentação; sem câmera, o Plano B cobre)
 
 **Não arecare: `docker compose restart` re-semeia o banco (reset total) e apaga dados criados ao vivo durante a demo.**
 
@@ -18,11 +19,12 @@
 **0:00–0:30 — A dor** (slide/contexto)
 "Na Usina Lins, quem atesta presença em treinamento é a assinatura numa lista de chamada. O certificado que sai disso não tem como conferir." → abre `/verificar` com QR do PZ-2025.
 
-**0:30–1:15 — A solução em 30 segundos**
+**0:30–1:30 — A solução em 60 segundos (facial REAL — RF03)**
 - Colaborador (`otavio.martins.gomes@exemplo.com`) faz **login** — todas as contas do seed já têm o **termo LGPD aceito** (o aceite volta a ser exigido quando o RH publicar nova versão do termo, mostrado em 4:00).
-- Portal: aula **NR35 em andamento** → botão **"Validar presença agora (facial)"** → presença registrada + auditoria.
+- Sidebar: **Cadastro facial** → **"Capturar meu rosto agora"** → câmera abre no navegador (contagem 3-2-1, flash) → embedding de 128 números gravado no pgvector; **a imagem nunca sai do dispositivo** (falar: LGPD de verdade).
+- Portal: aula **NR35 em andamento** → botão **"Validar presença agora (facial)"** → câmera reconhece o rosto → presença registrada + auditoria com a **similaridade real**.
 
-**1:15–2:15 — A exceção com anti-fraude (RF15)**
+**1:30–2:15 — A exceção com anti-fraude (RF15)**
 - Logout → login `klaus.werner.steiner` (instrutor) → aula NR35 Aula 3 → **Iniciar aula** (notifica RH!).
 - Tela da chamada: homologação manual — escolhe colaborador, **senha do COLABORADOR** + motivo do catálogo (ou motivo novo no ato — RF27).
 - Mostrar o flash de erro com **senha errada** (recusado, e a tentativa fica na auditoria).

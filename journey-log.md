@@ -674,4 +674,40 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 21/10/2026 14h40 — gerado pela skill `registro-hackathon`._
+## Nº 46 — CÓDIGO — Endurecimento do chat IA (auditoria A1–A6/M1–M10/B1–B8) + protocolo https padronizado
+
+- **Quando:** 17/11/2026 08h10–12h30
+- **O que foi feito:**
+  - **Auditoria minuciosa do assistente de IA** (foco: falhas técnicas do módulo RF29–RF34): achados priorizados — 6 de severidade **alta** (senhas de seed legíveis em `docs/` pelo agente, `read` sem restrição de caminho, erro do gateway entregue como "resposta ok", resposta **stale** do turno anterior, race condition na mesma sessão runtime, IP de auditoria forjável com `trustProxies('*')`), ~10 de **média** e 8 de **baixa**;
+  - **Correções de alta:** `RuntimeAssistente` reescrito — resposta aceita só do **turno atual** (`idPrompt`), denylist de erro de gateway (auth/quota/rate limit) vira cortesia, `Cache::lock` serializa prompt→wait→message por thread; `bootstrap/app.php` — `trustProxies` restrito à rede interna do compose (`172.16.0.0/12`, ajustável via `TRUSTED_PROXIES`); `docs/.opencode/opencode.json` — `deny` para `*.env*`;
+  - **Correções de média/baixa:** controller valida com `trim` + formato de sessão (`^[a-z0-9\-]{8,64}$`), `create` de auditoria em try próprio (falha de banco não vira 500 pós-resposta), widget com `AbortSignal.timeout(120s)` + distinção de `estado`/422, ids incrementais no histórico, `100dvh` no CSS mobile, tela Admin com `Str::limit` + `overflow-wrap:anywhere`, healthcheck real no serviço `assistente` + `service_healthy`, Dockerfile pinado `@opencode/cli@2.0.32`;
+  - **LGPD:** comando `presenza:limpar-assistente` (purge de conversas > 30 dias) agendado diariamente no scheduler;
+  - **Protocolo:** decisão do time de **padronizar em `https://`** — `APP_URL` https nos 2 serviços do compose, `trustProxies` para o app gerar URLs https (QR RF21, e-mails), 13 referências vivas de docs atualizadas (deploy-coolify, relatório). O proxy do Coolify já redirecionava http→https (302/307 com certificado válido, verificado por curl);
+  - **Senhas de seed em `docs/` (A1):** decisão do time = **manter como está** (contas fake de demo; risco registrado; prompt do agente já proíbe repetir senhas);
+  - Git local reconfigurado (`user.name`/`user.email` do histórico — config global sumiu).
+- **Artefatos:** `app/Services/RuntimeAssistente.php`, `app/Http/Controllers/AssistenteController.php`, `resources/views/assistente/widget.blade.php`, `resources/views/portal/rh/assistente.blade.php`, `public/css/assistente.css`, `public/css/app.css`, `app/Console/Commands/LimparConversasAssistente.php`, `routes/console.php`, `bootstrap/app.php`, `docker-compose.yaml`, `docker/opencode/Dockerfile`, `docs/.opencode/opencode.json`, `tests/Feature/AssistenteTest.php`, `docs/deploy-coolify.md`
+- **Decisões / por quê:** timeout não descarta a sessão em cache (só a espera falhou — preserva o contexto da conversa); erro do gateway nunca é resposta legítima (vira cortesia RNF08); lock por thread elimina respostas cruzadas sem abrir mão do contexto multi-pergunta (RF34).
+- **Prompts-chave:** "corrigir possíveis problemas no chat com IA, faça uma análise minuciosa pela funcionalidade, identifique possíveis falhas técnicas para corrigirmos" (P-48); "corrigir todos os redirecionamentos para https:// ao invés de http://" (P-48).
+- **Resultados:** módulo assistente **11/11 verde** (4 testes novos: erro de gateway, resposta stale, validação trim/sessão, purge); suíte completa **104 testes / 342 asserções**; `docker compose config` OK; commit `79cd7c1`.
+- **Status:** Concluído.
+
+---
+
+## Nº 47 — CÓDIGO — Reconhecimento facial FUNCIONAL (face-api.js client-side + matching pgvector + autocadastro)
+
+- **Quando:** 17/11/2026 12h30–15h30
+- **O que foi feito:**
+  - **Auditoria do facial:** confirmado que a fachada RNF06 gravava presença **sem comparar rosto algum** (embeddings de seed nunca lidos); branch `reconhecimento-facial` (8af15f6) tinha overlay getUserMedia que recusava sempre por `Math.random()`;
+  - **Decisões do time:** matching **client-side com face-api.js vendido** (imagem nunca sai do navegador; embedding 128-d; ~7,6 MB de assets em `public/vendor/face-api` + `public/models/faceapi`, sem build Node) e **autocadastro no portal** (enrollment pelo próprio colaborador, exige termo LGPD);
+  - **Backend:** `BiometriaService` (cadastrar/upsert com `::vector`, identificar 1:N por cosseno com limiar 0,80, conferir 1:1, embeddings `mock-facenet-v1` de seed **excluídos do matching**); `PresencaService::registrarFacial` refactorado (embedding obrigatório; identidade vem do match; recusa `presenca_facial_rejeitada` e **divergência reivindicado×reconhecido** auditada `presenca_facial_divergente` — RF16); `ChamadaController` valida `embedding` (array 128, decodifica string JSON do form); `BiometriaController` + rotas `GET/POST /portal/biometria` no grupo do termo;
+  - **Frontend:** partial `partials/camera-facial.blade.php` (overlay com detecção contínua, contagem 3-2-1, flash, captura do descriptor e submit nativo do form com o vetor em input hidden); tela `portal/biometria.blade.php` (status do cadastro + captura/renovação); link "Cadastro facial" na sidebar; forms de presença marcados com `data-facial` em `home` e `aula`; ícone `camera` no componente de ícones; CSS `rec-*`;
+  - **Testes:** `PresencaFacialTest` reescrito com fixtures de vetores deterministas (base ortonormal) — 13 testes cobrindo enrollment, renovação, match 1:N, recusa abaixo do limiar, divergência, mock excluído, embedding ausente, termo, janela, duplicidade e autorização.
+- **Artefatos:** `app/Services/BiometriaService.php`, `app/Services/PresencaService.php`, `app/Http/Controllers/BiometriaController.php`, `app/Http/Controllers/ChamadaController.php`, `app/Models/Biometria.php` (casts), `routes/web.php`, `resources/views/partials/camera-facial.blade.php`, `resources/views/portal/biometria.blade.php`, `resources/views/layouts/portal.blade.php`, `resources/views/portal/{home,aula}.blade.php`, `resources/views/components/icon.blade.php`, `public/css/app.css`, `public/vendor/face-api/*`, `public/models/faceapi/*`, `tests/Feature/PresencaFacialTest.php`, `docs/requisitos-p1.md` (RF03/RF14/RNF01/RNF06), `docs/mapa-paginas.md`
+- **Decisões / por quê:** inferência no cliente preserva a narrativa LGPD (a imagem jamais trafega) e evita novo serviço no compose; `.gitignore` ganhou exceção `!public/vendor/` (o padrão `vendor/` engolia o asset do runtime); fallback para homologação manual preserva RNF06 em qualquer falha de câmera/permissão/limiar.
+- **Prompts-chave:** "adicionar o reconhecimento facial funcional" (P-48).
+- **Resultados:** suíte completa **111 testes / 367 asserções verde**; smoke no navegador: login, portal, tela de biometria, overlay, face-api vendored e modelos servidos (200), caminho de erro de câmera negada com copy correta; commit `3f8b8ff`.
+- **Status:** Concluído (captura com webcam real pendente de teste interativo pelo time).
+
+---
+
+_Última atualização: 17/11/2026 15h30 — gerado pela skill `registro-hackathon`._

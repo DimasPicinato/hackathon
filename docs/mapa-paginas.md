@@ -28,7 +28,8 @@ Legenda das telas: código-fonte em `resources/views/**`. Requisitos referenciad
 |---|---|---|
 | `GET /portal` | `portal/home.blade.php` | Home por papel: minhas aulas/treinamentos, minhas vagas/reservas, notificações (sino), botão abrir ticket (RF10), status do termo. Líder vê gestão do seu setor; instrutor vê suas aulas. |
 | `POST /portal/tickets` | — | Colaborador **abre ticket** (tipo do catálogo + texto livre; RF10/RF11). |
-| `POST /portal/presenca/facial` | — | Colaborador valida a **própria presença** pelo reconhecimento facial, só com aula ativa (RF03/RF14.a). |
+| `POST /portal/presenca/facial` | — | Colaborador valida a **própria presença** pelo reconhecimento facial (câmera no navegador → embedding 128-d → matching pgvector), só com aula ativa (RF03/RF14.a). |
+| `GET/POST /portal/biometria` | `portal/biometria.blade.php` | **Autocadastro facial** (enrollment): captura o próprio rosto pelo navegador (imagem não sai do dispositivo; grava embedding + auditoria `biometria_cadastro`; RNF01/RF03/RF04). |
 | `GET /portal/aulas/{aula}` | `portal/aula.blade.php` | Tela de **chamada do instrutor**: iniciar/encerrar aula, validar presença facial dos alunos e **homologação manual** (senha do colaborador + motivo do catálogo ou novo; RF14.b/RF15/RF16). |
 | `POST /portal/aulas/{aula}/iniciar|encerrar` | — | Controle da janela da aula pelo instrutor — notifica o RH (RF06). |
 | `GET/POST /profile` | `profile/edit.blade.php` | Perfil (Breeze) + alterar senha + excluir conta. |

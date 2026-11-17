@@ -36,7 +36,7 @@ Contas internas **acumulam papéis** (ex.: colaborador que também é líder). D
 ### 2.1 Identidade e acesso
 - **RF01** — Autenticação por login/senha em todos os portais; recuperação de senha por **e-mail** (link temporário; SMTP).
 - **RF02** — Papéis: Colaborador, Líder, Instrutor, RH, Admin (poder total) — acumuláveis na mesma conta.
-- **RF03** — Reconhecimento facial **apenas para validar presença**, funcionando **somente com aula em andamento** (instrutor iniciou e ainda não encerrou). Fora da janela, presença só por homologação manual.
+- **RF03** — Reconhecimento facial **funcional** **apenas para validar presença**, funcionando **somente com aula em andamento** (instrutor iniciou e ainda não encerrou). A captura roda no **navegador** (face-api.js vendored, sem build): a imagem nunca sai do dispositivo — só o **embedding de 128 dimensões** é enviado e comparado por **cosseno** contra os cadastros ativos no pgvector (limiar 0,80 configurável). O **autocadastro** do rosto fica em `/portal/biometria` (exige termo LGPD aceito — RF04). Fora da janela, câmera indisponível ou rosto não reconhecido, presença só por homologação manual (RF15).
 - **RF04** — Aceite do **termo LGPD** de biometria no **primeiro login**; nova versão do termo re-pede aceite na entrada seguinte. Sem aceite ativo: presença apenas manual.
 - **RF05** — CRUD de usuários **sem self-service**: só RH/Admin (e Líder, para seus liderados).
 
@@ -53,7 +53,7 @@ Contas internas **acumulam papéis** (ex.: colaborador que também é líder). D
 - **RF13** — Líder pode **justificar falta diretamente** (sem depender de ticket do liderado), ex.: liderado de férias.
 
 ### 2.4 Presença (chamada)
-- **RF14** — Validar presença com facial de duas formas, sempre **durante a aula ativa**:
+- **RF14** — Validar presença com facial de duas formas, sempre **durante a aula ativa** (o embedding capturado precisa reconhecer o colaborador — a identidade vem do rosto, não do botão):
   - **autônoma**: o colaborador valida a própria presença pela câmera;
   - **via instrutor**: o instrutor executa o reconhecimento para o colaborador.
 - **RF15** — **Homologação manual** (sem facial), pelo instrutor, exige: a **senha de acesso do próprio colaborador** no ato (anti-fraude) + **motivo** do catálogo (ex.: câmera desligada) **ou motivo novo cadastrado na hora** pelo instrutor (passa a integrar a lista; Admin/RH mantêm a lista).
@@ -80,12 +80,12 @@ Contas internas **acumulam papéis** (ex.: colaborador que também é líder). D
 - **RF28** — Completo **+ exportação CSV/PDF**: por sessão (vagas/convocados/presentes/faltas), por colaborador (histórico + vencidos/a vencer), por setor, **matriz de conformidade** (quem precisa fazer o quê), por instrutor/aula (taxa de presença).
 
 ## 3. Requisitos não funcionais
-- **RNF01 — LGPD**: consentimento versionado para biometria; mínimo de dados na verificação pública; trilha de auditoria de eventos sensíveis (captura, homologação, alteração de status).
+- **RNF01 — LGPD**: consentimento versionado para biometria; mínimo de dados na verificação pública; trilha de auditoria de eventos sensíveis (captura, homologação, alteração de status). Na biometria real: **imagem processada só no dispositivo** (nada armazenado nem enviado), apenas o embedding no banco; captura de rosto e divergência reivindicado×reconhecido são eventos auditados (`biometria_cadastro`, `presenca_facial_divergente`); conversas do assistente (RF33) têm **retenção de 30 dias**.
 - **RNF02 — PostgreSQL** como persistência (decisão do time).
 - **RNF03 — Segurança**: senhas nunca em texto puro; homologação manual exige autenticação do colaborador; audit-trail completo.
 - **RNF04 — E-mail**: SMTP por `.env` + painel Admin; falha de e-mail nunca impede o fluxo (in-app segue funcionando).
 - **RNF05 — Usabilidade**: portais em PT-BR, uma tela por tarefa por ator; presença validável em < 10s.
-- **RNF06 — Demo resiliente**: todos os fluxos críticos operam sem depender de hardware (fachada de biometria simulável).
+- **RNF06 — Demo resiliente**: todos os fluxos críticos operam sem depender de hardware — com a biometria **funcional** (RF03), qualquer falha de câmera/permissão/rosto não reconhecido cai de forma segura na **homologação manual** (RF15); embeddings de seed (`mock-facenet-v1`) ficam fora do matching (não reconhecem ninguém).
 
 ## 4. Dados de demonstração (seed)
 - **SEED01** — 30–40 colaboradores fictícios (nomes/setores/turnos plausíveis) **com metadados de reconhecimento facial já nos registros** (o mock facial da demo os reconhece).

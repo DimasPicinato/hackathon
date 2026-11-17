@@ -11,9 +11,9 @@
 | **Produto** | **Presenza** |
 | **Equipe** | Dimas Matheus Gomes Picinato · Sara Silva Marsola · João Marcelo dos Santos Silva (principais) · Bruno Miranda Barcelos Tremeschin Pereira Melo · João Lucas Martins Pazin · Matheus Roberto Baraúna da Silva · Matheus Pereira Jesus · Lucas Yuuji Murayama (coautores) |
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
-| **Estado final** | 34/34 RFs implementados · 100 testes / 331 asserções verdes · aplicação no ar em `https://hackathon.dpicinato.com` · módulo **assistente de IA** (RF29–RF34) implementado e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
+| **Estado final** | 34/34 RFs implementados · **111 testes / 367 asserções verdes** · aplicação no ar em `https://hackathon.dpicinato.com` · **reconhecimento facial funcional** (face-api.js no navegador + matching pgvector + autocadastro RF03/RF14) · módulo **assistente de IA** (RF29–RF34) implementado, endurecido por auditoria e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (45 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (47 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -24,7 +24,7 @@
 | Camada | Tecnologia | Papel no projeto |
 |---|---|---|
 | Backend | **Laravel 13 / PHP 8.4** (decisão original: Laravel 11 / PHP 8.3 — ajustada na execução, ver ATO 2 §6) | Framework único da aplicação (rotas, Eloquent, migrations, seeders, scheduler, mail) |
-| Frontend | **Blade + Alpine.js vendored, CSS com tokens — sem build de Node** | Portais server-rendered, menos peças para falhar na demo |
+| Frontend | **Blade + Alpine.js vendored, CSS com tokens — sem build de Node** | Portais server-rendered, menos peças para falhar na demo; reconhecimento facial client-side com **face-api.js vendored** (imagem nunca sai do navegador — RF03) |
 | Banco de dados | **PostgreSQL 16 + extensão pgvector** | Persistência formal + `vector(128)` para os embeddings biométricos (similaridade por distância cosseno em SQL) |
 | Autenticação (scaffold) | **Laravel Breeze (Blade)** | Login/senha + reset por e-mail (RF01/RF28) |
 | PDF | **dompdf** (`barryvdh/laravel-dompdf`) | Certificados e relatórios em PDF (RF21/RF28) + o próprio PDF de prompts |
@@ -32,7 +32,7 @@
 | E-mail (dev) | **Mailpit** | Captura de todos os e-mails da demo com UI web |
 | Infra | **Docker + Docker Compose** (dev e homologação) | `postgres` + `mailpit` (dev); `app` + `scheduler` buildados (homolog) |
 | Deploy | **Coolify em VPS** | Domínio `https://hackathon.dpicinato.com` |
-| Testes | **PHPUnit** (feature) rodando no PostgreSQL real | 93 testes / 305 asserções |
+| Testes | **PHPUnit** (feature) rodando no PostgreSQL real | 111 testes / 367 asserções |
 | Versionamento | **Git / GitHub** | Processo e código versionados |
 | IA | **IA generativa de preferência do time, operada via agente OpenCode (CLI)** com *skills* (`grilling`, `ui-ux-pro-max`, `frontend-design`, `ui-styling`, `design-system`, `web-design-guidelines`, `laravel-best-practices`, `testing-best-practices`, `registro-hackathon`) | 100% do código escrito por IA; decisões sempre com o time (AT01) |
 
@@ -514,6 +514,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** widget incluído nos layouts `portal` (dashboard, RH, Admin, conta) e `app` (telas de conta), somando-se às páginas públicas (welcome, login, `/verificar` e resultado); teste feature novo confirma o widget no portal logado (RH) e a suíte fecha em **100 testes / 331 asserções**; RF29 e o design (`docs/design-assistente-ia.md`) atualizados — o widget segue público e não lê a sessão do usuário.
 
+> **P-48 · Reconhecimento facial funcional + endurecimento do chat IA + https padronizado** (17/11/2026)
+> "aqui, vamos seguir com o desenvolvimento de novas funcionalidades e algumas correções: adicionar o reconhecimento facial funcional; corrigir possíveis problemas no chat com IA, faça uma análise minuciosa pela funcionalidade, identifique possíveis falhas técnicas para corrigirmos; corrigir todos os redirecionamentos para https:// ao invés de http://. Qualquer dificuldade técnica e/ou bugs e problemas encontrados e/ou documentados devem ser questionados sobre como prosseguir."
+>
+> **Resultado:** três frentes em uma sessão. **(1) Facial:** auditoria confirmou que a fachada RNF06 gravava presença sem comparar rosto — reescrito como **funcional**: captura no navegador com face-api.js vendido (imagem nunca sai do dispositivo), `BiometriaService` com matching cosseno no pgvector (limiar 0,80; embeddings de seed `mock-facenet-v1` fora do matching), divergência reivindicado×reconhecido recusada e auditada (RF16), **autocadastro** em `/portal/biometria`; 13 testes novos de biometria. **(2) Chat IA:** auditoria A1–A6/M1–M10/B1–B8 — respostas só do turno atual (`idPrompt`), erro de gateway vira cortesia, lock por thread (fim da race), trim + formato de sessão, fetch com timeout/AbortSignal, healthcheck + pin da imagem, tela Admin com limites de célula, purge LGPD de 30 dias agendado; `trustProxies` restrito à rede do compose. **(3) Protocolo:** `APP_URL` `https://` no compose (app + scheduler), trustProxies faz o app gerar URLs https (QR RF21, e-mails), 13 referências de docs atualizadas (o proxy do Coolify já redirecionava http→https com certificado válido). Suíte final **111 testes / 367 asserções**; commits `79cd7c1` e `3f8b8ff`.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -605,9 +610,11 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 23. **Nome da equipe corrigido no PDF + anexo com os 53 prompts originais das conversas** (P-43) — 21/10 11h27–11h55.
 24. **Assistente de IA público implementado ponta a ponta** (P-44) — runtime OpenCode em contêiner, widget nas páginas públicas, auditoria só do Admin, 98/325 verde — 21/10 12h10–13h45.
 25. **Domínio público alterado para http://** (P-45) — 21/10 13h30–13h36.
-26. **Assistente estável em produção + widget em todas as telas** (P-46/P-47) — timeout 100 s com retry de sessão, widget no portal logado, 100/331 verde — 21/10 14h05–14h35.
+26. **Assistente estável em produção + widget em todas as telas** (P-46/P-47) - timeout 100 s com retry de sessão, widget no portal logado, 100/331 verde - 21/10 14h05-14h35.
+27. **Pós-hackathon: endurecimento do chat IA + https padronizado** (P-48) - resposta do turno atual, erro de gateway → cortesia, lock por thread, purge LGPD 30d, trustProxies restrito, APP_URL https - 17/11 (104/342 verde).
+28. **Reconhecimento facial funcional** (P-48) - face-api.js client-side (imagem nunca sai do navegador), matching pgvector com limiar 0,80, autocadastro `/portal/biometria`, divergência auditada - 17/11 (**111/367 verde**).
 
-## §9. Diário de bordo (`journey-log.md`, 45 sessões)
+## §9. Diário de bordo (`journey-log.md`, 47 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -669,7 +676,12 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 44 · 13h30–13h36 — Configuração:** domínio público passa a `http://` — defaults `APP_URL` do compose (app + scheduler) e docs vivos atualizados; conferido que nenhum middleware força HTTPS (QR e e-mails seguem o valor configurado). ✔
 - **Nº 45 · 14h05–14h35 — Código:** fallback do assistente em produção diagnosticado (primeira chamada estourava 60 s; modelo free responde em ~20 s) e corrigido com **timeout de 100 s** + retry só para falhas rápidas (sessão do runtime morta), com teste de regressão; **widget incluído em todas as telas** (layouts `portal` e `app`, além das públicas), teste do portal logado e RF29/design atualizados; **100/331 verde**, deploy validado no domínio (3/3 `ok`). ✔
 
-*Última atualização do diário: 21/10/2026, 14h40.*
+### 17/11/2026 (pós-hackathon) — Facial funcional + endurecimento do chat
+
+- **Nº 46 · 08h10–12h30 — Código:** **auditoria minuciosa do chat IA** (6 achados de severidade alta + ~10 média + 8 baixa) e correção do escopo aprovado pelo time: resposta apenas do **turno atual**, erro do gateway vira cortesia (não "resposta ok"), **lock por thread** (fim da race condition), trim + formato de sessão na validação, timeout/AbortSignal no widget, healthcheck + `service_healthy`, pin `@opencode/cli@2.0.32`, tela Admin com limites de célula, **purge LGPD de 30 dias** agendado; **https padronizado** (`APP_URL` https no compose, `trustProxies` restrito à rede interna do compose — fim do IP forjável, 13 refs de docs atualizadas); senhas de seed em `docs/` mantidas por decisão do time (risco registrado); **104/342 verde** (commit `79cd7c1`). ✔
+- **Nº 47 · 12h30–15h30 — Código:** **reconhecimento facial FUNCIONAL** — auditoria mostrou que a fachada gravava presença sem comparar rosto; nova arquitetura: captura no **navegador** com face-api.js vendido (imagem nunca sai do dispositivo), `BiometriaService` com matching cosseno no pgvector (limiar 0,80, seed `mock-facenet-v1` excluído do matching), **autocadastro** `/portal/biometria` (enrollment + auditoria `biometria_cadastro`), divergência reivindicado×reconhecido recusada e auditada (`presenca_facial_divergente`, RF16); overlay de câmera + tela de cadastro + link na sidebar; docs RF03/RF14/RNF01/RNF06 e mapa de páginas atualizados; **111/367 verde** (commit `3f8b8ff`); smoke no navegador confirmou assets, rota e caminho de erro de câmera negada. ✔
+
+*Última atualização do diário: 17/11/2026, 15h30.*
 
 ## §10. Estado final e evidências
 
@@ -702,18 +714,18 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 ### Qualidade
 
-- Suíte: `docker run --rm -v .:/app -w /app presenza/php vendor/bin/phpunit` → **100 testes, 331 asserções, verde** (PostgreSQL real com pgvector).
-- Cobertura dos fluxos críticos: aceite do termo, janela facial, anti-fraude (duplicidade), homologação (senha certa/errada + motivo novo), ciclo da aula com notificação, verificação pública (VÁLIDO/EXPIRADO/NÃO ENCONTRADO + log + PDF), tickets, justificativas, emissão/reemissão, relatórios CSV, lembretes, configurações, reservas, conformidade, **assistente (resposta do runtime, cortesia em falha, validação e auditoria só do Admin)**.
+- Suíte: `docker run --rm -v .:/app -w /app hackaton-app:latest php artisan test` → **111 testes, 367 asserções, verde** (PostgreSQL real com pgvector).
+- Cobertura dos fluxos críticos: aceite do termo, **biometria funcional (enrollment, match 1:N, recusa abaixo do limiar, divergência, seed mock fora do matching)**, janela facial, anti-fraude (duplicidade), homologação (senha certa/errada + motivo novo), ciclo da aula com notificação, verificação pública (VÁLIDO/EXPIRADO/NÃO ENCONTRADO + log + PDF), tickets, justificativas, emissão/reemissão, relatórios CSV, lembretes, configurações, reservas, conformidade, **assistente (resposta do turno atual, erro de gateway → cortesia, validação, purge de 30 dias e auditoria só do Admin)**.
 
 ### Roteiro da demo (5 min)
 
-0:00 a dor (lista de presença falsificável) → 0:30 login + **presença facial** (termo LGPD já aceito no seed) → 1:15 instrutor: iniciar aula + **homologação com senha do colaborador + motivo** (senha errada recusada) → 2:15 **tickets** (justificar falta aprovada; cancelar vaga promove a **fila** na hora) → 3:00 **certificados**: emissão + **reemissão** (código antigo vira NÃO ENCONTRADO ao vivo — momento uau) + CSV → 4:00 governança: **nova versão do termo** re-pede aceite, Mailpit com e-mails reais, scheduler → 4:30 **assistente público** (pergunta sobre `/verificar`, recusa fora do escopo, conversa registrada só para o Admin) → 4:45 fechamento. Plano B: homologação manual é feature; suíte verde prova o domínio; assistente em falha mostra cortesia (RNF08); 403 de escopo é feature (líder não sai do setor).
+0:00 a dor (lista de presença falsificável) → 0:30 login + **autocadastro facial** (`/portal/biometria` — câmera no navegador, imagem nunca sai do dispositivo) + **presença facial real** (matching no pgvector com aula ativa) → 1:30 instrutor: iniciar aula + **homologação com senha do colaborador + motivo** (senha errada recusada) → 2:30 **tickets** (justificar falta aprovada; cancelar vaga promove a **fila** na hora) → 3:15 **certificados**: emissão + **reemissão** (código antigo vira NÃO ENCONTRADO ao vivo — momento uau) + CSV → 4:15 governança: **nova versão do termo** re-pede aceite, Mailpit com e-mails reais, scheduler → 4:45 **assistente público** (pergunta sobre `/verificar`, recusa fora do escopo, conversa registrada só para o Admin) → 5:00 fechamento. Plano B: sem webcam ou rosto não reconhecido → **homologação manual** é feature (a recusa facial é auditada); suíte verde prova o domínio; assistente em falha mostra cortesia (RNF08); 403 de escopo é feature (líder não sai do setor).
 
 ### Mapa de artefatos
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 45 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 47 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
