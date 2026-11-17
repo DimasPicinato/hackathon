@@ -728,4 +728,20 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 17/11/2026 17h00 — gerado pela skill `registro-hackathon`._
+## Nº 49 — CÓDIGO — Fix do 419 no login no domínio: trustProxies ampliado para as redes privadas (RFC1918)
+
+- **Quando:** 17/11/2026 17h30–18h00
+- **O que foi feito:**
+  - **Bug confirmado no domínio:** após o deploy da copy amigável, qualquer POST de login em `https://hackathon.dpicinato.com` terminava em **419 Page Expired** — o formulário era gerado com `action="http://…"` (confirmado via browser: `document.querySelector('form').action`);
+  - **Causa raiz:** o `trustProxies` default `172.16.0.0/12` **não casa** com a sub-rede real do proxy do Coolify → o Laravel via o proxy como cliente comum, ignorava `X-Forwarded-Proto: https` e gerava URLs/redirects em `http://` → POST cruza http↔https → token CSRF invalidado (419). O mesmo bug quebraria QRs (RF21) e links de e-mail em http — regressão do https;
+  - **Correção:** default de `trustProxies` ampliado para todas as faixas privadas RFC1918 (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`) em `bootstrap/app.php` — continua bloqueando forja de `X-Forwarded-For` por clientes públicos e ajustável via `TRUSTED_PROXIES`;
+  - **Validação no domínio:** `action="https://hackathon.dpicinato.com/login"`; senha errada → "E-mail ou senha incorretos. Verifique e tente novamente." (sem 419); login real → portal em https com **zero** links `http://` na página; tela de cadastro facial com a copy nova.
+- **Artefatos:** `bootstrap/app.php` (commit `321fe6b`, pushado e no ar)
+- **Decisões / por quê:** ampliar o default para RFC1918 em vez de `*` — confiar em `*` reabriria a forja de IP (auditorias de IP poluíveis por qualquer cliente). RFC1918 cobre qualquer sub-rede privada do proxy do Coolify sem expor isso.
+- **Prompts-chave:** "continue" (P-50).
+- **Resultados:** login funcional no domínio em https, sem 419; mensagens amigáveis confirmadas no ar; QR/links deixam de ter risco de http.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 17/11/2026 18h00 — gerado pela skill `registro-hackathon`._

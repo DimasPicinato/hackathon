@@ -13,7 +13,7 @@
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
 | **Estado final** | 34/34 RFs implementados · **111 testes / 367 asserções verdes** · aplicação no ar em `https://hackathon.dpicinato.com` · **reconhecimento facial funcional** (face-api.js no navegador + matching pgvector + autocadastro RF03/RF14) · módulo **assistente de IA** (RF29–RF34) implementado, endurecido por auditoria e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (48 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (49 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -524,6 +524,10 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** varredura completa da interface: **~35 mensagens reescritas** sem códigos RFxx ou jargão (flashes, erros de validação, 403s, notificações, CSVs e status da câmera facial); tela de cadastro facial agora fala a língua do usuário ("código numérico que representa o seu rosto"); **bug do login corrigido** — sem pasta de traduções, senha errada exibia literalmente `auth.failed`; criadas traduções pt-BR (`lang/pt_BR`) e `APP_LOCALE=pt_BR` (`.env` + compose), com todas as validações em português; aviso do widget do assistente reescrito. Suíte **111/367 verde**; smoke no navegador confirmou login, cadastro facial e caminho de câmera negada com as copies novas.
 
+> **P-50 · "continue"** (17/11/2026) — sequência da sessão anterior: envio do fix do **419 no login do domínio**.
+>
+> **Resultado:** causa confirmada via browser — o formulário era gerado com `action="http://hackathon.dpicinato.com/login"` porque o default de `trustProxies` (`172.16.0.0/12`) não casava com a sub-rede do proxy do Coolify, quebrando também QRs (RF21) e e-mails (regressão do https); corrigido em `bootstrap/app.php` para as faixas privadas RFC1918 (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`), mantendo bloqueio de forja de IP e ajustável via `TRUSTED_PROXIES` (commit `321fe6b`). Validado no domínio: `action="https://…/login"`, senha errada exibe "E-mail ou senha incorretos. Verifique e tente novamente." (sem 419), login real leva ao portal em https com **zero** links `http://` na página.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -619,8 +623,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 27. **Pós-hackathon: endurecimento do chat IA + https padronizado** (P-48) - resposta do turno atual, erro de gateway → cortesia, lock por thread, purge LGPD 30d, trustProxies restrito, APP_URL https - 17/11 (104/342 verde).
 28. **Reconhecimento facial funcional** (P-48) - face-api.js client-side (imagem nunca sai do navegador), matching pgvector com limiar 0,80, autocadastro `/portal/biometria`, divergência auditada - 17/11 (**111/367 verde**).
 29. **Copy 100% amigável + traduções pt-BR** (P-49) - ~35 mensagens sem códigos RFxx/jargão, bug `auth.failed` no login corrigido com `lang/pt_BR` + `APP_LOCALE=pt_BR`, câmera facial com copy de usuário real - 17/11 (111/367 verde).
+30. **Fix do 419 no login no domínio** (P-50) - `trustProxies` ampliado para RFC1918 (proxy do Coolify fora do default `172.16.0.0/12` gerava forms/QRs em `http://` → 419); validado no domínio: `action` https, mensagem amigável, zero links http - 17/11 (commit `321fe6b`).
 
-## §9. Diário de bordo (`journey-log.md`, 48 sessões)
+## §9. Diário de bordo (`journey-log.md`, 49 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -687,8 +692,9 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 46 · 08h10–12h30 — Código:** **auditoria minuciosa do chat IA** (6 achados de severidade alta + ~10 média + 8 baixa) e correção do escopo aprovado pelo time: resposta apenas do **turno atual**, erro do gateway vira cortesia (não "resposta ok"), **lock por thread** (fim da race condition), trim + formato de sessão na validação, timeout/AbortSignal no widget, healthcheck + `service_healthy`, pin `@opencode/cli@2.0.32`, tela Admin com limites de célula, **purge LGPD de 30 dias** agendado; **https padronizado** (`APP_URL` https no compose, `trustProxies` restrito à rede interna do compose — fim do IP forjável, 13 refs de docs atualizadas); senhas de seed em `docs/` mantidas por decisão do time (risco registrado); **104/342 verde** (commit `79cd7c1`). ✔
 - **Nº 47 · 12h30–15h30 — Código:** **reconhecimento facial FUNCIONAL** — auditoria mostrou que a fachada gravava presença sem comparar rosto; nova arquitetura: captura no **navegador** com face-api.js vendido (imagem nunca sai do dispositivo), `BiometriaService` com matching cosseno no pgvector (limiar 0,80, seed `mock-facenet-v1` excluído do matching), **autocadastro** `/portal/biometria` (enrollment + auditoria `biometria_cadastro`), divergência reivindicado×reconhecido recusada e auditada (`presenca_facial_divergente`, RF16); overlay de câmera + tela de cadastro + link na sidebar; docs RF03/RF14/RNF01/RNF06 e mapa de páginas atualizados; **111/367 verde** (commit `3f8b8ff`); smoke no navegador confirmou assets, rota e caminho de erro de câmera negada. ✔
 - **Nº 48 · 16h10–17h00 — Código:** **copy 100% amigável** — varredura completa tirou códigos RFxx e jargão técnico das ~35 mensagens visíveis ao usuário (flashes, validações, 403s, notificações, CSVs, câmera facial); tela de cadastro facial reescrita sem termos técnicos; **bug do login corrigido** (`auth.failed` literal por falta de traduções) com `lang/pt_BR` + `APP_LOCALE=pt_BR` (validações 100% em português); aviso do widget do assistente reescrito; **111/367 verde**; smoke confirmou as copies novas no login, cadastro facial e câmera negada. ✔
+- **Nº 49 · 17h30–18h00 — Código:** **fix do 419 no login no domínio** — POST era gerado com `action="http://…"` porque o default de `trustProxies` (`172.16.0.0/12`) não casava com a sub-rede do proxy do Coolify; ampliado para as faixas privadas RFC1918 (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`), mantendo bloqueio de forja de IP; validado no domínio: `action` https, senha errada com mensagem amigável (sem 419), portal sem nenhum link http. ✔
 
-*Última atualização do diário: 17/11/2026, 17h00.*
+*Última atualização do diário: 17/11/2026, 18h00.*
 
 ## §10. Estado final e evidências
 
@@ -732,7 +738,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 48 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 49 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
