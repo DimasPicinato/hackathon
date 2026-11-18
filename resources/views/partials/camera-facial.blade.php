@@ -14,6 +14,15 @@
             <span id="rec-flash" class="rec-flash"></span>
         </div>
         <p id="rec-status" class="rec-status"></p>
+        <div id="rec-dica" class="rec-dica" hidden>
+            <p><strong>A câmera está bloqueada neste navegador. Para liberar:</strong></p>
+            <ol>
+                <li>Clique no <strong>ícone de cadeado</strong> (ou de ajustes) ao lado do endereço do site.</li>
+                <li>Em <strong>Câmera</strong>, escolha <strong>Permitir</strong>.</li>
+                <li>Volte aqui e toque em <strong>Já liberei — tentar novamente</strong>.</li>
+            </ol>
+            <p class="mini">Se continuar bloqueada, confira também nas configurações de privacidade do seu computador se este navegador pode usar a câmera.</p>
+        </div>
         <div class="linha-acoes">
             <button type="button" class="btn btn-accent" id="rec-capturar" disabled>Capturar</button>
             <button type="button" class="btn btn-outline" id="rec-repetir" hidden>Tentar novamente</button>
@@ -36,6 +45,7 @@
     var status = document.getElementById('rec-status');
     var numero = document.getElementById('rec-numero');
     var flash = document.getElementById('rec-flash');
+    var dica = document.getElementById('rec-dica');
     var botaoCapturar = document.getElementById('rec-capturar');
     var botaoRepetir = document.getElementById('rec-repetir');
     var botaoCancelar = document.getElementById('rec-cancelar');
@@ -66,6 +76,8 @@
     function fechar() {
         pararCamera();
         botaoRepetir.hidden = true;
+        botaoRepetir.textContent = 'Tentar novamente';
+        dica.hidden = true;
         overlay.hidden = true;
         formAlvo = null;
     }
@@ -76,14 +88,18 @@
         falhaCamera = true;
         botaoRepetir.hidden = false;
         var nome = erro && erro.name;
+        var semPermissao = (nome === 'NotAllowedError' || nome === 'SecurityError');
         var mensagem = 'Não foi possível começar a usar a câmera agora. Tente novamente em instantes — enquanto isso, o instrutor pode registrar a sua presença manualmente.';
 
-        if (nome === 'NotAllowedError' || nome === 'SecurityError') {
-            mensagem = 'O navegador está bloqueando o uso da câmera neste site. No ícone de cadeado (ou de privacidade) ao lado do endereço, escolha Permitir câmera e toque em Tentar novamente. Enquanto isso, o instrutor pode registrar a sua presença manualmente.';
+        dica.hidden = !semPermissao;
+        botaoRepetir.textContent = semPermissao ? 'Já liberei — tentar novamente' : 'Tentar novamente';
+
+        if (semPermissao) {
+            mensagem = 'Não conseguimos usar a câmera: o navegador está bloqueando o acesso a ela neste site.';
         } else if (nome === 'NotFoundError' || nome === 'DevicesNotFoundError') {
             mensagem = 'Não encontramos uma câmera neste dispositivo. O instrutor pode registrar a sua presença manualmente.';
         } else if (nome === 'NotReadableError' || nome === 'TrackStartError' || nome === 'AbortError') {
-            mensagem = 'A câmera está sendo usada por outro programa. Feche o outro programa (ou a aba que a está usando) e toque em Tentar novamente.';
+            mensagem = 'A câmera não está nos enviando imagem — ela pode estar em uso por outro programa. Feche o outro programa e toque em Tentar novamente.';
         } else if (nome === 'OverconstrainedError' || nome === 'ConstraintNotSatisfiedError') {
             mensagem = 'A câmera deste dispositivo não conseguiu abrir. Toque em Tentar novamente — se continuar, o instrutor pode registrar a sua presença manualmente.';
         }
@@ -178,7 +194,14 @@
         rotulo.textContent = form.dataset.nome ? 'Colaborador: ' + form.dataset.nome : 'Modo: ' + (form.dataset.modo === 'cadastro' ? 'cadastro do rosto' : 'validação de presença');
         overlay.hidden = false;
         botaoRepetir.hidden = true;
+        botaoRepetir.textContent = 'Tentar novamente';
+        dica.hidden = true;
         falhaCamera = false;
+
+        if (window.isSecureContext === false) {
+            definirStatus('A câmera só funciona em uma conexão segura (endereço começando com https). Peça ao instrutor para registrar a sua presença manualmente.', 'erro');
+            return;
+        }
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             definirStatus('Seu navegador não permite o uso da câmera aqui. Peça ao instrutor para registrar a sua presença manualmente.', 'erro');
@@ -195,6 +218,10 @@
                 stream = s;
                 video.srcObject = s;
                 if (!modelosOk) definirStatus('Câmera liberada — preparando o reconhecimento facial…');
+                // Vigia: se a câmera "abrir" sem entregar imagem (em uso por outro app), avisa.
+                setTimeout(function () {
+                    if (stream && video.videoWidth === 0) tratarErroCamera({ name: 'NotReadableError' });
+                }, 3500);
                 return video.play().catch(function () { /* autoplay sem som pode ser bloqueado em alguns navegadores */ });
             });
 
@@ -210,6 +237,7 @@
 
         Promise.all([pedidoCamera, pedidoModelos])
             .then(function () {
+                if (falhaCamera) return; // câmera caiu (vigia/erro) depois de liberar
                 botaoRepetir.hidden = true;
                 definirStatus('Olhe para a câmera — aguardando detectar um rosto.');
                 iniciarDeteccao();

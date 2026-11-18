@@ -256,6 +256,12 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
 .rec-status { min-height: 2.4em; margin: var(--space-2) 0; font-size: .9rem; }
 .rec-status-ok { color: var(--primary); font-weight: 600; }
 .rec-status-erro { color: #b91c1c; font-weight: 600; }
+.rec-dica { text-align: left; font-size: .85rem; margin: var(--space-2) 0;
+            padding: var(--space-3); border-left: 3px solid #b91c1c;
+            border-radius: var(--radius); background: rgba(185, 28, 28, .08); }
+.rec-dica p { margin: 0 0 var(--space-2); }
+.rec-dica ol { margin: 0 0 var(--space-2); padding-left: 1.2rem; }
+.rec-dica li { margin-bottom: var(--space-1); }
 
 .linha-aula { display: flex; align-items: center; justify-content: space-between;
               gap: var(--space-4); padding: var(--space-3) 0;
