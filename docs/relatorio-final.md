@@ -13,7 +13,7 @@
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
 | **Estado final** | 34/34 RFs implementados · **111 testes / 367 asserções verdes** · aplicação no ar em `https://hackathon.dpicinato.com` · **reconhecimento facial funcional** (face-api.js no navegador + matching pgvector + autocadastro RF03/RF14) · módulo **assistente de IA** (RF29–RF34) implementado, endurecido por auditoria e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (51 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (52 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -538,6 +538,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** o componente foi validado com **câmera sintética** (`canvas.captureStream()`): vídeo 640×480 tocando, modelos carregados e detecção ativa — logo, o problema é o navegador **negando** a permissão (depois de um "Bloquear", o pedido não reaparece sozinho). O overlay agora exibe um **painel com passo a passo** (cadeado → Câmera → Permitir → "Já liberei — tentar novamente"), o botão muda de rótulo quando o erro é de permissão, há aviso para conexões não seguras e um **vigia de câmera sem imagem** (3,5 s) que detecta câmera ocupada por outro programa. Suíte **111/367 verde**; commit `b04f299`.
 
+> **P-53 · "O componente continua sendo mostrado mesmo depois de cadastrar"** (18/11/2026)
+> "é impressão minha ou o componente continua sendo mostrado mesmo depois de já ter cadastrado a imagem?"
+>
+> **Resultado:** a suspeita estava certa e era **a causa raiz** dos relatos anteriores. O CSS definia `display: flex` em `.rec-overlay` e `.btn`, o que **vence o `hidden`** do HTML: o overlay da câmera ficava sempre visível, cobrindo o portal com `z-index: 90`. O clique nunca chegava ao botão real — então a câmera nunca era pedida — e os botões do overlay respondiam a um estado interno "fechado" (pareciam mortos). Corrigido com a regra global `[hidden] { display: none !important; }`, mais placeholder "Aguardando a câmera…", liberação do `srcObject` ao parar e vigia de frames (3 validações antes de liberar a captura). Fluxo completo validado localmente e no domínio: detectar rosto → contar 3-2-1 → capturar → cadastro salvo → overlay fecha. Suíte **111/367 verde**; commit `f0b5634`.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -636,8 +641,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 30. **Fix do 419 no login no domínio** (P-50) - `trustProxies` ampliado para RFC1918 (proxy do Coolify fora do default `172.16.0.0/12` gerava forms/QRs em `http://` → 419); validado no domínio: `action` https, mensagem amigável, zero links http - 17/11 (commit `321fe6b`).
 31. **Permissão de câmera pedida no clique** (P-51) - `getUserMedia` síncrono no gesto do usuário (modelos em paralelo), mensagens por tipo de bloqueio, botão "Tentar novamente" e aviso "escolha Permitir" nos três pontos de entrada - 18/11 (**111/367 verde**, commit `2453b18`).
 32. **Desbloqueio guiado da câmera** (P-52) - painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; componente validado com câmera sintética (vídeo + modelos + detecção) - 18/11 (**111/367 verde**, commit `b04f299`).
+33. **Causa raiz do componente "morto"** (P-53) - CSS de classe sobrepunha o atributo `hidden` e o overlay ficava sempre visível, bloqueando a página e o clique real; regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", liberação do `srcObject` e vigia de frames - 18/11 (**111/367 verde**, commit `f0b5634`).
 
-## §9. Diário de bordo (`journey-log.md`, 51 sessões)
+## §9. Diário de bordo (`journey-log.md`, 52 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -707,8 +713,9 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 49 · 17h30–18h00 — Código:** **fix do 419 no login no domínio** — POST era gerado com `action="http://…"` porque o default de `trustProxies` (`172.16.0.0/12`) não casava com a sub-rede do proxy do Coolify; ampliado para as faixas privadas RFC1918 (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`), mantendo bloqueio de forja de IP; validado no domínio: `action` https, senha errada com mensagem amigável (sem 419), portal sem nenhum link http. ✔
 - **Nº 50 · 09h00–10h00 — Código:** **permissão de câmera no clique do usuário** — `getUserMedia` saiu da cadeia pós-modelos e é chamado de forma síncrona no gesto do clique (modelos em paralelo), exibindo o pedido do navegador de imediato; mensagens específicas por tipo de bloqueio (cadeado, câmera em uso, sem câmera), botão "Tentar novamente" no overlay e aviso "escolha Permitir" nos três pontos de entrada; spy confirmou `userActivation.isActive === true` no pedido; **111/367 verde**, `view:cache` ok (commit `2453b18`). ✔
 - **Nº 51 · 10h30–11h30 — Código:** **desbloqueio guiado da câmera** — componente validado com câmera sintética (vídeo 640×480, modelos e detecção ativos), provando que o problema é permissão negada; overlay ganhou painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; caminhos bloqueado e liberado validados; **111/367 verde** (commit `b04f299`). ✔
+- **Nº 52 · 15h50–16h40 — Código:** **causa raiz do componente "morto"** — o `display` das classes (`.rec-overlay`, `.btn`) vencia o atributo `hidden`, deixando o overlay da câmera **sempre visível** por cima do portal: o clique nunca chegava ao botão real e os botões do overlay respondiam a um estado "fechado". Regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", `srcObject` liberado ao parar e vigia de frames; fluxo completo (detectar → 3-2-1 → capturar → salvar → fechar) validado local e no domínio; **111/367 verde** (commit `f0b5634`). ✔
 
-*Última atualização do diário: 18/11/2026, 11h30.*
+*Última atualização do diário: 18/11/2026, 16h40.*
 
 ## §10. Estado final e evidências
 
@@ -752,7 +759,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 51 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 52 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |

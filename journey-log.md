@@ -780,4 +780,21 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 18/11/2026 11h30 — gerado pela skill `registro-hackathon`._
+## Nº 52 — CÓDIGO — Causa raiz do componente "morto": CSS sobrepunha o atributo `hidden` (overlay sempre visível)
+
+- **Quando:** 18/11/2026 15h50–16h40
+- **O que foi feito:**
+  - **Sintoma relatado:** o overlay de reconhecimento facial continuava aparecendo mesmo depois do cadastro; o quadro ficava só na cor de fundo, e "Capturar", "Tentar novamente" e "Cancelar" não reagiam;
+  - **Causa raiz encontrada:** o CSS define `display` nas classes (`.rec-overlay` e `.btn` → `flex`/`inline-flex`), e o `display` de uma classe **vence a regra do navegador** para o atributo `hidden` — ou seja, o overlay ficava **sempre visível**, cobrindo toda página com `z-index: 90`. O clique nunca chegava ao botão real "Capturar meu rosto agora", portanto o `getUserMedia` nunca era chamado (sem pedido de câmera). Os botões do overlay respondiam a um estado interno "fechado" (`formAlvo` nulo), parecendo mortos;
+  - **Correção:** regra global `[hidden] { display: none !important; }` no topo do `app.css` — vale para o overlay, o contador, o painel de dica e o botão "Tentar novamente";
+  - **Blindagens adicionais:** placeholder "Aguardando a câmera…" sobre o quadro; `video.srcObject = null` ao parar (evita o quadro "morto"/mensagem de mídia inválida); vigia de 1 s×5 que valida `videoWidth > 0`, `!video.paused` e `readyState ≥ 2` antes de liberar a captura; guarda no `capturar()` quando a câmera não está pronta;
+  - **Validação local:** overlay `display: none` ao carregar e a página clicável; abrir → `flex`; cancelar → `none`; fluxo com câmera simulada e rosto real concluiu o cadastro ("Rosto cadastrado com sucesso", overlay fechado).
+- **Artefatos:** `public/css/app.css`, `resources/views/partials/camera-facial.blade.php` (commit `f0b5634`)
+- **Decisões / por quê:** corrigir na raiz (`[hidden]` global) em vez de remendar classe por classe — o mesmo defeito poderia reaparecer em qualquer componente novo com `display` próprio.
+- **Prompts-chave:** "é impressão minha ou o componente continua sendo mostrado mesmo depois de já ter cadastrado a imagem?" (P-53).
+- **Resultados:** suíte **111/367 verde**; fluxo completo validado local; deploy confirmado no domínio.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 18/11/2026 16h40 — gerado pela skill `registro-hackathon`._
