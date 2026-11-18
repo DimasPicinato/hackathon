@@ -744,4 +744,22 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 17/11/2026 18h00 — gerado pela skill `registro-hackathon`._
+## Nº 50 — CÓDIGO — Pedido de permissão de câmera no clique do usuário + mensagens por tipo de bloqueio
+
+- **Quando:** 18/11/2026 09h00–10h00
+- **O que foi feito:**
+  - **Diagnóstico:** o `getUserMedia` era chamado **só depois** de baixar os 3 modelos do face-api (~7 MB), dentro de uma cadeia de `.then()` — o pedido de permissão chegava tarde, fora do gesto do usuário (Safari/iOS nem exibe o pedido nesse caso; em qualquer navegador a demora fazia parecer que nada acontecia) e, se o modelo falhasse, a câmera nunca era solicitada;
+  - **Correção:** a permissão agora é pedida **imediatamente no clique** (`abrir()` chama `getUserMedia` de forma síncrona no handler do submit), com os modelos carregando **em paralelo**; status inicial "Aguardando a sua autorização — quando o navegador perguntar, escolha Permitir para usar a câmera."; ao liberar, "Câmera liberada — preparando o reconhecimento facial…";
+  - **Mensagens específicas por tipo de bloqueio:** bloqueio do navegador (`NotAllowedError`/`SecurityError`) explica o cadeado ao lado do endereço; câmera em uso por outro programa (`NotReadableError`); sem câmera no dispositivo (`NotFoundError`); formato incompatível (`OverconstrainedError`); todas terminam com o caminho alternativo (registro manual pelo instrutor);
+  - **Botão "Tentar novamente"** no overlay (gesto novo permite o navegador perguntar de novo) e **aviso nos três pontos de entrada** ("Na primeira vez, o navegador vai pedir permissão... escolha Permitir"): cadastro facial, portal (validar presença) e chamada do instrutor;
+  - **Verificação técnica no navegador:** spy em `getUserMedia` provou `navigator.userActivation.isActive === true` no momento do pedido e que o status exibido já é o de autorização — é exatamente o que faz o navegador exibir o prompt;
+  - **Roteiro de demo** atualizado: checklist de webcam com o passo "permitir câmera", Plano B com o cadeado e suíte corrigida para 111/367.
+- **Artefatos:** `resources/views/partials/camera-facial.blade.php`, `resources/views/portal/{biometria,home,aula}.blade.php`, `docs/roteiro-demo.md` (commit `2453b18`)
+- **Decisões / por quê:** pedir a permissão **antes** dos modelos, e não junto deles, porque a ativação do usuário expira — o pedido precisa nascer do clique; erros traduzidos por `erro.name` em vez de mensagem única, porque "permissão negada" e "câmera em uso" exigem ações diferentes do usuário.
+- **Prompts-chave:** "o sistema precisa pedir solicitação do navegador do usuário para usar a câmera" (P-51).
+- **Resultados:** suíte **111/367 verde**; `view:cache` compila todas as views; smoke local confirmou aviso de permissão, status de autorização no instante do pedido (com ativação ativa), mensagem de bloqueio com "Tentar novamente".
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 18/11/2026 10h00 — gerado pela skill `registro-hackathon`._
