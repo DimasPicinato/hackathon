@@ -13,7 +13,7 @@
 | **Entrega** | Este documento em PDF — contém **todos os prompts criados pelo grupo** para o desenvolvimento, conforme exigido no enunciado |
 | **Estado final** | 34/34 RFs implementados · **111 testes / 367 asserções verdes** · aplicação no ar em `https://hackathon.dpicinato.com` · **reconhecimento facial funcional** (face-api.js no navegador + matching pgvector + autocadastro RF03/RF14) · módulo **assistente de IA** (RF29–RF34) implementado, endurecido por auditoria e auditável (runtime em contêiner, widget público, conversas só para o Admin) |
 
-**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (50 sessões registradas por IA) e as evidências finais.
+**Como ler este relatório:** o **ATO 1** é a síntese (tecnologias, arquitetura e metodologia). O **ATO 2** é o relato completo e detalhado: o desafio, os acordos, os requisitos, o design, **todos os prompts relevantes em ordem cronológica com seus resultados**, a transcrição do questionário de requisitos, os passos do desenvolvimento, o diário de bordo (51 sessões registradas por IA) e as evidências finais.
 
 ---
 
@@ -533,6 +533,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** o `getUserMedia` era chamado só depois de baixar os ~7 MB dos modelos do face-api, fora do gesto do usuário (Safari/iOS nem exibe o pedido; nos demais, parecia travado) e não acontecia se o modelo falhasse. Agora a **permissão é pedida imediatamente no clique**, com os modelos carregando em paralelo; o overlay mostra "Aguardando a sua autorização — quando o navegador perguntar, escolha Permitir para usar a câmera." e, se bloqueada, uma mensagem específica por motivo (cadeado do navegador, câmera em uso, sem câmera) com **botão "Tentar novamente"**; os três pontos de entrada (cadastro facial, portal, chamada do instrutor) avisam que o navegador vai perguntar. Verificação por spy em `getUserMedia`: `navigator.userActivation.isActive === true` no instante do pedido. Suíte **111/367 verde**; commit `2453b18`.
 
+> **P-52 · Câmera não usada no teste real — desbloqueio guiado** (18/11/2026)
+> "o componente de reconhecimento facial não está funcionando, não vejo minha imagem e a câmera não é usada"
+>
+> **Resultado:** o componente foi validado com **câmera sintética** (`canvas.captureStream()`): vídeo 640×480 tocando, modelos carregados e detecção ativa — logo, o problema é o navegador **negando** a permissão (depois de um "Bloquear", o pedido não reaparece sozinho). O overlay agora exibe um **painel com passo a passo** (cadeado → Câmera → Permitir → "Já liberei — tentar novamente"), o botão muda de rótulo quando o erro é de permissão, há aviso para conexões não seguras e um **vigia de câmera sem imagem** (3,5 s) que detecta câmera ocupada por outro programa. Suíte **111/367 verde**; commit `b04f299`.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -630,8 +635,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 29. **Copy 100% amigável + traduções pt-BR** (P-49) - ~35 mensagens sem códigos RFxx/jargão, bug `auth.failed` no login corrigido com `lang/pt_BR` + `APP_LOCALE=pt_BR`, câmera facial com copy de usuário real - 17/11 (111/367 verde).
 30. **Fix do 419 no login no domínio** (P-50) - `trustProxies` ampliado para RFC1918 (proxy do Coolify fora do default `172.16.0.0/12` gerava forms/QRs em `http://` → 419); validado no domínio: `action` https, mensagem amigável, zero links http - 17/11 (commit `321fe6b`).
 31. **Permissão de câmera pedida no clique** (P-51) - `getUserMedia` síncrono no gesto do usuário (modelos em paralelo), mensagens por tipo de bloqueio, botão "Tentar novamente" e aviso "escolha Permitir" nos três pontos de entrada - 18/11 (**111/367 verde**, commit `2453b18`).
+32. **Desbloqueio guiado da câmera** (P-52) - painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; componente validado com câmera sintética (vídeo + modelos + detecção) - 18/11 (**111/367 verde**, commit `b04f299`).
 
-## §9. Diário de bordo (`journey-log.md`, 50 sessões)
+## §9. Diário de bordo (`journey-log.md`, 51 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -700,8 +706,9 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 48 · 16h10–17h00 — Código:** **copy 100% amigável** — varredura completa tirou códigos RFxx e jargão técnico das ~35 mensagens visíveis ao usuário (flashes, validações, 403s, notificações, CSVs, câmera facial); tela de cadastro facial reescrita sem termos técnicos; **bug do login corrigido** (`auth.failed` literal por falta de traduções) com `lang/pt_BR` + `APP_LOCALE=pt_BR` (validações 100% em português); aviso do widget do assistente reescrito; **111/367 verde**; smoke confirmou as copies novas no login, cadastro facial e câmera negada. ✔
 - **Nº 49 · 17h30–18h00 — Código:** **fix do 419 no login no domínio** — POST era gerado com `action="http://…"` porque o default de `trustProxies` (`172.16.0.0/12`) não casava com a sub-rede do proxy do Coolify; ampliado para as faixas privadas RFC1918 (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`), mantendo bloqueio de forja de IP; validado no domínio: `action` https, senha errada com mensagem amigável (sem 419), portal sem nenhum link http. ✔
 - **Nº 50 · 09h00–10h00 — Código:** **permissão de câmera no clique do usuário** — `getUserMedia` saiu da cadeia pós-modelos e é chamado de forma síncrona no gesto do clique (modelos em paralelo), exibindo o pedido do navegador de imediato; mensagens específicas por tipo de bloqueio (cadeado, câmera em uso, sem câmera), botão "Tentar novamente" no overlay e aviso "escolha Permitir" nos três pontos de entrada; spy confirmou `userActivation.isActive === true` no pedido; **111/367 verde**, `view:cache` ok (commit `2453b18`). ✔
+- **Nº 51 · 10h30–11h30 — Código:** **desbloqueio guiado da câmera** — componente validado com câmera sintética (vídeo 640×480, modelos e detecção ativos), provando que o problema é permissão negada; overlay ganhou painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; caminhos bloqueado e liberado validados; **111/367 verde** (commit `b04f299`). ✔
 
-*Última atualização do diário: 18/11/2026, 10h00.*
+*Última atualização do diário: 18/11/2026, 11h30.*
 
 ## §10. Estado final e evidências
 
@@ -745,7 +752,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 50 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 51 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |

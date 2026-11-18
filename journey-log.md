@@ -762,4 +762,22 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 18/11/2026 10h00 — gerado pela skill `registro-hackathon`._
+## Nº 51 — CÓDIGO — Câmera bloqueada: instruções visíveis para liberar no navegador + diagnóstico do componente
+
+- **Quando:** 18/11/2026 10h30–11h30
+- **O que foi feito:**
+  - **Diagnóstico:** o componente foi testado com **câmera sintética** (`canvas.captureStream()`) em substituição ao `getUserMedia` — vídeo 640×480 tocando, modelos do face-api carregados e loop de detecção rodando. Ou seja: quando o navegador **entrega** a câmera, o componente funciona; o relato "não vejo imagem / câmera não usada" corresponde ao navegador **negando** a permissão (e a mensagem anterior era discreta);
+  - **Painel "A câmera está bloqueada neste navegador"** dentro do overlay, com passo a passo: cadeado ao lado do endereço → Câmera → Permitir → "Já liberei — tentar novamente"; inclui dica de privacidade do sistema operacional;
+  - **Botão contextual:** "Já liberei — tentar novamente" quando o erro é de permissão; "Tentar novamente" nos demais casos;
+  - **Aviso de conexão segura:** se a página não estiver em contexto seguro (`isSecureContext === false`), explica que a câmera só funciona em https;
+  - **Vigia de câmera sem imagem:** se a câmera "abrir" mas não entregar frames em 3,5 s (em uso por outro programa), mostra a mensagem de câmera ocupada em vez de deixar um quadro preto parado;
+  - Validação local dos dois caminhos: bloqueado (painel + botão contextual) e liberado (vídeo tocando, sem painel).
+- **Artefatos:** `resources/views/partials/camera-facial.blade.php`, `public/css/app.css` (commit `b04f299`)
+- **Decisões / por quê:** o navegador nunca reabre o pedido de permissão depois de um "Bloquear" — por isso a interface precisa ensinar o caminho do cadeado; mensagem única não bastava, o usuário precisava dos passos.
+- **Prompts-chave:** "o componente de reconhecimento facial não está funcionando, não vejo minha imagem e a câmera não é usada" (P-52).
+- **Resultados:** suíte **111/367 verde**; caminho bloqueado e caminho liberado validados no navegador.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 18/11/2026 11h30 — gerado pela skill `registro-hackathon`._
