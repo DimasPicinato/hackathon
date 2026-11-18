@@ -42,6 +42,11 @@
 
 * { box-sizing: border-box; }
 
+/* O atributo `hidden` precisa vencer os `display` das classes (.btn, .rec-overlay…).
+   Sem isto, elementos com `hidden` continuam visíveis e o overlay da câmera cobre a
+   página inteira, impedindo o clique nos botões reais. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--background);
@@ -246,6 +251,9 @@ label { display: block; font-weight: 600; margin: var(--space-3) 0 var(--space-1
             background: #0f172a; }
 .rec-cena video { width: 100%; height: 100%; object-fit: cover;
                   transform: scaleX(-1); /* espelho: UX de câmera frontal */ }
+.rec-espera { position: absolute; inset: 0; display: flex; align-items: center;
+              justify-content: center; color: #cbd5e1; font-size: .9rem;
+              background: #0f172a; }
 .rec-numero { position: absolute; inset: 0; display: flex; align-items: center;
               justify-content: center; font-family: var(--font-heading);
               font-size: 4.5rem; font-weight: 700; color: #fff;

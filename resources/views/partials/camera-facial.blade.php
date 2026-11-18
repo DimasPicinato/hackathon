@@ -10,6 +10,7 @@
         <p class="mini" id="rec-nome"></p>
         <div class="rec-cena">
             <video id="rec-video" autoplay playsinline muted></video>
+            <div id="rec-espera" class="rec-espera">Aguardando a câmera…</div>
             <span id="rec-numero" class="rec-numero" hidden></span>
             <span id="rec-flash" class="rec-flash"></span>
         </div>
@@ -42,6 +43,7 @@
     if (!overlay) return;
 
     var video = document.getElementById('rec-video');
+    var espera = document.getElementById('rec-espera');
     var status = document.getElementById('rec-status');
     var numero = document.getElementById('rec-numero');
     var flash = document.getElementById('rec-flash');
@@ -69,6 +71,9 @@
             stream.getTracks().forEach(function (t) { t.stop(); });
             stream = null;
         }
+        // Soltar o stream do elemento evita o quadro "morto" (e a mensagem de mídia inválida)
+        video.srcObject = null;
+        espera.hidden = false;
         rostoVisivel = false;
         botaoCapturar.disabled = true;
     }
@@ -163,6 +168,11 @@
     }
 
     function capturar() {
+        if (!stream || video.paused || video.videoWidth === 0) {
+            definirStatus('A câmera não está pronta para a captura. Toque em Tentar novamente.', 'erro');
+            botaoRepetir.hidden = false;
+            return;
+        }
         botaoCapturar.disabled = true;
         definirStatus('Analisando o rosto…');
         clearInterval(loop);
@@ -196,6 +206,7 @@
         botaoRepetir.hidden = true;
         botaoRepetir.textContent = 'Tentar novamente';
         dica.hidden = true;
+        espera.hidden = false;
         falhaCamera = false;
 
         if (window.isSecureContext === false) {
@@ -218,11 +229,24 @@
                 stream = s;
                 video.srcObject = s;
                 if (!modelosOk) definirStatus('Câmera liberada — preparando o reconhecimento facial…');
-                // Vigia: se a câmera "abrir" sem entregar imagem (em uso por outro app), avisa.
-                setTimeout(function () {
-                    if (stream && video.videoWidth === 0) tratarErroCamera({ name: 'NotReadableError' });
-                }, 3500);
-                return video.play().catch(function () { /* autoplay sem som pode ser bloqueado em alguns navegadores */ });
+                return video.play().catch(function () { /* alguns navegadores só tocam após um toque */ });
+            })
+            .then(function () {
+                // Vigia: confirma que a câmera realmente entrega imagem (não só "abriu").
+                var tentativas = 0;
+                var vigia = setInterval(function () {
+                    tentativas++;
+                    if (!stream) { clearInterval(vigia); return; }
+                    if (video.videoWidth > 0 && !video.paused && video.readyState >= 2) {
+                        espera.hidden = true;
+                        clearInterval(vigia);
+                        return;
+                    }
+                    if (tentativas >= 5) {
+                        clearInterval(vigia);
+                        tratarErroCamera({ name: 'NotReadableError' });
+                    }
+                }, 1000);
             });
 
         var pedidoModelos = carregarModelos();
@@ -268,6 +292,11 @@
         botaoCapturar.addEventListener('click', function () { contagem(capturar); });
         botaoRepetir.addEventListener('click', function () { if (formAlvo) abrir(formAlvo); });
         botaoCancelar.addEventListener('click', fechar);
+        video.addEventListener('playing', function () { espera.hidden = true; });
+        video.addEventListener('loadeddata', function () { espera.hidden = true; });
+        video.addEventListener('error', function () {
+            if (!overlay.hidden) tratarErroCamera({ name: 'NotReadableError' });
+        });
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && !overlay.hidden) fechar();
         });
