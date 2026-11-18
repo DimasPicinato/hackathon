@@ -71,6 +71,7 @@
                                         <input type="hidden" name="colaborador_id" value="{{ $pessoa->id }}">
                                         <button class="btn btn-accent btn-pequeno">📷 Reconhecimento facial</button>
                                     </form>
+                                    <p class="mini muted">Na primeira vez, o navegador vai pedir permissão para usar a câmera — escolha <strong>Permitir</strong>.</p>
                                     <form method="POST" action="{{ route('portal.aula.presenca.manual', $aula) }}" class="form-manual">@csrf
                                         <input type="hidden" name="colaborador_id" value="{{ $pessoa->id }}">
                                         <label class="mini">Senha da própria pessoa (confirma a presença — antifraude)</label>

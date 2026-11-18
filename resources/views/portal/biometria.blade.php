@@ -36,6 +36,7 @@
     <form method="POST" action="{{ route('portal.biometria.cadastrar') }}" data-facial data-modo="cadastro" data-nome="{{ auth()->user()->name }}">@csrf
         <button class="btn btn-accent">📷 Capturar meu rosto agora</button>
     </form>
+    <p class="mini muted">Na primeira vez, o navegador vai pedir permissão para usar a câmera — escolha <strong>Permitir</strong>.</p>
     <p class="mini muted">Para uma boa captura: ambiente bem iluminado, rosto centralizado na câmera,
         sem óculos escuros ou boné. A imagem não sai do seu dispositivo.</p>
 </div>

@@ -126,6 +126,7 @@
                         <input type="hidden" name="aula_id" value="{{ $aula->id }}">
                         <button class="btn btn-accent">📷 Validar presença agora (facial)</button>
                     </form>
+                    <p class="mini muted">Na primeira vez, o navegador vai pedir permissão para usar a câmera — escolha <strong>Permitir</strong>.</p>
                 @endif
             </div>
         </div>

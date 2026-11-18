@@ -16,6 +16,7 @@
         <p id="rec-status" class="rec-status"></p>
         <div class="linha-acoes">
             <button type="button" class="btn btn-accent" id="rec-capturar" disabled>Capturar</button>
+            <button type="button" class="btn btn-outline" id="rec-repetir" hidden>Tentar novamente</button>
             <button type="button" class="btn btn-outline" id="rec-cancelar">Cancelar</button>
         </div>
         <p class="mini muted">A imagem da câmera é usada apenas neste instante e nunca é armazenada
@@ -36,6 +37,7 @@
     var numero = document.getElementById('rec-numero');
     var flash = document.getElementById('rec-flash');
     var botaoCapturar = document.getElementById('rec-capturar');
+    var botaoRepetir = document.getElementById('rec-repetir');
     var botaoCancelar = document.getElementById('rec-cancelar');
     var rotulo = document.getElementById('rec-nome');
 
@@ -44,6 +46,7 @@
     var rostoVisivel = false;
     var loop = null;
     var modelosOk = false;
+    var falhaCamera = false;
 
     function definirStatus(texto, tipo) {
         status.textContent = texto;
@@ -62,13 +65,34 @@
 
     function fechar() {
         pararCamera();
+        botaoRepetir.hidden = true;
         overlay.hidden = true;
         formAlvo = null;
     }
 
+    // Explica, em linguagem de usuário, por que a câmera não abriu e o que fazer agora.
+    function tratarErroCamera(erro) {
+        pararCamera();
+        falhaCamera = true;
+        botaoRepetir.hidden = false;
+        var nome = erro && erro.name;
+        var mensagem = 'Não foi possível começar a usar a câmera agora. Tente novamente em instantes — enquanto isso, o instrutor pode registrar a sua presença manualmente.';
+
+        if (nome === 'NotAllowedError' || nome === 'SecurityError') {
+            mensagem = 'O navegador está bloqueando o uso da câmera neste site. No ícone de cadeado (ou de privacidade) ao lado do endereço, escolha Permitir câmera e toque em Tentar novamente. Enquanto isso, o instrutor pode registrar a sua presença manualmente.';
+        } else if (nome === 'NotFoundError' || nome === 'DevicesNotFoundError') {
+            mensagem = 'Não encontramos uma câmera neste dispositivo. O instrutor pode registrar a sua presença manualmente.';
+        } else if (nome === 'NotReadableError' || nome === 'TrackStartError' || nome === 'AbortError') {
+            mensagem = 'A câmera está sendo usada por outro programa. Feche o outro programa (ou a aba que a está usando) e toque em Tentar novamente.';
+        } else if (nome === 'OverconstrainedError' || nome === 'ConstraintNotSatisfiedError') {
+            mensagem = 'A câmera deste dispositivo não conseguiu abrir. Toque em Tentar novamente — se continuar, o instrutor pode registrar a sua presença manualmente.';
+        }
+
+        definirStatus(mensagem, 'erro');
+    }
+
     function carregarModelos() {
         if (modelosOk) return Promise.resolve(true);
-        definirStatus('Preparando o reconhecimento facial…');
         var opcoes = { inputSize: 320, scoreThreshold: 0.5 };
         return Promise.all([
             faceapi.nets.tinyFaceDetector.loadFromUri('/models/faceapi'),
@@ -152,35 +176,45 @@
     function abrir(form) {
         formAlvo = form;
         rotulo.textContent = form.dataset.nome ? 'Colaborador: ' + form.dataset.nome : 'Modo: ' + (form.dataset.modo === 'cadastro' ? 'cadastro do rosto' : 'validação de presença');
-        definirStatus('Iniciando câmera…');
         overlay.hidden = false;
+        botaoRepetir.hidden = true;
+        falhaCamera = false;
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             definirStatus('Seu navegador não permite o uso da câmera aqui. Peça ao instrutor para registrar a sua presença manualmente.', 'erro');
             return;
         }
 
-        var iniciarCamera = function () {
-            navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } })
-                .then(function (s) {
-                    stream = s;
-                    video.srcObject = s;
-                    return video.play();
-                })
-                .then(function () {
-                    definirStatus('Olhe para a câmera — aguardando detectar um rosto.');
-                    iniciarDeteccao();
-                })
-                .catch(function () {
-                    definirStatus('Não foi possível usar a câmera — verifique se a permissão foi concedida e se ela não está sendo usada por outro programa. Enquanto isso, o instrutor pode registrar a sua presença manualmente.', 'erro');
-                });
-        };
+        // Pede a câmera AGORA, ainda dentro do clique do usuário: é isso que faz o
+        // navegador exibir o pedido de permissão (Safari/iOS só mostra com gesto).
+        // Os modelos de reconhecimento carregam em paralelo, sem segurar o pedido.
+        definirStatus('Aguardando a sua autorização — quando o navegador perguntar, escolha Permitir para usar a câmera.');
 
-        carregarModelos()
-            .then(function () { iniciarCamera(); })
-            .catch(function () {
-                definirStatus('Não foi possível preparar o reconhecimento facial agora. Tente novamente em instantes ou peça o registro manual ao instrutor.', 'erro');
+        var pedidoCamera = navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } })
+            .then(function (s) {
+                stream = s;
+                video.srcObject = s;
+                if (!modelosOk) definirStatus('Câmera liberada — preparando o reconhecimento facial…');
+                return video.play().catch(function () { /* autoplay sem som pode ser bloqueado em alguns navegadores */ });
             });
+
+        var pedidoModelos = carregarModelos();
+
+        pedidoCamera.catch(function (erro) { tratarErroCamera(erro); });
+        pedidoModelos.catch(function () {
+            pararCamera();
+            if (falhaCamera) return; // a mensagem da câmera é a causa principal
+            botaoRepetir.hidden = false;
+            definirStatus('Não foi possível preparar o reconhecimento facial agora. Toque em Tentar novamente em instantes — se continuar, o instrutor pode registrar a sua presença manualmente.', 'erro');
+        });
+
+        Promise.all([pedidoCamera, pedidoModelos])
+            .then(function () {
+                botaoRepetir.hidden = true;
+                definirStatus('Olhe para a câmera — aguardando detectar um rosto.');
+                iniciarDeteccao();
+            })
+            .catch(function () { /* mensagens já exibidas pelos tratamentos acima */ });
     }
 
     // face-api.min.js entra com `defer`: só estará pronto antes de DOMContentLoaded.
@@ -204,6 +238,7 @@
         });
 
         botaoCapturar.addEventListener('click', function () { contagem(capturar); });
+        botaoRepetir.addEventListener('click', function () { if (formAlvo) abrir(formAlvo); });
         botaoCancelar.addEventListener('click', fechar);
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && !overlay.hidden) fechar();

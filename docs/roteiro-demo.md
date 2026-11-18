@@ -10,7 +10,7 @@
 - [ ] Telas prontas em abas: `/verificar/PZ-2024-000087` (EXPIRADO) e `/verificar/PZ-2025-000101` (VÁLIDO)
 - [ ] Suíte verde: `docker run --rm -v .:/app -w /app hackaton-app:latest php artisan test` → 111 testes / 367 asserções
 - [ ] Assistente no ar: `docker compose ps assistente` → **Up (healthy)** (runtime interno `:4096`; a API interna responde só na rede do compose)
-- [ ] **Webcam funcionando no navegador da demo** (o facial é real — teste o autocadastro antes da apresentação; sem câmera, o Plano B cobre)
+- [ ] **Webcam funcionando no navegador da demo** (o facial é real — teste o autocadastro antes da apresentação; ao tocar em "Capturar meu rosto", o navegador **pede permissão de câmera** — escolha Permitir; sem câmera, o Plano B cobre)
 
 **Não arecare: `docker compose restart` re-semeia o banco (reset total) e apaga dados criados ao vivo durante a demo.**
 
@@ -55,7 +55,7 @@
 
 ## Plano B (se algo falhar)
 
-- Facial "não funcionar" → homologação manual (que é feature real — mostre-a com orgulho).
-- Banco "não subir" → suíte PHPUnit no Postgres (100/331 verde) prova o domínio rodando.
+- Facial "não funcionar" → primeiro confira o **ícone de cadeado** ao lado do endereço e permita a câmera; se o navegador negar de novo, use a homologação manual (que é feature real — mostre-a com orgulho).
+- Banco "não subir" → suíte PHPUnit no Postgres (111/367 verde) prova o domínio rodando.
 - Assistente "não responder" → a tela mostra a **mensagem de cortesia** (RNF08), sem erro 500; a demo segue. Para religar: `docker compose up -d --build assistente` (a imagem embute `docs/`).
 - Qualquer 403 de escopo → ISSO é feature (RF05/RF12): "líder não sai do seu setor".
