@@ -129,6 +129,23 @@ class BiometriaService
         return $similaridade >= $this->limiar() ? $similaridade : null;
     }
 
+    /** Similaridade bruta entre o rosto capturado e o cadastro real do usuário (ou null se não houver cadastro real). */
+    public function similaridadeCom(User $alvo, array $embedding): ?float
+    {
+        $this->garantirDimensoes($embedding);
+        $vetor = $this->vetorLiteral($embedding);
+        $linha = DB::selectOne(
+            'SELECT 1 - (embedding <=> ?::vector) AS similaridade
+               FROM biometrias
+              WHERE user_id = ? AND ativo = true AND modelo = ?',
+            [$vetor, $alvo->id, self::MODELO],
+        );
+        if (! $linha) {
+            return null;
+        }
+        return (float) $linha->similaridade;
+    }
+
     /** O usuário já tem embedding REAL (não-fachada) cadastrado? */
     public function temCadastroReal(User $user): bool
     {

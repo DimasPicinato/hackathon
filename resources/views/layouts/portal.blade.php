@@ -95,7 +95,7 @@
                 </header>
                 <main class="container" id="conteudo">
                     @if (session('status'))
-                        <div class="alert alert-ok">{{ session('status') }}</div>
+                        <div class="alert alert-ok">{{ ['profile-updated' => 'Perfil atualizado com sucesso.', 'password-updated' => 'Senha alterada com sucesso.', 'verification-link-sent' => 'Enviamos um link de confirmação para o seu e-mail.'][session('status')] ?? session('status') }}</div>
                     @endif
                     @if (session('ok'))
                         <div class="flash-ok">{{ session('ok') }}</div>

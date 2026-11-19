@@ -35,11 +35,11 @@ class ConformidadeTest extends TestCase
         $resposta->assertOk();
         $html = $resposta->getContent();
 
-        $this->assertStringContainsString($vigente->name, $html);
+        $this->assertStringContainsString(e($vigente->name), $html);
         $this->assertStringContainsString('vigente', $html);
         $this->assertStringContainsString('expirado', $html);
         $this->assertStringContainsString('em_curso', $html);
-        $this->assertStringContainsString($pendente->name, $html);
+        $this->assertStringContainsString(e($pendente->name), $html);
     }
 
     public function test_treinamento_de_outro_setor_nao_aparece_para_a_pessoa(): void
@@ -70,8 +70,8 @@ class ConformidadeTest extends TestCase
 
         $html = $this->actingAs($lider)->get(route('portal.rh.conformidade'))->getContent();
 
-        $this->assertStringContainsString($meuLiderado->name, $html);
-        $this->assertStringNotContainsString($deOutroSetor->name, $html);
+        $this->assertStringContainsString(e($meuLiderado->name), $html);
+        $this->assertStringNotContainsString(e($deOutroSetor->name), $html);
     }
 
     public function test_colaborador_nao_ve_matriz(): void

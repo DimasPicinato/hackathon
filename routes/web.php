@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
         // RF03/RNF01 — autocadastro biométrico (enrollment do próprio rosto)
         Route::get('/portal/biometria', [BiometriaController::class, 'mostrar'])->name('portal.biometria.mostrar');
         Route::post('/portal/biometria', [BiometriaController::class, 'cadastrar'])->name('portal.biometria.cadastrar');
+Route::post('/portal/biometria/teste', [BiometriaController::class, 'testar'])->name('portal.biometria.teste');
 
         // RF06/RF14.b/RF15 — chamada conduzida pelo instrutor
         Route::get('/portal/aulas/{aula}', [ChamadaController::class, 'aula'])->name('portal.aula.mostrar');

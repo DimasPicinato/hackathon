@@ -1,31 +1,24 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+@extends('layouts.guest')
+
+@section('titulo', 'Verificar e-mail — Presenza')
+
+@section('conteudo')
+<h1>Verificar e-mail</h1>
+<p class="muted">Antes de começar, confirme o seu endereço de e-mail clicando no link que acabamos de enviar. Se não recebeu, podemos enviar outro.</p>
+
+@if (session('status') == 'verification-link-sent')
+    <div class="alert alert-ok">Um novo link de confirmação foi enviado para o seu e-mail.</div>
+@endif
+
+<form method="POST" action="{{ route('verification.send') }}">
+    @csrf
+    <div class="acoes-login">
+        <button type="submit" class="btn btn-primary">Reenviar e-mail de confirmação</button>
     </div>
+</form>
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
-
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
-        </form>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
-            </button>
-        </form>
-    </div>
-</x-guest-layout>
+<form method="POST" action="{{ route('logout') }}" style="margin-top:var(--space-3);">
+    @csrf
+    <button type="submit" class="btn btn-outline">Sair</button>
+</form>
+@endsection

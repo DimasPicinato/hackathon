@@ -188,6 +188,37 @@
                     return;
                 }
                 var embedding = Array.from(resultado.descriptor);
+                if (formAlvo && formAlvo.dataset && formAlvo.dataset.modo === 'teste') {
+                    definirStatus('Comparando com o seu cadastro…');
+                    var campoToken = document.querySelector('meta[name="csrf-token"]');
+                    var fd = new FormData();
+                    if (campoToken) fd.append('_token', campoToken.content);
+                    fd.append('embedding', JSON.stringify(embedding));
+                    fetch(formAlvo.action, {
+                        method: 'POST',
+                        body: fd,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                        credentials: 'same-origin'
+                    }).then(function (r) { return r.json(); }).then(function (data) {
+                        pararCamera();
+                        overlay.hidden = true;
+                        var area = document.getElementById('teste-facial-resultado');
+                        if (area) {
+                            area.hidden = false;
+                            area.className = 'alert ' + (data.reconhecido ? 'alert-ok' : 'alert-erro');
+                            var pct = (typeof data.similaridade === 'number') ? ' (similaridade ' + Math.round(data.similaridade * 100) + '%)' : '';
+                            area.textContent = (data.mensagem || 'Resultado do teste.') + pct;
+                        }
+                        formAlvo = null;
+                    }).catch(function () {
+                        pararCamera();
+                        overlay.hidden = true;
+                        var area = document.getElementById('teste-facial-resultado');
+                        if (area) { area.hidden = false; area.className = 'alert alert-erro'; area.textContent = 'Não foi possível concluir o teste agora. Tente novamente.'; }
+                        formAlvo = null;
+                    });
+                    return;
+                }
                 formAlvo.querySelector('input[name="embedding"]').value = JSON.stringify(embedding);
                 overlay.hidden = true;
                 pararCamera();

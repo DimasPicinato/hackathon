@@ -40,4 +40,16 @@
     <p class="mini muted">Para uma boa captura: ambiente bem iluminado, rosto centralizado na câmera,
         sem óculos escuros ou boné. A imagem não sai do seu dispositivo.</p>
 </div>
+
+@if ($comCadastroReal)
+<div class="card">
+    <h2>Teste rápido de reconhecimento</h2>
+    <p class="muted">Confirme, na hora, se o seu rosto é reconhecido pelo cadastro atual — útil para validar a iluminação e a posição da câmera.</p>
+    <form method="POST" action="{{ route('portal.biometria.teste') }}" data-facial data-modo="teste" data-nome="{{ auth()->user()->name }}">@csrf
+        <button class="btn btn-outline">🧪 Testar reconhecimento agora</button>
+    </form>
+    <div id="teste-facial-resultado" class="alert" hidden style="margin-top:var(--space-3);"></div>
+    <p class="mini muted">A imagem é analisada apenas no seu navegador; o servidor recebe somente o código numérico e compara com o seu próprio cadastro.</p>
+</div>
+@endif
 @endsection
