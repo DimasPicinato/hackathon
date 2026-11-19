@@ -798,4 +798,24 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 18/11/2026 16h40 — gerado pela skill `registro-hackathon`._
+---
+
+## Nº 53 — CÓDIGO — E2E completo: Meu Perfil estilizado, auth em pt-BR, teste rápido de reconhecimento facial, cache-busting nas views públicas
+
+- **Quando:** 19/11/2026 13h00–13h40
+- **O que foi feito:**
+  - **Meu Perfil sem estilo (causa):** a página era o scaffold do Breeze (`<x-app-layout>` + classes Tailwind), mas o app usa CSS próprio — renderizava sem estilo e dependia de Alpine que nunca era carregado. Reescrita para `@extends('layouts.portal')` com `card`, `label`, `input`, `btn`, e mensagens em pt-BR; formulários de dados, senha e exclusão de conta refeitos sem modal/Alpine (exclusão via `<details>`); mapeamento de `session('status')` para mensagens amigáveis no layout do portal;
+  - **Auth (guest):** `forgot-password`, `reset-password`, `confirm-password` e `verify-email` estavam usando `<x-guest-layout>` com slot (o layout é `@yield`-based → conteúdo descartado) e em inglês. Reescritos para `@extends('layouts.guest')` com `@section('conteudo')` e pt-BR;
+  - **Teste rápido de reconhecimento facial:** nova rota `POST /portal/biometria/teste` (`BiometriaController::testar`) que compara o rosto capturado com o próprio cadastro e devolve JSON `{ok, reconhecido, similaridade, mensagem}`; novo método `BiometriaService::similaridadeCom`; card "Teste rápido de reconhecimento" na página de cadastro facial (exibido só com cadastro real), com área de resultado; branch no `camera-facial.blade.php` (modo `teste`) que envia via `fetch` em vez de submit nativo e exibe a similaridade;
+  - **Cache-busting:** `/css/app.css?v=filemtime` aplicado também em `welcome.blade.php` e `verificar/{busca,resultado}.blade.php` (estavam sem versão);
+  - **E2E:** crawl HTTP de todas as rotas do portal como admin, líder e colaborador — todas 200, sem erro/Undefined, CSS presente, sem vazamento de classes Tailwind; endpoint de teste validado (422 JSON quando sem cadastro real); suíte completa verde.
+  - **Teste flaky corrigido:** `ConformidadeTest` comparava nomes sem considerar a fuga do Blade (`{{ }}` → `e()`); afetava apenas o caso com apóstrofo no nome (ex.: "Seamus O'Hara").
+- **Artefatos:** `resources/views/profile/*`, `resources/views/auth/{forgot,reset,confirm,verify}*.blade.php`, `resources/views/portal/biometria.blade.php`, `resources/views/partials/camera-facial.blade.php`, `resources/views/layouts/portal.blade.php`, `resources/views/welcome.blade.php`, `resources/views/verificar/*`, `app/Http/Controllers/BiometriaController.php`, `app/Services/BiometriaService.php`, `routes/web.php`, `tests/Feature/ConformidadeTest.php`
+- **Decisões / por quê:** reutilizar o fluxo de câmera existente (overlay) para o teste, apenas bifurcando o submit; manter o Breeze (`layouts/app`/`navigation`) como código morto para não arriscar rotas legadas.
+- **Prompts-chave:** "faça um teste e2e por toda a aplicação, inclusive, a página de Meu Perfil também não está com estilos... depois de tudo commit e push" + "deixe também na página de cadastro facial, um teste rápido de reconhecimento facial".
+- **Resultados:** suíte **111/367 verde**; todas as páginas 200; deploy via push (commit `270205d`).
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 19/11/2026 13h40 — gerado pela skill `registro-hackathon`._

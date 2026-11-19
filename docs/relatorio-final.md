@@ -543,6 +543,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** a suspeita estava certa e era **a causa raiz** dos relatos anteriores. O CSS definia `display: flex` em `.rec-overlay` e `.btn`, o que **vence o `hidden`** do HTML: o overlay da câmera ficava sempre visível, cobrindo o portal com `z-index: 90`. O clique nunca chegava ao botão real — então a câmera nunca era pedida — e os botões do overlay respondiam a um estado interno "fechado" (pareciam mortos). Corrigido com a regra global `[hidden] { display: none !important; }`, mais placeholder "Aguardando a câmera…", liberação do `srcObject` ao parar e vigia de frames (3 validações antes de liberar a captura). O `app.css` ganhou cache-busting (`?v=filemtime`) nos três layouts para o fix chegar a navegadores com CSS antigo. Fluxo completo validado localmente e no domínio: detectar rosto → contar 3-2-1 → capturar → cadastro salvo → overlay fecha. Suíte **111/367 verde**; commits `f0b5634` e `e012af5`.
 
+> **P-54 · "E2E completo + Meu Perfil sem estilo + teste rápido de reconhecimento facial"** (19/11/2026)
+> "faça um teste e2e por toda a aplicação, inclusive, a página de Meu Perfil também não está com estilos, eu iniciei o Docker então você pode iniciar o servidor de desenvolvimento e prosseguir com os testes e correções, depois de tudo commit e push" + "deixe também na página de cadastro facial, um teste rápido de reconhecimento facial"
+>
+> **Resultado:** **Meu Perfil** era o scaffold do Breeze (`<x-app-layout>` + Tailwind) sobre um app com CSS próprio — reescrito para `@extends('layouts.portal')` (card/label/input/btn, pt-BR), sem modal/Alpine; **auth (guest)** `forgot/reset/confirm/verify` reescritos para `@extends('layouts.guest')` com `@section('conteudo')` (estavam descartando o slot) e pt-BR; **teste rápido de reconhecimento facial** com rota `POST /portal/biometria/teste` (JSON `{ok, reconhecido, similaridade, mensagem}`), método `BiometriaService::similaridadeCom`, card na página de cadastro e branch no overlay (modo `teste` via `fetch`); **cache-busting** estendido a `welcome.blade.php` e `verificar/*`; crawl HTTP de todas as rotas como admin/líder/colaborador — todas 200, sem erro/Undefined, CSS presente, sem vazamento Tailwind; endpoint validado (422 JSON sem cadastro real); **teste flaky de `ConformidadeTest` corrigido** (fuga do Blade via `e()`). Suíte **111/367 verde**; commit `270205d`.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -642,8 +647,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 31. **Permissão de câmera pedida no clique** (P-51) - `getUserMedia` síncrono no gesto do usuário (modelos em paralelo), mensagens por tipo de bloqueio, botão "Tentar novamente" e aviso "escolha Permitir" nos três pontos de entrada - 18/11 (**111/367 verde**, commit `2453b18`).
 32. **Desbloqueio guiado da câmera** (P-52) - painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; componente validado com câmera sintética (vídeo + modelos + detecção) - 18/11 (**111/367 verde**, commit `b04f299`).
 33. **Causa raiz do componente "morto"** (P-53) - CSS de classe sobrepunha o atributo `hidden` e o overlay ficava sempre visível, bloqueando a página e o clique real; regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", liberação do `srcObject` e vigia de frames - 18/11 (**111/367 verde**, commit `f0b5634`).
+34. **E2E completo + Meu Perfil estilizado + teste rápido de reconhecimento facial** (P-54) - Meu Perfil (Breeze/Tailwind) reescrito para o design system do portal; auth guest refeita em pt-BR; rota `POST /portal/biometria/teste` com JSON e card de teste rápido; cache-busting em `welcome` e `verificar/*`; crawl de todas as rotas como admin/líder/colaborador (todas 200); teste flaky de `ConformidadeTest` corrigido - 19/11 (**111/367 verde**, commit `270205d`).
 
-## §9. Diário de bordo (`journey-log.md`, 52 sessões)
+## §9. Diário de bordo (`journey-log.md`, 53 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -714,6 +720,7 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 50 · 09h00–10h00 — Código:** **permissão de câmera no clique do usuário** — `getUserMedia` saiu da cadeia pós-modelos e é chamado de forma síncrona no gesto do clique (modelos em paralelo), exibindo o pedido do navegador de imediato; mensagens específicas por tipo de bloqueio (cadeado, câmera em uso, sem câmera), botão "Tentar novamente" no overlay e aviso "escolha Permitir" nos três pontos de entrada; spy confirmou `userActivation.isActive === true` no pedido; **111/367 verde**, `view:cache` ok (commit `2453b18`). ✔
 - **Nº 51 · 10h30–11h30 — Código:** **desbloqueio guiado da câmera** — componente validado com câmera sintética (vídeo 640×480, modelos e detecção ativos), provando que o problema é permissão negada; overlay ganhou painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; caminhos bloqueado e liberado validados; **111/367 verde** (commit `b04f299`). ✔
 - **Nº 52 · 15h50–16h40 — Código:** **causa raiz do componente "morto"** — o `display` das classes (`.rec-overlay`, `.btn`) vencia o atributo `hidden`, deixando o overlay da câmera **sempre visível** por cima do portal: o clique nunca chegava ao botão real e os botões do overlay respondiam a um estado "fechado". Regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", `srcObject` liberado ao parar e vigia de frames; fluxo completo (detectar → 3-2-1 → capturar → salvar → fechar) validado local e no domínio; **111/367 verde** (commit `f0b5634`). ✔
+- **Nº 53 · 13h00–13h40 — Código:** **E2E completo** — Meu Perfil (Breeze/Tailwind) reescrito para o design system do portal (card/label/input/btn, pt-BR), sem modal/Alpine; auth guest (`forgot/reset/confirm/verify`) refeita com `@extends('layouts.guest')` e pt-BR; **teste rápido de reconhecimento facial** (rota `POST /portal/biometria/teste` com JSON, `BiometriaService::similaridadeCom`, card + branch no overlay via `fetch`); cache-busting em `welcome` e `verificar/*`; crawl HTTP de todas as rotas como admin/líder/colaborador (todas 200); teste flaky de `ConformidadeTest` corrigido (`e()`); **111/367 verde** (commit `270205d`). ✔
 
 *Última atualização do diário: 18/11/2026, 16h40.*
 
@@ -759,7 +766,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 52 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 53 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |
