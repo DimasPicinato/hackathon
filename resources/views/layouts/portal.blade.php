@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('titulo', 'Presenza')</title>
-        <link rel="stylesheet" href="/css/app.css">
+        <link rel="stylesheet" href="/css/app.css?v={{ @filemtime(public_path('css/app.css')) ?: 1 }}">
         {{-- RF03/RF14 — face-api.js vendored (sem build): extrai o embedding no navegador --}}
         <script src="/vendor/face-api/face-api.min.js" defer></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">

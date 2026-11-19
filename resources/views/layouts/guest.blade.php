@@ -7,7 +7,7 @@
 
         <title>@yield('titulo', 'Presenza')</title>
 
-        <link rel="stylesheet" href="/css/app.css">
+        <link rel="stylesheet" href="/css/app.css?v={{ @filemtime(public_path('css/app.css')) ?: 1 }}">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
     </head>
