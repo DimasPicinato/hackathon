@@ -31,7 +31,7 @@ class BiometriaService
     /** Similaridade de cosseno mínima para aceitar o match (configurável via .env). */
     public function limiar(): float
     {
-        return (float) config('services.biometria.limiar', 0.85);
+        return (float) config('services.biometria.limiar', 0.95);
     }
 
     /**
