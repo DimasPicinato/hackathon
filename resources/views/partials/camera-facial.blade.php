@@ -59,6 +59,8 @@
     var loop = null;
     var modelosOk = false;
     var falhaCamera = false;
+    var contando = false;
+    var autoTimer = null;
 
     function definirStatus(texto, tipo) {
         status.textContent = texto;
@@ -67,6 +69,7 @@
 
     function pararCamera() {
         if (loop) { clearInterval(loop); loop = null; }
+        if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
         if (stream) {
             stream.getTracks().forEach(function (t) { t.stop(); });
             stream = null;
@@ -80,6 +83,8 @@
 
     function fechar() {
         pararCamera();
+        contando = false;
+        if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
         botaoRepetir.hidden = true;
         botaoRepetir.textContent = 'Tentar novamente';
         dica.hidden = true;
@@ -135,11 +140,23 @@
                         if (!rostoVisivel) {
                             rostoVisivel = true;
                             botaoCapturar.disabled = false;
-                            definirStatus('Rosto detectado! Fique bem iluminado, olhe para a câmera e clique em Capturar.', 'ok');
+                            definirStatus('Rosto detectado! Capturando automaticamente em instantes… (ou clique em Capturar)');
+                            // Início automático assim que o rosto fica disponível na tela;
+                            // o botão "Capturar" permanece como alternativa manual.
+                            if (!contando && !autoTimer) {
+                                autoTimer = setTimeout(function () {
+                                    autoTimer = null;
+                                    if (rostoVisivel && !contando) {
+                                        contando = true;
+                                        contagem(function () { contando = false; capturar(); });
+                                    }
+                                }, 1200);
+                            }
                         }
                     } else if (rostoVisivel) {
                         rostoVisivel = false;
                         botaoCapturar.disabled = true;
+                        if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
                         definirStatus('Nenhum rosto visível — olhe para a câmera.');
                     } else if (status.textContent.indexOf('Nenhum rosto') === -1) {
                         definirStatus('Nenhum rosto visível — olhe para a câmera.');
@@ -168,6 +185,7 @@
     }
 
     function capturar() {
+        contando = false;
         if (!stream || video.paused || video.videoWidth === 0) {
             definirStatus('A câmera não está pronta para a captura. Toque em Tentar novamente.', 'erro');
             botaoRepetir.hidden = false;
@@ -320,7 +338,7 @@
             });
         });
 
-        botaoCapturar.addEventListener('click', function () { contagem(capturar); });
+        botaoCapturar.addEventListener('click', function () { if (contando) return; if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } contando = true; contagem(function () { contando = false; capturar(); }); });
         botaoRepetir.addEventListener('click', function () { if (formAlvo) abrir(formAlvo); });
         botaoCancelar.addEventListener('click', fechar);
         video.addEventListener('playing', function () { espera.hidden = true; });
