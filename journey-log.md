@@ -833,4 +833,14 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 19/11/2026 14h30 — gerado pela skill `registro-hackathon`._
+---
+
+## Nº 55 — CÓDIGO — Reconhecimento facial automático
+
+- **Quando:** 19/11/2026 14h40–14h50
+- **O que foi feito:** o overlay agora **inicia a captura automaticamente** 1,2 s após detectar um rosto na tela (contagem 3-2-1 + captura), sem exigir clique. O botão "Capturar" permanece como **alternativa manual** (fallback) e pode ser usado a qualquer momento; se o rosto desaparecer, o agendamento é cancelado. Flags `contando`/`autoTimer` evitam disparos duplicados.
+- **Artefatos:** `resources/views/partials/camera-facial.blade.php`
+- **Resultados:** JS válido (`node --check`); commit `090e8b4`.
+- **Status:** Concluído.
+
+_Última atualização: 19/11/2026 14h50 — gerado pela skill `registro-hackathon`._
