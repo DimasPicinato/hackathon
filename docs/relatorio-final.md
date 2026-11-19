@@ -548,6 +548,11 @@ Contexto: VPS gerenciada pelo Coolify, domínio `http://hackathon.dpicinato.com`
 >
 > **Resultado:** **Meu Perfil** era o scaffold do Breeze (`<x-app-layout>` + Tailwind) sobre um app com CSS próprio — reescrito para `@extends('layouts.portal')` (card/label/input/btn, pt-BR), sem modal/Alpine; **auth (guest)** `forgot/reset/confirm/verify` reescritos para `@extends('layouts.guest')` com `@section('conteudo')` (estavam descartando o slot) e pt-BR; **teste rápido de reconhecimento facial** com rota `POST /portal/biometria/teste` (JSON `{ok, reconhecido, similaridade, mensagem}`), método `BiometriaService::similaridadeCom`, card na página de cadastro e branch no overlay (modo `teste` via `fetch`); **cache-busting** estendido a `welcome.blade.php` e `verificar/*`; crawl HTTP de todas as rotas como admin/líder/colaborador — todas 200, sem erro/Undefined, CSS presente, sem vazamento Tailwind; endpoint validado (422 JSON sem cadastro real); **teste flaky de `ConformidadeTest` corrigido** (fuga do Blade via `e()`). Suíte **111/367 verde**; commit `270205d`.
 
+> **P-55 · "Facial permissivo + chat de IA sem resposta + animação de carregamento"** (19/11/2026)
+> "o reconhecimento facial está muito permissivo, rostos que não são o meu cadastrado em um testes, estão passando como se fossem eu" + "o chat de IA não está mostrando as respostas e nem histórico da conversa" + "deixe uma animação de que a resposta está carregando a mensagem também"
+>
+> **Resultado:** **presença facial** usava `identificar` (1:N — nearest neighbor), aceitando o rosto de outra pessoa quando fosse o mais próximo. Trocado por `conferir` (1:1 contra o cadastro da pessoa reivindicada), com auditoria de divergência preservada; limiar elevado de 0,80 para 0,85. **Chat de IA**: o widget enviava JSON que o servidor não parseava (422 "campo obrigatório") — passou a enviar `application/x-www-form-urlencoded`, compatível com a rota; respostas voltam a aparecer. **Animação de carregamento**: indicador "Assistente escrevendo" ganhou pontinhos animados (CSS keyframes). Suíte **111/367 verde**; commit `ea44762`.
+
 ## §7. Transcrição do questionário interativo (Q1–Q35)
 
 Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada; o time respondia e ajustava livremente). **Q1–Q30 = requisitos · Q31–Q33 = design · Q34 = nome · Q35 = stack.**
@@ -648,8 +653,9 @@ Método: skill `grilling` (perguntas em rodadas, sempre com resposta recomendada
 32. **Desbloqueio guiado da câmera** (P-52) - painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; componente validado com câmera sintética (vídeo + modelos + detecção) - 18/11 (**111/367 verde**, commit `b04f299`).
 33. **Causa raiz do componente "morto"** (P-53) - CSS de classe sobrepunha o atributo `hidden` e o overlay ficava sempre visível, bloqueando a página e o clique real; regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", liberação do `srcObject` e vigia de frames - 18/11 (**111/367 verde**, commit `f0b5634`).
 34. **E2E completo + Meu Perfil estilizado + teste rápido de reconhecimento facial** (P-54) - Meu Perfil (Breeze/Tailwind) reescrito para o design system do portal; auth guest refeita em pt-BR; rota `POST /portal/biometria/teste` com JSON e card de teste rápido; cache-busting em `welcome` e `verificar/*`; crawl de todas as rotas como admin/líder/colaborador (todas 200); teste flaky de `ConformidadeTest` corrigido - 19/11 (**111/367 verde**, commit `270205d`).
+35. **Facial mais estrito + chat corrigido** (P-55) - presença facial trocou `identificar` (1:N) por `conferir` (1:1) e limiar 0,80→0,85 (fim dos falsos positivos); chat de IA voltou a responder (widget enviava JSON não parseado → form-encoded); animação de carregamento com pontinhos animados - 19/11 (**111/367 verde**, commit `ea44762`).
 
-## §9. Diário de bordo (`journey-log.md`, 53 sessões)
+## §9. Diário de bordo (`journey-log.md`, 54 sessões)
 
 Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada sessão — resumo fiel de cada registro.
 
@@ -721,6 +727,7 @@ Histórico cronológico escrito pela skill `registro-hackathon` ao fim de cada s
 - **Nº 51 · 10h30–11h30 — Código:** **desbloqueio guiado da câmera** — componente validado com câmera sintética (vídeo 640×480, modelos e detecção ativos), provando que o problema é permissão negada; overlay ganhou painel passo a passo do cadeado, botão "Já liberei — tentar novamente", aviso de conexão segura e vigia de câmera sem imagem; caminhos bloqueado e liberado validados; **111/367 verde** (commit `b04f299`). ✔
 - **Nº 52 · 15h50–16h40 — Código:** **causa raiz do componente "morto"** — o `display` das classes (`.rec-overlay`, `.btn`) vencia o atributo `hidden`, deixando o overlay da câmera **sempre visível** por cima do portal: o clique nunca chegava ao botão real e os botões do overlay respondiam a um estado "fechado". Regra global `[hidden] { display: none !important; }` + placeholder "Aguardando a câmera…", `srcObject` liberado ao parar e vigia de frames; fluxo completo (detectar → 3-2-1 → capturar → salvar → fechar) validado local e no domínio; **111/367 verde** (commit `f0b5634`). ✔
 - **Nº 53 · 13h00–13h40 — Código:** **E2E completo** — Meu Perfil (Breeze/Tailwind) reescrito para o design system do portal (card/label/input/btn, pt-BR), sem modal/Alpine; auth guest (`forgot/reset/confirm/verify`) refeita com `@extends('layouts.guest')` e pt-BR; **teste rápido de reconhecimento facial** (rota `POST /portal/biometria/teste` com JSON, `BiometriaService::similaridadeCom`, card + branch no overlay via `fetch`); cache-busting em `welcome` e `verificar/*`; crawl HTTP de todas as rotas como admin/líder/colaborador (todas 200); teste flaky de `ConformidadeTest` corrigido (`e()`); **111/367 verde** (commit `270205d`). ✔
+- **Nº 54 · 14h00–14h30 — Código:** **facial mais estrito + chat corrigido** — presença facial trocou `identificar` (1:N) por `conferir` (1:1) e limiar 0,80→0,85 (fim dos falsos positivos); chat de IA voltou a responder (widget enviava JSON não parseado → form-encoded); animação de carregamento com pontinhos animados; **111/367 verde** (commit `ea44762`). ✔
 
 *Última atualização do diário: 18/11/2026, 16h40.*
 
@@ -766,7 +773,7 @@ O seed também **pré-assina o termo LGPD (44/44)** — login vai direto ao port
 
 | Artefato | Conteúdo |
 |---|---|
-| `journey-log.md` | Diário de bordo — 53 sessões com prompts, decisões e resultados |
+| `journey-log.md` | Diário de bordo — 54 sessões com prompts, decisões e resultados |
 | `docs/requisitos-p1.md` | RF01–RF34, RNF01–09, SEED01–03, fluxos, fora de escopo + **§7 assistente de IA (RF29–RF34, RNF07–09)** |
 | `docs/questionario-requisitos-p1.md` | Transcrição Q1–Q33 (perguntas, respostas, impacto) |
 | `docs/questionario-requisitos-assistente-ia.md` | Transcrição Q36–Q59 (módulo assistente de IA — 21/10) |

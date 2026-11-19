@@ -818,4 +818,19 @@ _Última atualização: 21/10/2026 11h47 — gerado pela skill `registro-hackath
 
 ---
 
-_Última atualização: 19/11/2026 13h40 — gerado pela skill `registro-hackathon`._
+---
+
+## Nº 54 — CÓDIGO — Facial mais estrito + chat corrigido
+
+- **Quando:** 19/11/2026 14h00–14h30
+- **O que foi feito:**
+  - **Facial permissivo:** a presença facial usava `identificar` (1:N — nearest neighbor entre todos os cadastros), o que aceitava o rosto de outra pessoa quando fosse o mais próximo. Trocado por `conferir` (1:1 contra o cadastro da pessoa reivindicada), com auditoria de divergência preservada (se o rosto bate com outra pessoa, registra `presenca_facial_divergente`); limiar elevado de 0,80 para 0,85; o "teste rápido" já usava conferência 1:1;
+  - **Chat de IA:** o widget enviava o corpo em JSON, mas o servidor não parseava (422 "campo obrigatório") → nenhuma resposta aparecia. Widget passou a enviar `application/x-www-form-urlencoded`, compatível com a rota;
+  - **Animação de carregamento:** o indicador "Assistente escrevendo" ganhou pontinhos animados (CSS keyframes) em vez do texto estático.
+- **Artefatos:** `app/Services/PresencaService.php`, `app/Services/BiometriaService.php`, `resources/views/assistente/widget.blade.php`, `public/css/assistente.css`
+- **Resultados:** suíte **111/367 verde**; commit `ea44762`.
+- **Status:** Concluído.
+
+---
+
+_Última atualização: 19/11/2026 14h30 — gerado pela skill `registro-hackathon`._
