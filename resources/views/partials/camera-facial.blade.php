@@ -14,6 +14,10 @@
             <span id="rec-numero" class="rec-numero" hidden></span>
             <span id="rec-flash" class="rec-flash"></span>
         </div>
+        <div class="linha-acoes" style="margin-top:var(--space-2); align-items:center;">
+            <label for="rec-camera" class="mini" style="margin:0; white-space:nowrap;">Câmera:</label>
+            <select id="rec-camera" class="mini" style="flex:1; min-width:0;" hidden></select>
+        </div>
         <p id="rec-status" class="rec-status"></p>
         <div id="rec-dica" class="rec-dica" hidden>
             <p><strong>A câmera está bloqueada neste navegador. Para liberar:</strong></p>
@@ -52,6 +56,8 @@
     var botaoRepetir = document.getElementById('rec-repetir');
     var botaoCancelar = document.getElementById('rec-cancelar');
     var rotulo = document.getElementById('rec-nome');
+    var seletorCamera = document.getElementById('rec-camera');
+    var cameraId = null;
 
     var stream = null;
     var formAlvo = null;
@@ -85,6 +91,7 @@
         pararCamera();
         contando = false;
         if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+        seletorCamera.hidden = true;
         botaoRepetir.hidden = true;
         botaoRepetir.textContent = 'Tentar novamente';
         dica.hidden = true;
@@ -273,11 +280,35 @@
         // Os modelos de reconhecimento carregam em paralelo, sem segurar o pedido.
         definirStatus('Aguardando a sua autorização — quando o navegador perguntar, escolha Permitir para usar a câmera.');
 
-        var pedidoCamera = navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } })
+        var constraints = cameraId
+            ? { video: { deviceId: { exact: cameraId }, width: 640, height: 480 } }
+            : { video: { width: 640, height: 480, facingMode: 'user' } };
+
+        var pedidoCamera = navigator.mediaDevices.getUserMedia(constraints)
             .then(function (s) {
                 stream = s;
                 video.srcObject = s;
                 if (!modelosOk) definirStatus('Câmera liberada — preparando o reconhecimento facial…');
+                // Lista as câmeras disponíveis para permitir a troca de dispositivo.
+                if (navigator.mediaDevices.enumerateDevices) {
+                    navigator.mediaDevices.enumerateDevices().then(function (devices) {
+                        var cameras = devices.filter(function (d) { return d.kind === 'videoinput'; });
+                        if (cameras.length > 1) {
+                            seletorCamera.hidden = false;
+                            seletorCamera.innerHTML = '';
+                            cameras.forEach(function (cam, idx) {
+                                var opt = document.createElement('option');
+                                opt.value = cam.deviceId;
+                                opt.textContent = cam.label || ('Câmera ' + (idx + 1));
+                                if (cam.deviceId === cameraId || (!cameraId && idx === 0)) opt.selected = true;
+                                seletorCamera.appendChild(opt);
+                            });
+                            if (!cameraId && cameras[0]) cameraId = cameras[0].deviceId;
+                        } else {
+                            seletorCamera.hidden = true;
+                        }
+                    }).catch(function () { /* ignore */ });
+                }
                 return video.play().catch(function () { /* alguns navegadores só tocam após um toque */ });
             })
             .then(function () {
@@ -340,6 +371,10 @@
 
         botaoCapturar.addEventListener('click', function () { if (contando) return; if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } contando = true; contagem(function () { contando = false; capturar(); }); });
         botaoRepetir.addEventListener('click', function () { if (formAlvo) abrir(formAlvo); });
+        seletorCamera.addEventListener('change', function () {
+            cameraId = seletorCamera.value;
+            if (formAlvo) abrir(formAlvo);
+        });
         botaoCancelar.addEventListener('click', fechar);
         video.addEventListener('playing', function () { espera.hidden = true; });
         video.addEventListener('loadeddata', function () { espera.hidden = true; });
