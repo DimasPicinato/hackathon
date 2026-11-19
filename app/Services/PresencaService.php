@@ -30,31 +30,41 @@ class PresencaService
         $this->garantirConsentimento($colaborador);  // RF04
         $this->garantirAusenciaDuplicidade($aula, $colaborador, $atorId); // RF16
 
-        $match = $embedding ? $this->biometria->identificar($embedding) : null;
+        // Conferência 1:1 contra o cadastro da pessoa reivindicada (mais estrita
+        // que a identificação 1:N): o rosto capturado precisa ser o da própria
+        // pessoa, não apenas o mais próximo entre todos os cadastros.
+        $similaridade = $embedding ? $this->biometria->conferir($colaborador, $embedding) : null;
 
-        if ($match === null) {
+        if ($similaridade === null) {
+            // Anti-fraude: se o rosto bate com o cadastro de OUTRA pessoa, registra
+            // a divergência (sinal mais forte de fraude) antes de rejeitar.
+            $outro = null;
+            if ($embedding) {
+                $matchOutro = $this->biometria->identificar($embedding);
+                if ($matchOutro && $matchOutro['user']->id !== $colaborador->id) {
+                    $outro = $matchOutro;
+                    Auditoria::registrar('presenca_facial_divergente', $aula, [
+                        'reivindicado' => $colaborador->matricula,
+                        'reconhecido' => $matchOutro['user']->matricula,
+                        'similaridade' => $matchOutro['similaridade'],
+                    ], $atorId ?? $colaborador->id, $ip);
+                }
+            }
+
             Auditoria::registrar('presenca_facial_rejeitada', $aula, [
                 'colaborador' => $colaborador->matricula,
-                'motivo' => $embedding ? 'nenhum cadastro acima do limiar' : 'captura sem embedding',
+                'motivo' => $embedding ? 'rosto não confere com o cadastro da pessoa' : 'captura sem embedding',
+                'divergente' => $outro !== null,
             ], $atorId ?? $colaborador->id, $ip);
 
             throw ValidationException::withMessages([
-                'facial' => 'Rosto não reconhecido. Verifique se esta pessoa já registrou o rosto no cadastro facial ou registre a presença manualmente (com senha e motivo).',
+                'facial' => $outro !== null
+                    ? 'O rosto capturado corresponde ao cadastro de outra pessoa. A presença não foi registrada.'
+                    : 'Rosto não reconhecido. Verifique se esta pessoa já registrou o rosto no cadastro facial ou registre a presença manualmente (com senha e motivo).',
             ]);
         }
 
-        if ($match['user']->id !== $colaborador->id) {
-            // Anti-fraude: o rosto reconhecido NÃO é o do colaborador reivindicado.
-            Auditoria::registrar('presenca_facial_divergente', $aula, [
-                'reivindicado' => $colaborador->matricula,
-                'reconhecido' => $match['user']->matricula,
-                'similaridade' => $match['similaridade'],
-            ], $atorId ?? $colaborador->id, $ip);
-
-            throw ValidationException::withMessages([
-                'facial' => 'O rosto capturado não corresponde ao cadastro da pessoa indicada. A presença não foi registrada.',
-            ]);
-        }
+        $match = ['user' => $colaborador, 'similaridade' => $similaridade];
 
         $presenca = Presenca::create([
             'aula_id' => $aula->id,

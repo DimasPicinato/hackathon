@@ -20,7 +20,7 @@
             <template x-for="msg in mensagens" :key="msg.id">
                 <div class="assistente-msg" :class="msg.autor === 'voce' ? 'assistente-msg-voce' : 'assistente-msg-assistente'" x-text="msg.texto"></div>
             </template>
-            <div class="assistente-digitando" x-show="carregando">Assistente escrevendo&hellip;</div>
+            <div class="assistente-digitando" x-show="carregando">Assistente escrevendo</div>
         </div>
 
         <form class="assistente-form" @submit.prevent="enviar()">
@@ -60,10 +60,13 @@
                     try {
                         // O servidor pode levar até ~100 s (modelo free com cold start);
                         // aborta um pouco além disso para o painel nunca ficar preso.
+                        const corpo = new URLSearchParams();
+                        corpo.append('sessao', this.sessao);
+                        corpo.append('pergunta', texto);
                         const resposta = await fetch('/assistente', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                            body: JSON.stringify({ sessao: this.sessao, pergunta: texto }),
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+                            body: corpo.toString(),
                             signal: AbortSignal.timeout(120000)
                         });
                         let dados = null;
